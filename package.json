@@ -9,10 +9,12 @@
   "author": "Adrian Olczyk <adrian@olczyk.me>",
   "license": "Apache 2.0",
   "devDependencies": {
-    "chai": "^3.0.0"
+    "chai": "^3.0.0",
+    "randomstring": "^1.0.7"
   },
   "dependencies": {
     "MD5": "^1.2.2",
+    "js-base64": "^2.1.8",
     "rsvp": "^3.0.18",
     "superagent": "^1.2.0",
     "underscore": "^1.8.3"

@@ -1,9 +1,10 @@
 
-var _      = require('underscore')._,
-    chai   = require('chai'),
-    assert = chai.assert,
-    SMSAPI = require(__dirname + '/../lib/smsapi.js'),
-    config = require('./config.js');
+var _            = require('underscore')._,
+    chai         = require('chai'),
+    assert       = chai.assert,
+    SMSAPI       = require(__dirname + '/../lib/smsapi.js'),
+    config       = require('./config.js'),
+    randomString = require('randomstring').generate;
 
 describe('sms', function(){
     var smsapi = new SMSAPI({ server: config.server });
@@ -54,41 +55,17 @@ describe('sms', function(){
                 .catch(done);
         });
 
-        it('should send eco sms to two numbers', function(done){
+        it('should send eco sms to array of numbers', function(done){
             smsapi.message
                 .sms()
                 .eco()
-                .to([config.testNumber,'505206406'])
+                .to([config.testNumber])
                 .test()
                 .message('Test message')
                 .execute()
                 .then(function(result){
-                    assert.equal(result.count, 2);
+                    assert.equal(result.count, 1);
                     assert.equal(result.list[0].number, config.testNumber);
-                    done();
-                })
-                .catch(done);
-        });
-
-        it('should send eco sms to group', function(done){
-            smsapi.phonebook.group
-                .list()
-                .execute()
-                .then(function(result){
-                    return _.first(result.list);
-                })
-                .then(function(group){
-                    return smsapi.message
-                        .sms()
-                        .eco()
-                        .group(group.name)
-                        .test()
-                        .message('Test message')
-                        .execute();
-                })
-                .then(function(result){
-                    assert.property(result, 'count');
-                    assert.isArray(result.list);
                     done();
                 })
                 .catch(done);

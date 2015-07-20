@@ -47,9 +47,7 @@ function displayError(err){
 
 Dokumentacja interfejsu REST API znajduje się pod adresem [http://www.smsapi.pl/rest](http://www.smsapi.pl/rest).
 
-Wszystkie odwołania do API zwracają obiekt `Promise` zgodny ze standardem [Promises/A+](https://promisesaplus.com).
-
-Wykorzystywana implementacja: https://github.com/tildeio/rsvp.js
+Wszystkie odwołania do API zwracają obiekt `Promise` zgodny ze standardem [Promises/A+](https://promisesaplus.com). Użyta implementacja: https://github.com/tildeio/rsvp.js
 
 ## Dostępne operacje
 
@@ -57,19 +55,6 @@ Wykorzystywana implementacja: https://github.com/tildeio/rsvp.js
     * sms
     * mms
     * vms
-* phonebook
-    * contact
-        * add
-        * get
-        * update
-        * list
-        * delete
-    * group
-        * get
-        * add
-        * update
-        * list
-        * delete
 * points
     * get
 * sender
@@ -86,6 +71,51 @@ Wykorzystywana implementacja: https://github.com/tildeio/rsvp.js
     * update
     * get
     * list
+* phonebook (deprecated)
+    * contact
+        * add
+        * get
+        * update
+        * list
+        * delete
+    * group
+        * get
+        * add
+        * update
+        * list
+        * delete
+* contacts
+    * list
+    * add
+    * get
+    * update
+    * delete
+    * fields
+        * list
+        * add
+        * update
+        * delete
+    * groups
+        * list
+        * add
+        * get
+        * update
+        * delete
+        * assignments
+            * list
+            * add
+            * get
+            * delete
+        * permissions
+            * list
+            * add
+            * get
+            * update
+            * delete
+        * members
+            * add
+            * get
+            * delete
 
 ## Przykłady
 
