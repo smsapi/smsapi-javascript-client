@@ -1,3 +1,4 @@
 .idea
 node_modules
 test/config.dist.js
+npm-debug.log
