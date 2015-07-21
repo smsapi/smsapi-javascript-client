@@ -1,5 +1,5 @@
 {
-  "name": "SMSAPI",
+  "name": "smsapipl",
   "version": "1.0.0",
   "description": "Oficjalny klient JavaScript pozwalający na wysyłanie wiadomości SMS, MMS, VMS oraz zarządzanie kontem w serwisie SMSAPI.pl",
   "main": "index.js",
