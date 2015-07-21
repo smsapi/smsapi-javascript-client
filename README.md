@@ -1,4 +1,4 @@
-# SMSAPI JavaScript Client
+# SMSAPI JavaScript (node.js) Client
 
 Klient JavaScript pozwalający na wysyłanie wiadomości SMS, MMS, VMS oraz zarządzanie kontem w serwisie SMSAPI.pl
 
@@ -14,7 +14,7 @@ $ npm install smsapipl --save
 
 ```javascript
 
-var SMSAPI = require('smsapi'),
+var SMSAPI = require('smsapipl'),
     smsapi = new SMSAPI();
 
 smsapi.authentication
