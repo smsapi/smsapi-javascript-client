@@ -6,7 +6,7 @@ Klient JavaScript pozwalający na wysyłanie wiadomości SMS, MMS, VMS oraz zarz
 
 ```bash
 
-$ npm install smsapipl --save
+$ npm install smsapi --save
 
 ```
 
@@ -14,7 +14,7 @@ $ npm install smsapipl --save
 
 ```javascript
 
-var SMSAPI = require('smsapipl'),
+var SMSAPI = require('smsapi'),
     smsapi = new SMSAPI();
 
 smsapi.authentication
