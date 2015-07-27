@@ -1,5 +1,7 @@
 # SMSAPI JavaScript (node.js) Client
 
+[![npm version](https://badge.fury.io/js/smsapi.svg)](http://badge.fury.io/js/smsapi)
+
 Klient JavaScript pozwalający na wysyłanie wiadomości SMS, MMS, VMS oraz zarządzanie kontem w serwisie SMSAPI.pl
 
 ## Instalacja (node.js)
