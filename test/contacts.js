@@ -75,6 +75,21 @@ describe('phonebook v2', function(){
                 .catch(done);
         });
 
+        it('should get contacts list (using order_by)', function(done){
+            smsapi.contacts
+                .list()
+                .orderBy('first_name')
+                .execute()
+                .then(function(result){
+                    assert.property(result, 'size');
+                    assert.property(result, 'collection');
+                    assert.isArray(result.collection);
+
+                    done();
+                })
+                .catch(done);
+        });
+
         it('should get contacts list with some additional params', function(done){
             smsapi.contacts
                 .list()
