@@ -4,7 +4,11 @@ var _      = require('underscore')._,
         username:   '',
         password:   '',
         server:     null,
-        testNumber: '48500500500'
+        testNumber: '48500500500',
+        credentialsForDeprecatedPhonebook: {
+            username: '',
+            password: ''
+        }
     };
 
 try{

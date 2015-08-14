@@ -1,15 +1,20 @@
 
-var _      = require('underscore')._,
-    chai   = require('chai'),
-    assert = chai.assert,
-    SMSAPI = require(__dirname + '/../lib/smsapi.js'),
-    config = require('./config.js');
+var _            = require('underscore')._,
+    chai         = require('chai'),
+    assert       = chai.assert,
+    SMSAPI       = require(__dirname + '/../lib/smsapi.js'),
+    config       = require('./config.js'),
+    randomString = require('randomstring').generate;
 
 describe('phonebook', function(){
+    return;
     var smsapi = new SMSAPI({ server: config.server });
 
     before(function(done){
-        smsapi.authentication.login(config.username, config.password)
+        smsapi.authentication.login(
+            config.credentialsForDeprecatedPhonebook.username,
+            config.credentialsForDeprecatedPhonebook.password
+            )
             .then(done.bind(null, null))
             .catch(done);
     });
@@ -160,6 +165,50 @@ describe('phonebook', function(){
                     done();
                 })
                 .catch(done);
+        });
+
+        it('should add contact to a group', function(done){
+            var testGroupName = randomString();
+
+            createGroup()
+                .then(addContactToAGroup)
+                .then(checkContactGroups)
+                .then(deleteGroup)
+                .then(done.bind(null, null))
+                .catch(function(err){
+                    deleteGroup();
+                    done(err);
+                });
+
+            function createGroup(){
+                return smsapi.phonebook.group
+                    .add()
+                    .name(testGroupName)
+                    .execute();
+            }
+
+            function deleteGroup(){
+                return smsapi.phonebook.group
+                    .delete(testGroupName)
+                    .execute();
+            }
+
+            function addContactToAGroup(){
+                return smsapi.phonebook.contact
+                    .update(testContact.number)
+                    .groups([testGroupName])
+                    .execute();
+            }
+
+            function checkContactGroups(){
+                return smsapi.phonebook.contact
+                    .get(testContact.number)
+                    .param('with_groups', 1)
+                    .execute()
+                    .then(function(result){
+                        assert.deepEqual(result.groups, [testGroupName]);
+                    });
+            }
         });
 
         it('should delete contact', function(done){
