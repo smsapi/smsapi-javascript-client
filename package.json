@@ -25,8 +25,8 @@
     "randomstring": "^1.0.7"
   },
   "dependencies": {
-    "MD5": "^1.2.2",
     "js-base64": "^2.1.8",
+    "md5": "^2.0.0",
     "rsvp": "^3.0.18",
     "superagent": "^1.2.0",
     "underscore": "^1.8.3"
