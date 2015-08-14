@@ -355,12 +355,10 @@ describe('phonebook v2', function(){
         it('should update custom field', function(done){
             smsapi.contacts.fields
                 .update(testField.id)
-                .name(testField.name)
-                .type('EMAIL')
+                .name(testField.name + 'x')
                 .execute()
                 .then(function(result){
-                    assert.equal(result.name, testField.name);
-                    assert.equal(result.type, 'EMAIL');
+                    assert.equal(result.name, testField.name + 'x');
                     done();
                 })
                 .catch(done);
