@@ -1,5 +1,6 @@
 
-var chai   = require('chai'),
+var md5    = require('MD5'),
+    chai   = require('chai'),
     assert = chai.assert,
     SMSAPI = require(__dirname + '/../lib/smsapi.js'),
     config = require('./config.js');
@@ -9,6 +10,20 @@ describe('authentication', function(){
         var smsapi = new SMSAPI({ server: config.server });
 
         smsapi.authentication.login(config.username, config.password)
+            .then(function(result){
+                return smsapi.points.get().execute();
+            })
+            .then(function(result){
+                assert.property(result, 'points', 'Response has property `points`');
+                done();
+            })
+            .catch(done);
+    });
+
+    it('should login with hashed password and be able to get points', function(done){
+        var smsapi = new SMSAPI({ server: config.server });
+
+        smsapi.authentication.loginHashed(config.username, md5(config.password))
             .then(function(result){
                 return smsapi.points.get().execute();
             })
