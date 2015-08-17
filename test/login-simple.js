@@ -1,5 +1,5 @@
 
-var md5    = require('MD5'),
+var md5    = require('md5'),
     chai   = require('chai'),
     assert = chai.assert,
     SMSAPI = require(__dirname + '/../lib/smsapi.js'),
