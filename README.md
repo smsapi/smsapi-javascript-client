@@ -21,16 +21,49 @@ var SMSAPI = require('smsapi'),
 
 smsapi.authentication
     .login('username', 'password')
-    .then(sendEcoMessage)
+    .then(sendMessage)
+    .then(displayResult)
+    .catch(displayError);
+
+function sendMessage(){
+    return smsapi.message
+        .sms()
+        .from('Info')
+        .to('605xxxxxx')
+        .message('My first message!')
+        .execute(); // return Promise
+}
+
+function displayResult(result){
+    console.log(result);
+}
+
+function displayError(err){
+    console.error(err);
+}
+
+```
+
+## Przykład wykorzystania serwera zapasowego
+
+```javascript
+
+var SMSAPI = require('smsapi'),
+    smsapi = new SMSAPI({
+	server: ‘https://api2.smsapi.pl/'
+});
+
+smsapi.authentication
+    .login('username', 'password')
+    .then(sendMessage)
     .then(displayResult)
     .catch(displayError);
 
 function sendEcoMessage(){
     return smsapi.message
         .sms()
-        .eco()
+        .from('Info')
         .to('605xxxxxx')
-        .test()
         .message('My first message!')
         .execute(); // return Promise
 }
