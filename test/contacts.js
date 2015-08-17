@@ -4,7 +4,8 @@ var _            = require('underscore')._,
     assert       = chai.assert,
     SMSAPI       = require(__dirname + '/../lib/smsapi.js'),
     config       = require('./config.js'),
-    randomString = require('randomstring').generate;
+    randomString = require('randomstring').generate,
+    RSVP         = require('rsvp');
 
 describe('phonebook v2', function(){
     var smsapi = new SMSAPI({ server: config.serverContacts });
@@ -52,6 +53,34 @@ describe('phonebook v2', function(){
         it('should get contacts list', function(done){
             smsapi.contacts
                 .list()
+                .execute()
+                .then(function(result){
+                    assert.property(result, 'size');
+                    assert.property(result, 'collection');
+                    assert.isArray(result.collection);
+
+                    if (result.collection.length > 0){
+                        var item = _.first(result.collection);
+                        assert.property(item, 'id');
+                        assert.property(item, 'first_name');
+                        assert.property(item, 'last_name');
+                        assert.property(item, 'phone_number');
+                        assert.property(item, 'email');
+                        assert.property(item, 'gender');
+                        assert.property(item, 'birthday_date');
+                        assert.property(item, 'description');
+                    }
+
+                    done();
+                })
+                .catch(done);
+        });
+
+        it('should get contacts list (with limit:50 and offset:0)', function(done){
+            smsapi.contacts
+                .list()
+                .limit(50)
+                .offset(0)
                 .execute()
                 .then(function(result){
                     assert.property(result, 'size');
@@ -197,11 +226,12 @@ describe('phonebook v2', function(){
         });
 
         describe('groups.assignment', function(){
-            var testGroup,
+            var testGroups = [], // create 2 groups
                 testContact;
 
             before(function(done){
                 createGroup()
+                    .then(createGroup)
                     .then(createContact)
                     .then(done.bind(null, null))
                     .catch(done);
@@ -212,9 +242,9 @@ describe('phonebook v2', function(){
                         .name(randomString())
                         .execute()
                         .then(function(result){
-                            testGroup = _.omit(result, [
+                            testGroups.push(_.omit(result, [
                                 'date_updated', 'date_created', 'contacts_count'
-                            ]);
+                            ]));
                         });
                 }
 
@@ -233,7 +263,7 @@ describe('phonebook v2', function(){
             });
 
             after(function(done){
-                deleteGroup()
+                deleteGroups()
                     .then(deleteContact)
                     .then(done.bind(null, null))
                     .catch(done);
@@ -244,16 +274,18 @@ describe('phonebook v2', function(){
                         .execute();
                 }
 
-                function deleteGroup(){
-                    return smsapi.contacts.groups
-                        .delete(testGroup.id)
-                        .execute();
+                function deleteGroups(){
+                    return RSVP.all(_.map(testGroups, function(testGroup){
+                        return smsapi.contacts.groups
+                            .delete(testGroup.id)
+                            .execute();
+                    }));
                 }
             });
 
             it('should assign contact to group', function(done){
                 smsapi.contacts.groups.assignments
-                    .add(testContact.id, testGroup.id)
+                    .add(testContact.id, _.first(testGroups).id)
                     .execute()
                     .then(function(result){
                         assert.property(result, 'size');
@@ -276,7 +308,7 @@ describe('phonebook v2', function(){
                         assert.equal(result.size, 1);
                         assert.deepEqual(_.omit(_.first(result.collection), [
                             'date_updated', 'date_created', 'contacts_count'
-                        ]), testGroup);
+                        ]), _.first(testGroups));
                         done();
                     })
                     .catch(done);
@@ -284,12 +316,40 @@ describe('phonebook v2', function(){
 
             it('should get group related to contact', function(done){
                 smsapi.contacts.groups.assignments
-                    .get(testContact.id, testGroup.id)
+                    .get(testContact.id, _.first(testGroups).id)
                     .execute()
                     .then(function(result){
                         assert.deepEqual(_.omit(result, [
                             'date_updated', 'date_created', 'contacts_count'
-                        ]), testGroup);
+                        ]), _.first(testGroups));
+                        done();
+                    })
+                    .catch(done);
+            });
+
+            it('should assign contact to the second group', function(done){
+                smsapi.contacts.groups.assignments
+                    .add(testContact.id, _.last(testGroups).id)
+                    .execute()
+                    .then(function(result){
+                        assert.property(result, 'size');
+                        assert.property(result, 'collection');
+                        assert.isArray(result.collection);
+                        assert.equal(result.size, 1);
+                        done();
+                    })
+                    .catch(done);
+            });
+
+            it('should get groups related to contact', function(done){
+                smsapi.contacts.groups.assignments
+                    .list(testContact.id)
+                    .execute()
+                    .then(function(result){
+                        assert.property(result, 'size');
+                        assert.property(result, 'collection');
+                        assert.isArray(result.collection);
+                        assert.equal(result.size, 2);
                         done();
                     })
                     .catch(done);
@@ -297,7 +357,15 @@ describe('phonebook v2', function(){
 
             it('should unpin contact from group', function(done){
                 smsapi.contacts.groups.assignments
-                    .delete(testContact.id, testGroup.id)
+                    .delete(testContact.id, _.first(testGroups).id)
+                    .execute()
+                    .then(done.bind(null, null))
+                    .catch(done);
+            });
+
+            it('should unpin contact from second group', function(done){
+                smsapi.contacts.groups.assignments
+                    .delete(testContact.id, _.last(testGroups).id)
                     .execute()
                     .then(done.bind(null, null))
                     .catch(done);
@@ -644,11 +712,12 @@ describe('phonebook v2', function(){
         });
 
         describe('members', function(){
-            var testGroup,
+            var testGroups = [], // create 2 groups
                 testContact;
 
             before(function(done){
                 createGroup()
+                    .then(createGroup)
                     .then(createContact)
                     .then(done.bind(null, null))
                     .catch(done);
@@ -656,10 +725,10 @@ describe('phonebook v2', function(){
                 function createGroup(){
                     return smsapi.contacts.groups
                         .add()
-                        .name('NewTestGroup')
+                        .name(randomString())
                         .execute()
                         .then(function(result){
-                            testGroup = result;
+                            testGroups.push(result);
                         });
                 }
 
@@ -678,7 +747,7 @@ describe('phonebook v2', function(){
             });
 
             after(function(done){
-                deleteGroup()
+                deleteGroups()
                     .then(deleteContact)
                     .then(done.bind(null, null))
                     .catch(done);
@@ -689,16 +758,18 @@ describe('phonebook v2', function(){
                         .execute();
                 }
 
-                function deleteGroup(){
-                    return smsapi.contacts.groups
-                        .delete(testGroup.id)
-                        .execute();
+                function deleteGroups(){
+                    return RSVP.all(testGroups, function(testGroup){
+                        return smsapi.contacts.groups
+                            .delete(testGroup.id)
+                            .execute();
+                    });
                 }
             });
 
             it('should pin contact to the group', function(done){
                 smsapi.contacts.groups.members
-                    .add(testGroup.id, testContact.id)
+                    .add(_.first(testGroups).id, testContact.id)
                     .execute()
                     .then(done.bind(null, null))
                     .catch(done);
@@ -706,7 +777,39 @@ describe('phonebook v2', function(){
 
             it('should check if contact is in group', function(done){
                 smsapi.contacts.groups.members
-                    .get(testGroup.id, testContact.id)
+                    .get(_.first(testGroups).id, testContact.id)
+                    .execute()
+                    .then(function(result){
+                        assert.deepEqual(_.omit(result, [
+                            'date_updated', 'date_created'
+                        ]), testContact);
+                        done();
+                    })
+                    .catch(done);
+            });
+
+            it('should pin contact to the second group', function(done){
+                smsapi.contacts.groups.members
+                    .add(_.last(testGroups).id, testContact.id)
+                    .execute()
+                    .then(done.bind(null, null))
+                    .catch(done);
+            });
+
+            it('should check if contact is in two groups', function(done){
+               smsapi.contacts.groups.assignments
+                    .list(testContact.id)
+                    .execute()
+                    .then(function(result){
+                        assert.equal(result.size, 2);
+                        done();
+                    })
+                    .catch(done);
+            });
+
+            it('should check if contact is in the second group', function(done){
+                smsapi.contacts.groups.members
+                    .get(_.last(testGroups).id, testContact.id)
                     .execute()
                     .then(function(result){
                         assert.deepEqual(_.omit(result, [
@@ -719,7 +822,7 @@ describe('phonebook v2', function(){
 
             it('should unpin contact from group', function(done){
                 smsapi.contacts.groups.members
-                    .delete(testGroup.id, testContact.id)
+                    .delete(_.first(testGroups).id, testContact.id)
                     .execute()
                     .then(done.bind(null, null))
                     .catch(done);
