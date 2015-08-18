@@ -59,7 +59,7 @@ smsapi.authentication
     .then(displayResult)
     .catch(displayError);
 
-function sendEcoMessage(){
+function sendMessage(){
     return smsapi.message
         .sms()
         .from('Info')
