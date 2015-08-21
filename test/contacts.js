@@ -11,7 +11,7 @@ describe('phonebook v2', function(){
     var smsapi = new SMSAPI({ server: config.serverContacts });
 
     before(function(done){
-        smsapi.authentication.login(config.username, config.password)
+        smsapi.authentication.loginHashed(config.username, config.password)
             .then(findTestContact)
             .then(deleteTestContactIfExists)
             .then(done.bind(null, null))

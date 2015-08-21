@@ -10,7 +10,7 @@ describe('phonebook', function(){
     var smsapi = new SMSAPI({ server: config.server });
 
     before(function(done){
-        smsapi.authentication.login(
+        smsapi.authentication.loginHashed(
             config.credentialsForDeprecatedPhonebook.username,
             config.credentialsForDeprecatedPhonebook.password
             )

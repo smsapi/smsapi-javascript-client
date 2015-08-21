@@ -10,7 +10,7 @@ describe('sms', function(){
     var smsapi = new SMSAPI({ server: config.server });
 
     before(function(done){
-        smsapi.authentication.login(config.username, config.password)
+        smsapi.authentication.loginHashed(config.username, config.password)
             .then(done.bind(null, null))
             .catch(done);
     });

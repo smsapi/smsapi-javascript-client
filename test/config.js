@@ -2,7 +2,7 @@
 var _      = require('underscore')._,
     config = {
         username:   '',
-        password:   '',
+        password:   '', // md5 hash
         server:     null,
         testNumber: '48500500500',
         credentialsForDeprecatedPhonebook: {

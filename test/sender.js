@@ -8,7 +8,7 @@ describe('sender', function(){
     var smsapi = new SMSAPI({ server: config.server });
 
     before(function(done){
-        smsapi.authentication.login(config.username, config.password)
+        smsapi.authentication.loginHashed(config.username, config.password)
             .then(done.bind(null, null))
             .catch(done);
     });
@@ -56,7 +56,7 @@ describe('sender', function(){
             .execute()
             .then(done)
             .catch(function(err){
-                assert.equal(err.message, 'Nie można ustawić nieaktywnego pola nadawcy jako domyślne');
+                assert.equal(err.message, 'Cannot set to default not active sendername!');
                 done();
             })
             .catch(done);
