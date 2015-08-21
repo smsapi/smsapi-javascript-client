@@ -7,7 +7,7 @@ var _            = require('underscore')._,
     randomString = require('randomstring').generate,
     RSVP         = require('rsvp');
 
-describe('phonebook v2', function(){
+describe('contacts', function(){
     var smsapi = new SMSAPI({ server: config.serverContacts });
 
     before(function(done){
