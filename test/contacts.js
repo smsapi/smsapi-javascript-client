@@ -370,6 +370,87 @@ describe('phonebook v2', function(){
                     .then(done.bind(null, null))
                     .catch(done);
             });
+
+            describe('parallel', function(){
+                var testGroups = [], // create 3 groups
+                    testContact;
+
+                before(function(done){
+                    createGroup()
+                        .then(createGroup)
+                        .then(createGroup)
+                        .then(createContact)
+                        .then(done.bind(null, null))
+                        .catch(done);
+
+                    function createGroup(){
+                        return smsapi.contacts.groups
+                            .add()
+                            .name(randomString())
+                            .execute()
+                            .then(function(result){
+                                testGroups.push(_.omit(result, [
+                                    'date_updated', 'date_created', 'contacts_count'
+                                ]));
+                            });
+                    }
+
+                    function createContact(){
+                        return smsapi.contacts
+                            .add()
+                            .firstName(randomString())
+                            .email('test@example.com')
+                            .execute()
+                            .then(function(result){
+                                testContact = _.omit(result, [
+                                    'date_updated', 'date_created'
+                                ]);
+                            });
+                    }
+                });
+
+                after(function(done){
+                    deleteGroups()
+                        .then(deleteContact)
+                        .then(done.bind(null, null))
+                        .catch(done);
+
+                    function deleteContact(){
+                        return smsapi.contacts
+                            .delete(testContact.id)
+                            .execute();
+                    }
+
+                    function deleteGroups(){
+                        return RSVP.all(_.map(testGroups, function(testGroup){
+                            return smsapi.contacts.groups
+                                .delete(testGroup.id)
+                                .execute();
+                        }));
+                    }
+                });
+
+                it('should assign contact to multiple groups', function(done){
+                    RSVP.all(_.map(testGroups, function(testGroup){
+                        return smsapi.contacts.groups.assignments
+                            .add(testContact.id, testGroup.id)
+                            .execute();
+                    }))
+                    .then(function(){
+                        return smsapi.contacts.groups.assignments
+                            .list(testContact.id)
+                            .execute()
+                            .then(function(result){
+                                assert.property(result, 'size');
+                                assert.property(result, 'collection');
+                                assert.isArray(result.collection);
+                                assert.equal(result.size, 3);
+                                done();
+                            });
+                    })
+                    .catch(done);
+                });
+            });
         });
     });
 
