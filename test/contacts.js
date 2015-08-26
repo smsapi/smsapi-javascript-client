@@ -840,11 +840,11 @@ describe('contacts', function(){
                 }
 
                 function deleteGroups(){
-                    return RSVP.all(testGroups, function(testGroup){
+                    return RSVP.all(_.map(testGroups, function(testGroup){
                         return smsapi.contacts.groups
                             .delete(testGroup.id)
                             .execute();
-                    });
+                    }));
                 }
             });
 
