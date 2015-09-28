@@ -371,7 +371,7 @@ describe('contacts', function(){
                     .catch(done);
             });
 
-            describe.skip('parallel', function(){
+            describe('parallel', function(){
                 var testGroups = [], // create 3 groups
                     testContact;
 
