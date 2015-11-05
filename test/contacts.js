@@ -728,7 +728,7 @@ describe('contacts', function(){
                         assert.property(result, 'send');
 
                         assert.equal(result.group_id, testGroup.id);
-                        assert.equal(result.username, testGroup.username);
+                        assert.equal(result.username, testUser.username);
                         assert.ok(result.write);
                         assert.ok(result.read);
                         assert.ok(result.send);
@@ -750,7 +750,7 @@ describe('contacts', function(){
                         assert.property(result, 'send');
 
                         assert.equal(result.group_id, testGroup.id);
-                        assert.equal(result.username, testGroup.username);
+                        assert.equal(result.username, testUser.username);
                         assert.ok(result.write);
                         assert.ok(result.read);
                         assert.ok(result.send);
@@ -773,7 +773,7 @@ describe('contacts', function(){
                         assert.property(result, 'send');
 
                         assert.equal(result.group_id, testGroup.id);
-                        assert.equal(result.username, testGroup.username);
+                        assert.equal(result.username, testUser.username);
                         assert.notOk(result.write);
                         assert.ok(result.read);
                         assert.ok(result.send);
