@@ -46,6 +46,7 @@ describe('contacts', function(){
             description:   'Additional info',
             gender:        'male',
             city:          'Gliwice',
+            country:       'Poland',
             email:         'test@example.com',
             birthday_date: '2000-12-12'
         };
@@ -67,6 +68,8 @@ describe('contacts', function(){
                         assert.property(item, 'phone_number');
                         assert.property(item, 'email');
                         assert.property(item, 'gender');
+                        assert.property(item, 'city');
+                        assert.property(item, 'country');
                         assert.property(item, 'birthday_date');
                         assert.property(item, 'description');
                     }
@@ -95,6 +98,8 @@ describe('contacts', function(){
                         assert.property(item, 'phone_number');
                         assert.property(item, 'email');
                         assert.property(item, 'gender');
+                        assert.property(item, 'city');
+                        assert.property(item, 'country');
                         assert.property(item, 'birthday_date');
                         assert.property(item, 'description');
                     }
