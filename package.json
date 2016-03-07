@@ -1,6 +1,6 @@
 {
   "name": "smsapi",
-  "version": "1.1.5",
+  "version": "1.2.0",
   "description": "Oficjalny klient JavaScript pozwalający na wysyłanie wiadomości SMS, MMS, VMS oraz zarządzanie kontem w serwisie SMSAPI.pl",
   "main": "index.js",
   "scripts": {
@@ -19,16 +19,16 @@
   },
   "homepage": "https://github.com/smsapi/smsapi-javascript-client#readme",
   "author": "Adrian Olczyk <adrian@olczyk.me>",
-  "license": "Apache 2.0",
+  "license": "Apache-2.0",
   "devDependencies": {
     "chai": "^3.0.0",
     "randomstring": "^1.0.7"
   },
   "dependencies": {
     "js-base64": "^2.1.8",
+    "lodash": "^4.6.1",
     "md5": "^2.0.0",
     "rsvp": "^3.0.18",
-    "superagent": "^1.2.0",
-    "underscore": "^1.8.3"
+    "superagent": "^1.2.0"
   }
 }

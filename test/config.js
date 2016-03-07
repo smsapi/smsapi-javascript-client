@@ -1,5 +1,4 @@
-
-var _      = require('underscore')._,
+var _      = require('lodash'),
     config = {
         username:   '',
         password:   '', // md5 hash
@@ -8,11 +7,15 @@ var _      = require('underscore')._,
         credentialsForDeprecatedPhonebook: {
             username: '',
             password: ''
+        },
+        oauth: {
+            clientId: 'xxx',
+            clientSecret: 'xxx'
         }
     };
 
 try{
-    config = _.extend(config, require('./config.dist.js'));
+    config = _.extend(config, require('./config.dist'));
 }
 catch(err){}
 

@@ -1,8 +1,7 @@
-
 var chai   = require('chai'),
     assert = chai.assert,
-    SMSAPI = require(__dirname + '/../lib/smsapi.js'),
-    config = require('./config.js');
+    SMSAPI = require('../lib/smsapi'),
+    config = require('./config');
 
 describe('authentication', function(){
     it('should login and be able to get points', function(done){
@@ -26,11 +25,11 @@ describe('authentication', function(){
             .then(function(){
                 return smsapi.authentication.logout();
             })
-            .then(function(result){
+            .then(function(){
                 return smsapi.points.get().execute();
             })
             .then(done)
-            .catch(function(err){
+            .catch(function(){
                 assert.ok(true, 'Points could not be retrieved');
                 done();
             });

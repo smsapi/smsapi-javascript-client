@@ -14,8 +14,7 @@ $ npm install smsapi --save
 
 ## Przykład użycia
 
-```javascript
-
+```
 var SMSAPI = require('smsapi'),
     smsapi = new SMSAPI();
 
@@ -41,7 +40,6 @@ function displayResult(result){
 function displayError(err){
     console.error(err);
 }
-
 ```
 
 ## Przykład wykorzystania serwera zapasowego
@@ -76,6 +74,55 @@ function displayError(err){
     console.error(err);
 }
 
+```
+
+# Autentykacja
+
+Biblioteka pozwala na autentykację zarówno czystym hasłem, jak i hashem md5. Domyślnie używana jest metoda autentykacji [Basic auth](https://en.wikipedia.org/wiki/Basic_access_authentication).
+
+## Przykład autentykacji czystym hasłem
+
+```javascript
+var promise = smsapi.authentication
+    .login('username', 'password');
+```
+
+## Przykład autentykacji przy użyciu md5
+
+```javascript
+var promise = smsapi.authentication
+    .loginHashed('username', '5f4dcc3b5aa765d61d8327deb882cf99');
+```
+
+## OAuth
+
+Aby skorzystać z OAuth należy podczas tworzenia obiektu SMSAPI dodać parametry:
+
+* `oauth.clientId`
+* `oauth.clientSecret`
+* `oauth.grantType` (opcjonalnie)
+* `oauth.scope` (opcjonalnie)
+
+```javascript
+var SMSAPI = require('smsapi'),
+    smsapi = new SMSAPI({
+        oauth: {
+            clientId: 'twoj-client-id',
+            clientSecret: 'twoj-client-secret'
+        }
+    });
+
+var promise = smsapi.authentication
+    .login('username', 'password');
+```
+
+Biblioteka zarządza otrzymanym tokenem autentykacji automatycznie.
+
+Token jest ważny 60 minut. W celu przedłużenia ważności tokenu należy użyć metody `refreshToken()`.
+
+```javascript
+var promise = smsapi.authentication
+    .refreshToken();
 ```
 
 # Dokumentacja
@@ -152,7 +199,7 @@ Wszystkie odwołania do API zwracają obiekt `Promise` zgodny ze standardem [Pro
             * get
             * delete
 
-## Przykłady
+## Dodatkowe przykłady
 
 Dodatkowe przykłady użycia dostępnych operacji można znaleźć w testach (./test).
 
