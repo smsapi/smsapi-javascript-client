@@ -96,34 +96,41 @@ var promise = smsapi.authentication
 
 ## OAuth
 
-Aby skorzystać z OAuth należy podczas tworzenia obiektu SMSAPI dodać parametry:
+Aby skorzystać z OAuth należy podczas tworzenia obiektu SMSAPI dodać parametr:
 
-* `oauth.clientId`
-* `oauth.clientSecret`
-* `oauth.grantType` (opcjonalnie)
-* `oauth.scope` (opcjonalnie)
+* `oauth.accessToken`
 
 ```javascript
 var SMSAPI = require('smsapi'),
     smsapi = new SMSAPI({
         oauth: {
-            clientId: 'twoj-client-id',
-            clientSecret: 'twoj-client-secret'
+            accessToken: 'twoj-access-token'
         }
     });
 
-var promise = smsapi.authentication
-    .login('username', 'password');
+sendMessage()
+    .then(displayResult)
+    .catch(displayError);
+
+function sendMessage(){
+    return smsapi.message
+        .sms()
+        .from('Info')
+        .to('605xxxxxx')
+        .message('My first message!')
+        .execute(); // return Promise
+}
+
+function displayResult(result){
+    console.log(result);
+}
+
+function displayError(err){
+    console.error(err);
+}
 ```
 
-Biblioteka zarządza otrzymanym tokenem autentykacji automatycznie.
-
-Token jest ważny 60 minut. W celu przedłużenia ważności tokenu należy użyć metody `refreshToken()`.
-
-```javascript
-var promise = smsapi.authentication
-    .refreshToken();
-```
+Token można wygenerować w panelu SMSAPI pod adresem: https://ssl.smsapi.pl/oauth/tokens#/oauth/manage
 
 # Dokumentacja
 
