@@ -21,11 +21,13 @@ _.forEach(optionsByAuth, function (options, authName) {
         var smsapi = new SMSAPI(options),
             senderName = ('test-' + randomString()).substring(0, 10);
 
-        before(function (done) {
-            smsapi.authentication.loginHashed(config.username, config.password)
-                .then(done.bind(null, null))
-                .catch(done);
-        });
+        if (authName === 'AuthenticationSimple') {
+            before(function (done) {
+                smsapi.authentication.loginHashed(config.username, config.password)
+                    .then(done.bind(null, null))
+                    .catch(done);
+            });
+        }
 
         it('should get senders list', function (done) {
             smsapi.sender

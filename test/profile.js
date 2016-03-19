@@ -19,11 +19,13 @@ _.forEach(optionsByAuth, function (options, authName) {
     describe('profile (' + authName + ')', function () {
         var smsapi = new SMSAPI(options);
 
-        before(function (done) {
-            smsapi.authentication.loginHashed(config.username, config.password)
-                .then(done.bind(null, null))
-                .catch(done);
-        });
+        if (authName === 'AuthenticationSimple') {
+            before(function (done) {
+                smsapi.authentication.loginHashed(config.username, config.password)
+                    .then(done.bind(null, null))
+                    .catch(done);
+            });
+        }
 
         it('should get profile data', function (done) {
             smsapi.profile.get()
@@ -32,7 +34,6 @@ _.forEach(optionsByAuth, function (options, authName) {
                     assert.property(result, 'name');
                     assert.property(result, 'username');
                     assert.property(result, 'email');
-                    assert.equal(result.username, config.username);
                     done();
                 })
                 .catch(function (err) {

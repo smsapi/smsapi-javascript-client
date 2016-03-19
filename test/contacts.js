@@ -22,11 +22,19 @@ _.forEach(optionsByAuth, function (options, authName) {
         var smsapi = new SMSAPI(options);
 
         before(function (done) {
-            smsapi.authentication.loginHashed(config.username, config.password)
-                .then(findTestContact)
-                .then(deleteTestContactIfExists)
-                .then(done.bind(null, null))
-                .catch(done);
+            if (authName === 'AuthenticationSimple') {
+                smsapi.authentication.loginHashed(config.username, config.password)
+                    .then(findTestContact)
+                    .then(deleteTestContactIfExists)
+                    .then(done.bind(null, null))
+                    .catch(done);
+            }
+            else{
+                findTestContact()
+                    .then(deleteTestContactIfExists)
+                    .then(done.bind(null, null))
+                    .catch(done);
+            }
 
             function findTestContact() {
                 return smsapi.contacts

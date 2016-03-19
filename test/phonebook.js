@@ -11,7 +11,7 @@ var optionsByAuth = {
     },
     AuthenticationOAuth: {
         server: config.server,
-        oauth: config.oauth
+        oauth: config.credentialsForDeprecatedPhonebook.oauth
     }
 };
 
@@ -20,14 +20,16 @@ _.forEach(optionsByAuth, function (options, authName) {
     describe('phonebook (' + authName + ')', function () {
         var smsapi = new SMSAPI(options);
 
-        before(function (done) {
-            smsapi.authentication.loginHashed(
-                config.credentialsForDeprecatedPhonebook.username,
-                config.credentialsForDeprecatedPhonebook.password
-                )
-                .then(done.bind(null, null))
-                .catch(done);
-        });
+        if (authName === 'AuthenticationSimple') {
+            before(function (done) {
+                smsapi.authentication.loginHashed(
+                    config.credentialsForDeprecatedPhonebook.username,
+                    config.credentialsForDeprecatedPhonebook.password
+                    )
+                    .then(done.bind(null, null))
+                    .catch(done);
+            });
+        }
 
         describe('group', function () {
             it('should get groups list', function (done) {

@@ -6,11 +6,13 @@ var _      = require('lodash'),
         testNumber: '48500500500',
         credentialsForDeprecatedPhonebook: {
             username: '',
-            password: ''
+            password: '',
+            oauth: {
+                accessToken: 'xxx'
+            }
         },
         oauth: {
-            clientId: 'xxx',
-            clientSecret: 'xxx'
+            accessToken: 'xxx'
         }
     };
 

@@ -19,11 +19,13 @@ _.forEach(optionsByAuth, function (options, authName) {
     describe('hlr (' + authName + ')', function () {
         var smsapi = new SMSAPI(options);
 
-        before(function (done) {
-            smsapi.authentication.loginHashed(config.username, config.password)
-                .then(done.bind(null, null))
-                .catch(done);
-        });
+        if (authName === 'AuthenticationSimple') {
+            before(function (done) {
+                smsapi.authentication.loginHashed(config.username, config.password)
+                    .then(done.bind(null, null))
+                    .catch(done);
+            });
+        }
 
         it('should send hlr request', function (done) {
             smsapi.hlr

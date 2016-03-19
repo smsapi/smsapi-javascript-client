@@ -24,11 +24,13 @@ _.forEach(optionsByAuth, function (options, authName) {
             template: ('template-' + randomString()).substring(0, 20),
         };
 
-        before(function (done) {
-            smsapi.authentication.loginHashed(config.username, config.password)
-                .then(done.bind(null, null))
-                .catch(done);
-        });
+        if (authName === 'AuthenticationSimple') {
+            before(function (done) {
+                smsapi.authentication.loginHashed(config.username, config.password)
+                    .then(done.bind(null, null))
+                    .catch(done);
+            });
+        }
 
         it('should get template list', function (done) {
             var createdTemplate;
