@@ -4,6 +4,7 @@ var _      = require('lodash'),
         password:   '', // md5 hash
         server:     null,
         testNumber: '48500500500',
+        testNumber2: '48500500501',
         credentialsForDeprecatedPhonebook: {
             username: '',
             password: '',
