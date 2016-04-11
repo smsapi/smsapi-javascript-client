@@ -4,7 +4,7 @@
   "description": "Oficjalny klient JavaScript pozwalający na wysyłanie wiadomości SMS, MMS, VMS oraz zarządzanie kontem w serwisie SMSAPI.pl",
   "main": "index.js",
   "scripts": {
-    "test": "mocha test"
+    "test": "mocha test --timeout 5000"
   },
   "repository": {
     "type": "git",
