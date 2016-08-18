@@ -1,10 +1,10 @@
-var _ = require('lodash'),
-    chai = require('chai'),
-    assert = chai.assert,
-    SMSAPI = require('../lib/smsapi'),
-    config = require('./config'),
-    randomString = require('randomstring').generate,
-    RSVP = require('rsvp');
+var _ = require('lodash');
+var chai = require('chai');
+var assert = chai.assert;
+var SMSAPI = require('../lib/smsapi');
+var config = require('./config');
+var randomString = require('randomstring').generate;
+var RSVP = require('rsvp');
 
 var optionsByAuth = {
     AuthenticationSimple: {
@@ -16,12 +16,12 @@ var optionsByAuth = {
     }
 };
 
-_.forEach(optionsByAuth, function (options, authName) {
+_.forEach(optionsByAuth, function(options, authName) {
 
-    describe('contacts (' + authName + ')', function () {
+    describe('contacts (' + authName + ')', function() {
         var smsapi = new SMSAPI(options);
 
-        before(function (done) {
+        before(function(done) {
             if (authName === 'AuthenticationSimple') {
                 smsapi.authentication.loginHashed(config.username, config.password)
                     .then(findTestContact)
@@ -29,7 +29,7 @@ _.forEach(optionsByAuth, function (options, authName) {
                     .then(done.bind(null, null))
                     .catch(done);
             }
-            else{
+            else {
                 findTestContact()
                     .then(deleteTestContactIfExists)
                     .then(done.bind(null, null))
@@ -41,7 +41,7 @@ _.forEach(optionsByAuth, function (options, authName) {
                     .list()
                     .phoneNumber(config.testNumber)
                     .execute()
-                    .then(function (result) {
+                    .then(function(result) {
                         return _.first(result.collection);
                     });
             }
@@ -56,7 +56,7 @@ _.forEach(optionsByAuth, function (options, authName) {
             }
         });
 
-        describe('contact', function () {
+        describe('contact', function() {
             var testContact = {
                 id: null,
                 phone_number: config.testNumber,
@@ -70,11 +70,11 @@ _.forEach(optionsByAuth, function (options, authName) {
                 birthday_date: '2000-12-12'
             };
 
-            it('should get contacts list', function (done) {
+            it('should get contacts list', function(done) {
                 smsapi.contacts
                     .list()
                     .execute()
-                    .then(function (result) {
+                    .then(function(result) {
                         assert.property(result, 'size');
                         assert.property(result, 'collection');
                         assert.isArray(result.collection);
@@ -85,12 +85,7 @@ _.forEach(optionsByAuth, function (options, authName) {
                             assert.property(item, 'first_name');
                             assert.property(item, 'last_name');
                             assert.property(item, 'phone_number');
-                            assert.property(item, 'email');
                             assert.property(item, 'gender');
-                            assert.property(item, 'city');
-                            assert.property(item, 'country');
-                            assert.property(item, 'birthday_date');
-                            assert.property(item, 'description');
                         }
 
                         done();
@@ -98,13 +93,13 @@ _.forEach(optionsByAuth, function (options, authName) {
                     .catch(done);
             });
 
-            it('should get contacts list (with limit:50 and offset:0)', function (done) {
+            it('should get contacts list (with limit:50 and offset:0)', function(done) {
                 smsapi.contacts
                     .list()
                     .limit(50)
                     .offset(0)
                     .execute()
-                    .then(function (result) {
+                    .then(function(result) {
                         assert.property(result, 'size');
                         assert.property(result, 'collection');
                         assert.isArray(result.collection);
@@ -115,12 +110,7 @@ _.forEach(optionsByAuth, function (options, authName) {
                             assert.property(item, 'first_name');
                             assert.property(item, 'last_name');
                             assert.property(item, 'phone_number');
-                            assert.property(item, 'email');
                             assert.property(item, 'gender');
-                            assert.property(item, 'city');
-                            assert.property(item, 'country');
-                            assert.property(item, 'birthday_date');
-                            assert.property(item, 'description');
                         }
 
                         done();
@@ -128,12 +118,12 @@ _.forEach(optionsByAuth, function (options, authName) {
                     .catch(done);
             });
 
-            it('should get contacts list (using order_by)', function (done) {
+            it('should get contacts list (using order_by)', function(done) {
                 smsapi.contacts
                     .list()
                     .orderBy('first_name')
                     .execute()
-                    .then(function (result) {
+                    .then(function(result) {
                         assert.property(result, 'size');
                         assert.property(result, 'collection');
                         assert.isArray(result.collection);
@@ -143,7 +133,7 @@ _.forEach(optionsByAuth, function (options, authName) {
                     .catch(done);
             });
 
-            it('should get contacts list with some additional params', function (done) {
+            it('should get contacts list with some additional params', function(done) {
                 smsapi.contacts
                     .list()
                     .q('test')
@@ -156,7 +146,7 @@ _.forEach(optionsByAuth, function (options, authName) {
                     .gender('male')
                     .birthday('2000-10-10')
                     .execute()
-                    .then(function (result) {
+                    .then(function(result) {
                         assert.property(result, 'size');
                         assert.property(result, 'collection');
                         assert.isArray(result.collection);
@@ -166,31 +156,32 @@ _.forEach(optionsByAuth, function (options, authName) {
                     .catch(done);
             });
 
-            it('should add new contact', function (done) {
+            it('should add new contact', function(done) {
                 smsapi.contacts
                     .add()
                     .params(testContact)
                     .execute()
-                    .then(function (result) {
+                    .then(function(result) {
                         assert.property(result, 'id');
                         testContact.id = result.id;
                         assert.deepEqual(_.omit(result, [
                             'date_created',
                             'date_updated',
                             'idx',
-                            'source'
+                            'source',
+                            'groups'
                         ]), testContact);
                         done();
                     })
                     .catch(done);
             });
 
-            it('should find new contact', function (done) {
+            it('should find new contact', function(done) {
                 smsapi.contacts
                     .list()
                     .phoneNumber(testContact.phone_number)
                     .execute()
-                    .then(function (result) {
+                    .then(function(result) {
                         assert.property(result, 'size');
                         assert.property(result, 'collection');
 
@@ -199,7 +190,8 @@ _.forEach(optionsByAuth, function (options, authName) {
                             'date_created',
                             'date_updated',
                             'idx',
-                            'source'
+                            'source',
+                            'groups'
                         ]), testContact);
 
                         done();
@@ -207,41 +199,43 @@ _.forEach(optionsByAuth, function (options, authName) {
                     .catch(done);
             });
 
-            it('should get contact', function (done) {
+            it('should get contact', function(done) {
                 smsapi.contacts
                     .get(testContact.id)
                     .execute()
-                    .then(function (result) {
+                    .then(function(result) {
                         assert.deepEqual(_.omit(result, [
                             'date_created',
                             'date_updated',
                             'idx',
-                            'source'
+                            'source',
+                            'groups'
                         ]), testContact);
                         done();
                     })
                     .catch(done);
             });
 
-            it('should update contact', function (done) {
+            it('should update contact', function(done) {
                 smsapi.contacts
                     .update(testContact.id)
                     .firstName('ChangedName')
                     .execute()
-                    .then(function (result) {
+                    .then(function(result) {
                         testContact.first_name = 'ChangedName';
                         assert.deepEqual(_.omit(result, [
                             'date_created',
                             'date_updated',
                             'idx',
-                            'source'
+                            'source',
+                            'groups'
                         ]), testContact);
                         done();
                     })
                     .catch(done);
             });
 
-            it('should delete contact', function (done) {
+            it('should delete contact', function(done) {
                 smsapi.contacts
                     .delete(testContact.id)
                     .execute()
@@ -249,11 +243,11 @@ _.forEach(optionsByAuth, function (options, authName) {
                     .catch(done);
             });
 
-            describe('groups.assignment', function () {
+            describe('groups.assignment', function() {
                 var testGroups = [], // create 2 groups
                     testContact;
 
-                before(function (done) {
+                before(function(done) {
                     createGroup()
                         .then(createGroup)
                         .then(createContact)
@@ -265,7 +259,7 @@ _.forEach(optionsByAuth, function (options, authName) {
                             .add()
                             .name(randomString())
                             .execute()
-                            .then(function (result) {
+                            .then(function(result) {
                                 testGroups.push(_.omit(result, [
                                     'date_updated', 'date_created', 'contacts_count'
                                 ]));
@@ -278,7 +272,7 @@ _.forEach(optionsByAuth, function (options, authName) {
                             .firstName(randomString())
                             .phoneNumber(config.testNumber)
                             .execute()
-                            .then(function (result) {
+                            .then(function(result) {
                                 testContact = _.omit(result, [
                                     'date_updated', 'date_created'
                                 ]);
@@ -286,7 +280,7 @@ _.forEach(optionsByAuth, function (options, authName) {
                     }
                 });
 
-                after(function (done) {
+                after(function(done) {
                     deleteGroups()
                         .then(deleteContact)
                         .then(done.bind(null, null))
@@ -299,7 +293,7 @@ _.forEach(optionsByAuth, function (options, authName) {
                     }
 
                     function deleteGroups() {
-                        return RSVP.all(_.map(testGroups, function (testGroup) {
+                        return RSVP.all(_.map(testGroups, function(testGroup) {
                             return smsapi.contacts.groups
                                 .delete(testGroup.id)
                                 .execute();
@@ -307,11 +301,11 @@ _.forEach(optionsByAuth, function (options, authName) {
                     }
                 });
 
-                it('should assign contact to group', function (done) {
+                it('should assign contact to group', function(done) {
                     smsapi.contacts.groups.assignments
                         .add(testContact.id, _.first(testGroups).id)
                         .execute()
-                        .then(function (result) {
+                        .then(function(result) {
                             assert.property(result, 'size');
                             assert.property(result, 'collection');
                             assert.isArray(result.collection);
@@ -321,11 +315,11 @@ _.forEach(optionsByAuth, function (options, authName) {
                         .catch(done);
                 });
 
-                it('should get groups related to contact', function (done) {
+                it('should get groups related to contact', function(done) {
                     smsapi.contacts.groups.assignments
                         .list(testContact.id)
                         .execute()
-                        .then(function (result) {
+                        .then(function(result) {
                             assert.property(result, 'size');
                             assert.property(result, 'collection');
                             assert.isArray(result.collection);
@@ -338,11 +332,11 @@ _.forEach(optionsByAuth, function (options, authName) {
                         .catch(done);
                 });
 
-                it('should get group related to contact', function (done) {
+                it('should get group related to contact', function(done) {
                     smsapi.contacts.groups.assignments
                         .get(testContact.id, _.first(testGroups).id)
                         .execute()
-                        .then(function (result) {
+                        .then(function(result) {
                             assert.deepEqual(_.omit(result, [
                                 'date_updated', 'date_created', 'contacts_count'
                             ]), _.first(testGroups));
@@ -351,11 +345,11 @@ _.forEach(optionsByAuth, function (options, authName) {
                         .catch(done);
                 });
 
-                it('should assign contact to the second group', function (done) {
+                it('should assign contact to the second group', function(done) {
                     smsapi.contacts.groups.assignments
                         .add(testContact.id, _.last(testGroups).id)
                         .execute()
-                        .then(function (result) {
+                        .then(function(result) {
                             assert.property(result, 'size');
                             assert.property(result, 'collection');
                             assert.isArray(result.collection);
@@ -365,11 +359,11 @@ _.forEach(optionsByAuth, function (options, authName) {
                         .catch(done);
                 });
 
-                it('should get groups related to contact', function (done) {
+                it('should get groups related to contact', function(done) {
                     smsapi.contacts.groups.assignments
                         .list(testContact.id)
                         .execute()
-                        .then(function (result) {
+                        .then(function(result) {
                             assert.property(result, 'size');
                             assert.property(result, 'collection');
                             assert.isArray(result.collection);
@@ -379,7 +373,7 @@ _.forEach(optionsByAuth, function (options, authName) {
                         .catch(done);
                 });
 
-                it('should unpin contact from group', function (done) {
+                it('should unpin contact from group', function(done) {
                     smsapi.contacts.groups.assignments
                         .delete(testContact.id, _.first(testGroups).id)
                         .execute()
@@ -387,7 +381,7 @@ _.forEach(optionsByAuth, function (options, authName) {
                         .catch(done);
                 });
 
-                it('should unpin contact from second group', function (done) {
+                it('should unpin contact from second group', function(done) {
                     smsapi.contacts.groups.assignments
                         .delete(testContact.id, _.last(testGroups).id)
                         .execute()
@@ -395,11 +389,11 @@ _.forEach(optionsByAuth, function (options, authName) {
                         .catch(done);
                 });
 
-                describe('parallel', function () {
+                describe('parallel', function() {
                     var testGroups = [], // create 3 groups
                         testContact;
 
-                    before(function (done) {
+                    before(function(done) {
                         createGroup()
                             .then(createGroup)
                             .then(createGroup)
@@ -412,7 +406,7 @@ _.forEach(optionsByAuth, function (options, authName) {
                                 .add()
                                 .name(randomString())
                                 .execute()
-                                .then(function (result) {
+                                .then(function(result) {
                                     testGroups.push(_.omit(result, [
                                         'date_updated', 'date_created', 'contacts_count'
                                     ]));
@@ -425,7 +419,7 @@ _.forEach(optionsByAuth, function (options, authName) {
                                 .firstName(randomString())
                                 .email('test@example.com')
                                 .execute()
-                                .then(function (result) {
+                                .then(function(result) {
                                     testContact = _.omit(result, [
                                         'date_updated', 'date_created'
                                     ]);
@@ -433,7 +427,7 @@ _.forEach(optionsByAuth, function (options, authName) {
                         }
                     });
 
-                    after(function (done) {
+                    after(function(done) {
                         deleteGroups()
                             .then(deleteContact)
                             .then(done.bind(null, null))
@@ -446,7 +440,7 @@ _.forEach(optionsByAuth, function (options, authName) {
                         }
 
                         function deleteGroups() {
-                            return RSVP.all(_.map(testGroups, function (testGroup) {
+                            return RSVP.all(_.map(testGroups, function(testGroup) {
                                 return smsapi.contacts.groups
                                     .delete(testGroup.id)
                                     .execute();
@@ -454,17 +448,17 @@ _.forEach(optionsByAuth, function (options, authName) {
                         }
                     });
 
-                    it('should assign contact to multiple groups', function (done) {
-                        RSVP.all(_.map(testGroups, function (testGroup) {
-                                return smsapi.contacts.groups.assignments
-                                    .add(testContact.id, testGroup.id)
-                                    .execute();
-                            }))
-                            .then(function () {
+                    it('should assign contact to multiple groups', function(done) {
+                        RSVP.all(_.map(testGroups, function(testGroup) {
+                            return smsapi.contacts.groups.assignments
+                                .add(testContact.id, testGroup.id)
+                                .execute();
+                        }))
+                            .then(function() {
                                 return smsapi.contacts.groups.assignments
                                     .list(testContact.id)
                                     .execute()
-                                    .then(function (result) {
+                                    .then(function(result) {
                                         assert.property(result, 'size');
                                         assert.property(result, 'collection');
                                         assert.isArray(result.collection);
@@ -478,14 +472,14 @@ _.forEach(optionsByAuth, function (options, authName) {
             });
         });
 
-        describe('fields', function () {
+        describe('fields', function() {
             var testField;
 
-            it('should get list of custom fields', function (done) {
+            it('should get list of custom fields', function(done) {
                 smsapi.contacts.fields
                     .list()
                     .execute()
-                    .then(function (result) {
+                    .then(function(result) {
                         assert.property(result, 'size');
                         assert.property(result, 'collection');
                         assert.isArray(result.collection);
@@ -494,12 +488,12 @@ _.forEach(optionsByAuth, function (options, authName) {
                     .catch(done);
             });
 
-            it('should create a custom field', function (done) {
+            it('should create a custom field', function(done) {
                 smsapi.contacts.fields
                     .add()
                     .name(randomString())
                     .execute()
-                    .then(function (result) {
+                    .then(function(result) {
                         assert.property(result, 'name');
                         assert.property(result, 'type');
                         assert.equal(result.type, 'TEXT');
@@ -511,12 +505,12 @@ _.forEach(optionsByAuth, function (options, authName) {
                     .catch(done);
             });
 
-            it('should find the created custom field on the list', function (done) {
+            it('should find the created custom field on the list', function(done) {
                 smsapi.contacts.fields
                     .list()
                     .execute()
-                    .then(function (result) {
-                        var field = _.find(result.collection, function (field) {
+                    .then(function(result) {
+                        var field = _.find(result.collection, function(field) {
                             return field.name === testField.name;
                         });
                         assert.deepEqual(field, testField);
@@ -525,19 +519,19 @@ _.forEach(optionsByAuth, function (options, authName) {
                     .catch(done);
             });
 
-            it('should update custom field', function (done) {
+            it('should update custom field', function(done) {
                 smsapi.contacts.fields
                     .update(testField.id)
                     .name(testField.name + 'x')
                     .execute()
-                    .then(function (result) {
+                    .then(function(result) {
                         assert.equal(result.name, testField.name + 'x');
                         done();
                     })
                     .catch(done);
             });
 
-            it('should delete the custom field', function (done) {
+            it('should delete the custom field', function(done) {
                 smsapi.contacts.fields
                     .delete(testField.id)
                     .execute()
@@ -546,10 +540,10 @@ _.forEach(optionsByAuth, function (options, authName) {
             });
         });
 
-        describe('groups', function () {
+        describe('groups', function() {
             var testGroup = {};
 
-            before(function (done) {
+            before(function(done) {
                 findTestGroup()
                     .then(deleteTestGroupIfExists)
                     .then(done.bind(null, null))
@@ -560,7 +554,7 @@ _.forEach(optionsByAuth, function (options, authName) {
                         .list()
                         .name('NewTestGroup')
                         .execute()
-                        .then(function (result) {
+                        .then(function(result) {
                             return _.first(result.collection);
                         });
                 }
@@ -575,11 +569,11 @@ _.forEach(optionsByAuth, function (options, authName) {
                 }
             });
 
-            it('should get groups list', function (done) {
+            it('should get groups list', function(done) {
                 smsapi.contacts.groups
                     .list()
                     .execute()
-                    .then(function (result) {
+                    .then(function(result) {
                         assert.property(result, 'size');
                         assert.property(result, 'collection');
                         assert.isArray(result.collection);
@@ -588,13 +582,13 @@ _.forEach(optionsByAuth, function (options, authName) {
                     .catch(done);
             });
 
-            it('should add new group', function (done) {
+            it('should add new group', function(done) {
                 smsapi.contacts.groups
                     .add()
                     .name('NewTestGroup')
                     .description('NewTestGroupDescription')
                     .execute()
-                    .then(function (result) {
+                    .then(function(result) {
                         assert.property(result, 'id');
                         assert.property(result, 'name');
                         assert.property(result, 'description');
@@ -609,12 +603,12 @@ _.forEach(optionsByAuth, function (options, authName) {
                     .catch(done);
             });
 
-            it('should find new group by id', function (done) {
+            it('should find new group by id', function(done) {
                 smsapi.contacts.groups
                     .list()
                     .id(testGroup.id)
                     .execute()
-                    .then(function (result) {
+                    .then(function(result) {
                         assert.property(result, 'size');
                         assert.property(result, 'collection');
                         assert.isArray(result.collection);
@@ -627,12 +621,12 @@ _.forEach(optionsByAuth, function (options, authName) {
                     .catch(done);
             });
 
-            it('should find new group by name', function (done) {
+            it('should find new group by name', function(done) {
                 smsapi.contacts.groups
                     .list()
                     .name(testGroup.name)
                     .execute()
-                    .then(function (result) {
+                    .then(function(result) {
                         assert.property(result, 'size');
                         assert.property(result, 'collection');
                         assert.isArray(result.collection);
@@ -646,11 +640,11 @@ _.forEach(optionsByAuth, function (options, authName) {
                     .catch(done);
             });
 
-            it('should get group details', function (done) {
+            it('should get group details', function(done) {
                 smsapi.contacts.groups
                     .get(testGroup.id)
                     .execute()
-                    .then(function (result) {
+                    .then(function(result) {
                         assert.property(result, 'name');
                         assert.property(result, 'description');
                         assert.property(result, 'contacts_count');
@@ -662,13 +656,13 @@ _.forEach(optionsByAuth, function (options, authName) {
                     .catch(done);
             });
 
-            it('should update group', function (done) {
+            it('should update group', function(done) {
                 smsapi.contacts.groups
                     .update(testGroup.id)
                     .name('UpdatedTestGroup')
                     .description('UpdatedTestGroupDescription')
                     .execute()
-                    .then(function (result) {
+                    .then(function(result) {
                         assert.property(result, 'name');
                         assert.property(result, 'description');
                         assert.equal(result.name, 'UpdatedTestGroup');
@@ -678,7 +672,7 @@ _.forEach(optionsByAuth, function (options, authName) {
                     .catch(done);
             });
 
-            it('should delete group', function (done) {
+            it('should delete group', function(done) {
                 smsapi.contacts.groups
                     .delete(testGroup.id)
                     .execute()
@@ -686,33 +680,33 @@ _.forEach(optionsByAuth, function (options, authName) {
                     .catch(done);
             });
 
-            describe('permissions', function () {
+            describe('permissions', function() {
                 var testUser,
                     testGroup;
 
-                before(function (done) {
+                before(function(done) {
                     // create test group and user
                     smsapi.user.add()
                         .name(randomString())
                         .pass(randomString())
                         .execute()
-                        .then(function (result) {
+                        .then(function(result) {
                             testUser = result;
                         })
-                        .then(function () {
+                        .then(function() {
                             return smsapi.contacts.groups
                                 .add()
                                 .name(randomString())
                                 .execute();
                         })
-                        .then(function (result) {
+                        .then(function(result) {
                             testGroup = result;
                         })
                         .then(done.bind(null, null))
                         .catch(done);
                 });
 
-                after(function (done) {
+                after(function(done) {
                     smsapi.contacts.groups
                         .delete(testGroup.id)
                         .execute()
@@ -722,11 +716,11 @@ _.forEach(optionsByAuth, function (options, authName) {
                     // FIXME da się usunąć użytkownika?
                 });
 
-                it('should list group permissions', function (done) {
+                it('should list group permissions', function(done) {
                     smsapi.contacts.groups.permissions
                         .list(testGroup.id)
                         .execute()
-                        .then(function (result) {
+                        .then(function(result) {
                             assert.property(result, 'size');
                             assert.property(result, 'collection');
                             assert.isArray(result.collection);
@@ -735,14 +729,14 @@ _.forEach(optionsByAuth, function (options, authName) {
                         .catch(done);
                 });
 
-                it('should add group permission', function (done) {
+                it('should add group permission', function(done) {
                     smsapi.contacts.groups.permissions
                         .add(testGroup.id, testUser.username)
                         .read(1)
                         .write(1)
                         .send(1)
                         .execute()
-                        .then(function (result) {
+                        .then(function(result) {
                             assert.property(result, 'group_id');
                             assert.property(result, 'username');
                             assert.property(result, 'write');
@@ -760,11 +754,11 @@ _.forEach(optionsByAuth, function (options, authName) {
                         .catch(done);
                 });
 
-                it('should get user group permission', function (done) {
+                it('should get user group permission', function(done) {
                     smsapi.contacts.groups.permissions
                         .get(testGroup.id, testUser.username)
                         .execute()
-                        .then(function (result) {
+                        .then(function(result) {
                             assert.property(result, 'group_id');
                             assert.property(result, 'username');
                             assert.property(result, 'write');
@@ -782,12 +776,12 @@ _.forEach(optionsByAuth, function (options, authName) {
                         .catch(done);
                 });
 
-                it('should edit user group permission', function (done) {
+                it('should edit user group permission', function(done) {
                     smsapi.contacts.groups.permissions
                         .update(testGroup.id, testUser.username)
                         .write(0)
                         .execute()
-                        .then(function (result) {
+                        .then(function(result) {
                             assert.property(result, 'group_id');
                             assert.property(result, 'username');
                             assert.property(result, 'write');
@@ -805,7 +799,7 @@ _.forEach(optionsByAuth, function (options, authName) {
                         .catch(done);
                 });
 
-                it('should delete user group permission', function (done) {
+                it('should delete user group permission', function(done) {
                     smsapi.contacts.groups.permissions
                         .delete(testGroup.id, testUser.username)
                         .execute()
@@ -814,11 +808,11 @@ _.forEach(optionsByAuth, function (options, authName) {
                 });
             });
 
-            describe('members', function () {
+            describe('members', function() {
                 var testGroups = [], // create 2 groups
                     testContact;
 
-                before(function (done) {
+                before(function(done) {
                     createGroup()
                         .then(createGroup)
                         .then(createContact)
@@ -830,7 +824,7 @@ _.forEach(optionsByAuth, function (options, authName) {
                             .add()
                             .name(randomString())
                             .execute()
-                            .then(function (result) {
+                            .then(function(result) {
                                 testGroups.push(result);
                             });
                     }
@@ -841,7 +835,7 @@ _.forEach(optionsByAuth, function (options, authName) {
                             .firstName(randomString())
                             .phoneNumber(config.testNumber)
                             .execute()
-                            .then(function (result) {
+                            .then(function(result) {
                                 testContact = _.omit(result, [
                                     'date_updated', 'date_created'
                                 ]);
@@ -849,7 +843,7 @@ _.forEach(optionsByAuth, function (options, authName) {
                     }
                 });
 
-                after(function (done) {
+                after(function(done) {
                     deleteGroups()
                         .then(deleteContact)
                         .then(done.bind(null, null))
@@ -862,7 +856,7 @@ _.forEach(optionsByAuth, function (options, authName) {
                     }
 
                     function deleteGroups() {
-                        return RSVP.all(_.map(testGroups, function (testGroup) {
+                        return RSVP.all(_.map(testGroups, function(testGroup) {
                             return smsapi.contacts.groups
                                 .delete(testGroup.id)
                                 .execute();
@@ -870,7 +864,7 @@ _.forEach(optionsByAuth, function (options, authName) {
                     }
                 });
 
-                it('should pin contact to the group', function (done) {
+                it('should pin contact to the group', function(done) {
                     smsapi.contacts.groups.members
                         .add(_.first(testGroups).id, testContact.id)
                         .execute()
@@ -878,20 +872,22 @@ _.forEach(optionsByAuth, function (options, authName) {
                         .catch(done);
                 });
 
-                it('should check if contact is in group', function (done) {
+                it('should check if contact is in group', function(done) {
                     smsapi.contacts.groups.members
                         .get(_.first(testGroups).id, testContact.id)
                         .execute()
-                        .then(function (result) {
+                        .then(function(result) {
                             assert.deepEqual(_.omit(result, [
-                                'date_updated', 'date_created'
-                            ]), testContact);
+                                'date_updated',
+                                'date_created',
+                                'groups'
+                            ]), _.omit(testContact, ['groups']));
                             done();
                         })
                         .catch(done);
                 });
 
-                it('should pin contact to the second group', function (done) {
+                it('should pin contact to the second group', function(done) {
                     smsapi.contacts.groups.members
                         .add(_.last(testGroups).id, testContact.id)
                         .execute()
@@ -899,31 +895,33 @@ _.forEach(optionsByAuth, function (options, authName) {
                         .catch(done);
                 });
 
-                it('should check if contact is in two groups', function (done) {
+                it('should check if contact is in two groups', function(done) {
                     smsapi.contacts.groups.assignments
                         .list(testContact.id)
                         .execute()
-                        .then(function (result) {
+                        .then(function(result) {
                             assert.equal(result.size, 2);
                             done();
                         })
                         .catch(done);
                 });
 
-                it('should check if contact is in the second group', function (done) {
+                it('should check if contact is in the second group', function(done) {
                     smsapi.contacts.groups.members
                         .get(_.last(testGroups).id, testContact.id)
                         .execute()
-                        .then(function (result) {
+                        .then(function(result) {
                             assert.deepEqual(_.omit(result, [
-                                'date_updated', 'date_created'
-                            ]), testContact);
+                                'date_updated',
+                                'date_created',
+                                'groups'
+                            ]), _.omit(testContact, ['groups']));
                             done();
                         })
                         .catch(done);
                 });
 
-                it('should unpin contact from group', function (done) {
+                it('should unpin contact from group', function(done) {
                     smsapi.contacts.groups.members
                         .delete(_.first(testGroups).id, testContact.id)
                         .execute()
@@ -932,7 +930,5 @@ _.forEach(optionsByAuth, function (options, authName) {
                 });
             });
         });
-
     });
-
 });
