@@ -407,6 +407,187 @@ _.forEach(optionsByAuth, function(options, authName) {
                 }
             });
 
+            describe('channels', function() {
+                var app;
+
+                beforeEach(function() {
+                    return addApp(smsapi)
+                        .then(function(createdApp) {
+                            app = createdApp;
+                        });
+                });
+
+                afterEach(function() {
+                    return deleteApp(smsapi, app.id);
+                });
+
+                it('should get list of devices', function() {
+                    return addExampleChannel()
+                        .then(listChannels)
+                        .then(assertResult);
+
+                    /**
+                     * @returns {Promise.<PushAppChannelListResponse>}
+                     */
+                    function listChannels() {
+                        return smsapi.push.app.channel.list(app.id)
+                            .execute();
+                    }
+
+                    /**
+                     * @param {PushAppDeviceListResponse} result
+                     */
+                    function assertResult(result) {
+                        var collection = result.collection;
+
+                        assert.lengthOf(collection, 1, 'Collection length is 1');
+                        assert.isOk(result.size > 0, 'Size is above 0');
+
+                        assertChannelProperties(collection[0]);
+                    }
+                });
+
+                it('should add a new channel', function() {
+                    var channelName = 'test-' + randomString();
+
+                    return smsapi.push.app.channel.add(app.id)
+                        .name(channelName)
+                        .execute()
+                        .then(assertChannelProperties)
+                        .then(assertResult);
+
+                    /**
+                     *
+                     * @param {PushAppChannelObject} channel
+                     */
+                    function assertResult(channel) {
+                        assert.equal(channel.name, channelName);
+                        assert.equal(channel.device_count, 0);
+                    }
+                });
+
+                it('should get channel', function() {
+                    var addedChannel;
+
+                    return addExampleChannel()
+                        .then(memoChannel)
+                        .then(getChannel)
+                        .then(assertChannelProperties)
+                        .then(assertResult);
+
+                    /**
+                     * @param {PushAppChannelObject} channel
+                     * @returns {PushAppChannelObject}
+                     */
+                    function memoChannel(channel) {
+                        addedChannel = channel;
+                        return channel;
+                    }
+
+                    /**
+                     * @param {PushAppChannelObject} channel
+                     * @returns {Promise.<PushAppChannelObject, Error>}
+                     */
+                    function getChannel(channel) {
+                        return smsapi.push.app.channel.get(app.id, channel.id)
+                            .execute();
+                    }
+
+                    /**
+                     * @param {PushAppChannelObject} channel
+                     */
+                    function assertResult(channel) {
+                        assert.equal(channel.name, addedChannel.name);
+                    }
+                });
+
+                it('should update channel', function() {
+                    var addedChannel;
+
+                    return addExampleChannel()
+                        .then(memoChannel)
+                        .then(updateChannel)
+                        .then(fetchChannel)
+                        .then(assertChannelProperties)
+                        .then(assertResult);
+
+                    /**
+                     * @param {PushAppChannelObject} channel
+                     * @returns {PushAppChannelObject}
+                     */
+                    function memoChannel(channel){
+                        addedChannel = channel;
+                        return channel;
+                    }
+
+                    /**
+                     *
+                     * @param {PushAppChannelObject} channel
+                     * @returns {Promise.<PushAppChannelObject>}
+                     */
+                    function updateChannel(channel) {
+                        return smsapi.push.app.channel.update(app.id, channel.id)
+                            .name(addedChannel.name + '-updated')
+                            .execute();
+                    }
+
+                    /**
+                     *
+                     * @param {PushAppChannelObject} channel
+                     * @returns {Promise.<PushAppChannelObject, Error>}
+                     */
+                    function fetchChannel(channel) {
+                        return smsapi.push.app.channel.get(app.id, channel.id)
+                            .execute();
+                    }
+
+                    /**
+                     * @param {PushAppChannelObject} channel
+                     */
+                    function assertResult(channel) {
+                        assert.equal(channel.id, addedChannel.id);
+                        assert.equal(channel.name, addedChannel.name + '-updated');
+                        assert.equal(channel.device_count, addedChannel.device_count);
+                    }
+                });
+
+                it('should delete channel', function() {
+                    return addExampleChannel()
+                        .then(removeChannel);
+
+                    /**
+                     *
+                     * @param {PushAppChannelObject} channel
+                     * @returns {Promise}
+                     */
+                    function removeChannel(channel) {
+                        return smsapi.push.app.channel.delete(app.id, channel.id)
+                            .execute();
+                    }
+                });
+
+                /**
+                 * @returns {Promise.<PushAppChannelObject>}
+                 */
+                function addExampleChannel() {
+                    return smsapi.push.app.channel.add(app.id)
+                        .name('test' + randomString())
+                        .execute();
+                }
+
+                /**
+                 * @param {PushAppChannelObject} channel
+                 * @return {PushAppChannelObject}
+                 */
+                function assertChannelProperties(channel) {
+                    assert.property(channel, 'id');
+                    assert.property(channel, 'name');
+                    assert.property(channel, 'device_count');
+
+                    return channel;
+                }
+            });
+
             /**
              *
              * @param {PushAppObject} app
