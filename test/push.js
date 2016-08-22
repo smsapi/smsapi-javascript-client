@@ -218,6 +218,195 @@ _.forEach(optionsByAuth, function(options, authName) {
                 }
             });
 
+            describe('devices', function() {
+                var app;
+
+                beforeEach(function() {
+                    return addApp(smsapi)
+                        .then(function(createdApp) {
+                            app = createdApp;
+                        });
+                });
+
+                afterEach(function() {
+                    return deleteApp(smsapi, app.id);
+                });
+
+                it('should get list of devices', function() {
+                    return addExampleDevice()
+                        .then(listDevices)
+                        .then(assertResult);
+
+                    /**
+                     * @returns {Promise.<PushAppDeviceListResponse>}
+                     */
+                    function listDevices() {
+                        return smsapi.push.app.device.list(app.id)
+                            .execute();
+                    }
+
+                    /**
+                     * @param {PushAppDeviceListResponse} result
+                     */
+                    function assertResult(result) {
+                        var collection = result.collection;
+
+                        assert.lengthOf(collection, 1, 'Collection length is 1');
+                        assert.isOk(result.size > 0, 'Size is above 0');
+
+                        assertDeviceProperties(collection[0]);
+                    }
+                });
+
+                it('should add an android device', function() {
+                    return smsapi.push.app.device.add(app.id)
+                        .deviceId(randomString())
+                        .deviceType('android')
+                        .phoneNumber('500500500')
+                        .channels(['test-channel-1', 'test-channel-2'])
+                        .email('example@example.com')
+                        .additionalData({foo: 'bar'})
+                        .execute()
+                        .then(assertDeviceProperties)
+                        .then(assertResult);
+
+                    /**
+                     *
+                     * @param {PushAppDeviceObject} device
+                     */
+                    function assertResult(device) {
+                        assert.equal(device.device_type, 'android');
+                        assert.equal(device.email, 'example@example.com');
+                        assert.equal(device.phone_number, '500500500');
+                        assert.lengthOf(device.channels, 2, 'Device has 2 channels');
+                        assert.deepEqual(device.additional_data, {foo: 'bar'});
+                    }
+                });
+
+                it('should add an ios device', function() {
+                    return smsapi.push.app.device.add(app.id)
+                        .deviceId(randomString())
+                        .deviceType('ios')
+                        .execute()
+                        .then(assertDeviceProperties)
+                        .then(assertResult);
+
+                    /**
+                     * @param {PushAppDeviceObject} device
+                     */
+                    function assertResult(device) {
+                        assert.equal(device.device_type, 'ios');
+                    }
+                });
+
+                it('should get device', function() {
+                    return addExampleDevice()
+                        .then(getDevice)
+                        .then(assertDeviceProperties)
+                        .then(assertResult);
+
+                    /**
+                     * @param {PushAppDeviceObject} device
+                     * @returns {Promise.<PushAppDeviceObject, Error>}
+                     */
+                    function getDevice(device) {
+                        return smsapi.push.app.device.get(app.id, device.device_id)
+                            .execute();
+                    }
+
+                    /**
+                     * @param device
+                     */
+                    function assertResult(device) {
+                        assert.equal(device.email, 'example@example.com');
+                    }
+                });
+
+                it('should update device', function() {
+                    return addExampleDevice()
+                        .then(updateDevice)
+                        .then(fetchDevice)
+                        .then(assertDeviceProperties)
+                        .then(assertResult);
+
+                    /**
+                     *
+                     * @param {PushAppDeviceObject} device
+                     * @returns {Promise.<PushAppDeviceObject>}
+                     */
+                    function updateDevice(device) {
+                        return smsapi.push.app.device.update(app.id, device.device_id)
+                            .email('example2@example.com')
+                            .phoneNumber('500500500')
+                            .channels(['test-channel-1', 'test-channel-2'])
+                            .additionalData({foo: 'bar'})
+                            .execute();
+                    }
+
+                    /**
+                     *
+                     * @param {PushAppDeviceObject} device
+                     * @returns {Promise.<PushAppDeviceObject, Error>}
+                     */
+                    function fetchDevice(device) {
+                        return smsapi.push.app.device.get(app.id, device.device_id)
+                            .execute();
+                    }
+
+                    /**
+                     * @param {PushAppDeviceObject} device
+                     */
+                    function assertResult(device) {
+                        assert.equal(device.device_type, 'android');
+                        assert.equal(device.email, 'example2@example.com');
+                        assert.equal(device.phone_number, '500500500');
+                        assert.lengthOf(device.channels, 2, 'Device has 2 channels');
+                        assert.deepEqual(device.additional_data, {foo: 'bar'});
+                    }
+                });
+
+                it('should delete device', function() {
+                    return addExampleDevice()
+                        .then(removeDevice);
+
+                    /**
+                     *
+                     * @param {PushAppDeviceObject} device
+                     * @returns {Promise}
+                     */
+                    function removeDevice(device) {
+                        return smsapi.push.app.device.delete(app.id, device.device_id)
+                            .execute();
+                    }
+                });
+
+                /**
+                 * @returns {Promise.<PushAppObject>}
+                 */
+                function addExampleDevice() {
+                    return smsapi.push.app.device.add(app.id)
+                        .deviceId(randomString())
+                        .deviceType('android')
+                        .email('example@example.com')
+                        .execute();
+                }
+
+                /**
+                 * @param {PushAppDeviceObject} device
+                 * @return {PushAppDeviceObject}
+                 */
+                function assertDeviceProperties(device) {
+                    assert.property(device, 'device_id');
+                    assert.property(device, 'device_type');
+                    assert.property(device, 'channels');
+                    assert.property(device, 'email');
+                    assert.property(device, 'phone_number');
+                    assert.property(device, 'additional_data');
+
+                    return device;
+                }
+            });
+
             /**
              *
              * @param {PushAppObject} app
