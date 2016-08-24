@@ -515,7 +515,7 @@ _.forEach(optionsByAuth, function(options, authName) {
                      * @param {PushAppChannelObject} channel
                      * @returns {PushAppChannelObject}
                      */
-                    function memoChannel(channel){
+                    function memoChannel(channel) {
                         addedChannel = channel;
                         return channel;
                     }
@@ -585,6 +585,129 @@ _.forEach(optionsByAuth, function(options, authName) {
                     assert.property(channel, 'device_count');
 
                     return channel;
+                }
+            });
+
+            describe('analytics', function() {
+                var app;
+
+                beforeEach(function() {
+                    return addApp(smsapi)
+                        .then(function(createdApp) {
+                            app = createdApp;
+                        });
+                });
+
+                afterEach(function() {
+                    return deleteApp(smsapi, app.id);
+                });
+
+                it('should post an analytics event', function() {
+                    return smsapi.push.app.analytics.event.add(app.id)
+                        .name('app_opened')
+                        .label('test-label')
+                        .location({latitude: 50.317949, longitude: 18.663902})
+                        .execute()
+                        .then(assertEventProperties)
+                        .then(assertResult);
+
+                    /**
+                     * @param {PushAppAnalyticsEventObject} event
+                     */
+                    function assertResult(event) {
+                        assert.equal(event.app_id, app.id);
+                        assert.equal(event.name, 'app_opened');
+                        assert.equal(event.label, 'test-label');
+                        assert.closeTo(Number(event.location.latitude), 50.317949, 0.01);
+                        assert.closeTo(Number(event.location.longitude), 18.663902, 0.01);
+
+                        console.log('event', event);
+
+                    }
+                });
+
+                it('should get list of events', function() {
+                    return addExampleEvent()
+                        .then(listEvents)
+                        .then(assertResult);
+
+                    /**
+                     * @return {Promise.<PushAppAnalyticsEventListResponse>}
+                     */
+                    function listEvents() {
+                        return smsapi.push.app.analytics.event.list(app.id)
+                            .execute();
+                    }
+
+                    /**
+                     * @param {PushAppAnalyticsEventListResponse} result
+                     */
+                    function assertResult(result) {
+                        var collection = result.collection;
+
+                        assert.lengthOf(collection, 1, 'Collection length is 1');
+                        assert.isOk(result.size > 0, 'Size is above 0');
+
+                        assertEventProperties(collection[0]);
+                    }
+                });
+
+                it('should get single event', function() {
+                    var createdEvent;
+
+                    return addExampleEvent()
+                        .then(memoCreatedEvent)
+                        .then(getEvent)
+                        .then(assertEventProperties)
+                        .then(assertResult);
+
+                    /**
+                     * @param {PushAppAnalyticsEventObject} event
+                     * @return {PushAppAnalyticsEventObject}
+                     */
+                    function memoCreatedEvent(event) {
+                        createdEvent = event;
+                    }
+
+                    /**
+                     * @return {Promise.<PushAppAnalyticsEventObject, Error>}
+                     */
+                    function getEvent() {
+                        return smsapi.push.app.analytics.event.get(app.id, createdEvent.id)
+                            .execute();
+                    }
+
+                    /**
+                     * @param {PushAppAnalyticsEventObject} fetchedEvent
+                     */
+                    function assertResult(fetchedEvent) {
+                        assert.deepEqual(fetchedEvent, createdEvent);
+                    }
+                });
+
+                /**
+                 * @return {Promise.<PushAppAnalyticsEventObject>}
+                 */
+                function addExampleEvent() {
+                    return smsapi.push.app.analytics.event.add(app.id)
+                        .name('app_opened')
+                        .execute();
+                }
+
+                /**
+                 * @param {PushAppAnalyticsEventObject} event
+                 * @return {PushAppAnalyticsEventObject}
+                 */
+                function assertEventProperties(event) {
+                    assert.property(event, 'id');
+                    assert.property(event, 'app_id');
+                    assert.property(event, 'push_id');
+                    assert.property(event, 'label');
+                    assert.property(event, 'at');
+                    assert.property(event, 'location');
+                    assert.property(event, 'metadata');
+
+                    return event;
                 }
             });
 
