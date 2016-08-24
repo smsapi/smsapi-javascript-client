@@ -620,9 +620,6 @@ _.forEach(optionsByAuth, function(options, authName) {
                         assert.equal(event.label, 'test-label');
                         assert.closeTo(Number(event.location.latitude), 50.317949, 0.01);
                         assert.closeTo(Number(event.location.longitude), 18.663902, 0.01);
-
-                        console.log('event', event);
-
                     }
                 });
 
