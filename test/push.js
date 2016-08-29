@@ -290,16 +290,12 @@ _.forEach(optionsByAuth, function(options, authName) {
                     return addOrUpdateDevice()
                         .then(addOrUpdateDevice)
                         .then(assertDeviceProperties)
-                        .then(assertResult)
-                        .catch(function(err){
-                            console.log('err', err);
-                            throw err;
-                        });
+                        .then(assertResult);
 
                     /**
                      * @return {Promise.<PushAppDeviceObject>}
                      */
-                    function addOrUpdateDevice(){
+                    function addOrUpdateDevice() {
                         email = randomString() + '@example.com';
 
                         return smsapi.push.app.device.addOrUpdate(app.id)
