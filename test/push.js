@@ -283,6 +283,42 @@ _.forEach(optionsByAuth, function(options, authName) {
                     }
                 });
 
+                it('should add or update device', function() {
+                    var deviceId = randomString();
+                    var email;
+
+                    return addOrUpdateDevice()
+                        .then(addOrUpdateDevice)
+                        .then(assertDeviceProperties)
+                        .then(assertResult)
+                        .catch(function(err){
+                            console.log('err', err);
+                            throw err;
+                        });
+
+                    /**
+                     * @return {Promise.<PushAppDeviceObject>}
+                     */
+                    function addOrUpdateDevice(){
+                        email = randomString() + '@example.com';
+
+                        return smsapi.push.app.device.addOrUpdate(app.id)
+                            .deviceId(deviceId)
+                            .deviceType('android')
+                            .email(email)
+                            .execute();
+                    }
+
+                    /**
+                     *
+                     * @param {PushAppDeviceObject} device
+                     */
+                    function assertResult(device) {
+                        assert.equal(device.device_type, 'android');
+                        assert.equal(device.email, email);
+                    }
+                });
+
                 it('should add an ios device', function() {
                     return smsapi.push.app.device.add(app.id)
                         .deviceId(randomString())
