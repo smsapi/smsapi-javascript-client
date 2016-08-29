@@ -718,6 +718,326 @@ _.forEach(optionsByAuth, function(options, authName) {
                 return app;
             }
         });
+
+        describe('send', function() {
+            var app, channel;
+            var devices = [];
+
+            beforeEach(function() {
+                // create 3 devices:
+                // 2 android devices, 1 ios
+                // single android device should be in the separate channel
+                return addApp(smsapi)
+                    .then(function(createdApp) {
+                        app = createdApp;
+                        return addExampleDevice(app.id);
+                    })
+                    .then(function(createdDevice) {
+                        devices.push(createdDevice);
+                        return addExampleChannel(app.id);
+                    })
+                    .then(function(createdChannel) {
+                        channel = createdChannel;
+                        return addExampleDevice(app.id, [channel.name]);
+                    })
+                    .then(function(createdDevice) {
+                        devices.push(createdDevice);
+                        return addExampleDevice(app.id, [channel.name], 'ios');
+                    })
+                    .then(function(createdDevice) {
+                        devices.push(createdDevice);
+                    });
+            });
+
+            afterEach(function() {
+                return deleteApp(smsapi, app.id);
+            });
+
+            it('should send push to all devices', function() {
+                var alert = 'Test Push ' + randomString();
+
+                return smsapi.push.send()
+                    .appId(app.id)
+                    .alert(alert)
+                    .execute()
+                    .then(assertResult);
+
+                /**
+                 * @param {PushSendResponseObject} res
+                 */
+                function assertResult(res) {
+                    assertResponseProperties(res);
+
+                    assert.equal(res.status, 'QUEUED');
+                    assert.equal(res.payload.alert, alert);
+
+                    assert.equal(res.app.id, app.id);
+                    assert.equal(res.app.name, app.name);
+
+                    assert.lengthOf(res.dispatch_details.channels, 0);
+                    assert.lengthOf(res.dispatch_details.device_ids, 0);
+                    assert.lengthOf(res.dispatch_details.device_type, 0);
+
+                    assert.equal(res.summary.recipients_count, 3);
+                    assert.equal(res.summary.points, 0);
+                    assert.isNull(res.summary.error_code);
+
+                    assert.isNull(res.fallback.message);
+                    assert.isNull(res.fallback.from);
+                    assert.isNull(res.fallback.status);
+                    assert.equal(res.fallback.delay, 0);
+                }
+            });
+
+            it('should send push to android devices', function() {
+                var alert = 'Test Push ' + randomString();
+
+                return smsapi.push.send()
+                    .appId(app.id)
+                    .alert(alert)
+                    .deviceTypes(['android'])
+                    .execute()
+                    .then(assertResult);
+
+                /**
+                 * @param {PushSendResponseObject} res
+                 */
+                function assertResult(res) {
+                    assertResponseProperties(res);
+
+                    assert.equal(res.status, 'QUEUED');
+                    assert.equal(res.payload.alert, alert);
+
+                    assert.equal(res.app.id, app.id);
+                    assert.equal(res.app.name, app.name);
+
+                    assert.lengthOf(res.dispatch_details.channels, 0);
+                    assert.lengthOf(res.dispatch_details.device_ids, 0);
+                    assert.deepEqual(res.dispatch_details.device_type, ['android']);
+
+                    assert.equal(res.summary.recipients_count, 2);
+                    assert.equal(res.summary.points, 0);
+                    assert.isNull(res.summary.error_code);
+
+                    assert.isNull(res.fallback.message);
+                    assert.isNull(res.fallback.from);
+                    assert.isNull(res.fallback.status);
+                    assert.equal(res.fallback.delay, 0);
+                }
+            });
+
+            it('should send push to ios devices', function() {
+                var alert = 'Test Push ' + randomString();
+
+                return smsapi.push.send()
+                    .appId(app.id)
+                    .alert(alert)
+                    .deviceTypes(['ios'])
+                    .execute()
+                    .then(assertResult);
+
+                /**
+                 * @param {PushSendResponseObject} res
+                 */
+                function assertResult(res) {
+                    assertResponseProperties(res);
+
+                    assert.equal(res.status, 'QUEUED');
+                    assert.equal(res.payload.alert, alert);
+
+                    assert.equal(res.app.id, app.id);
+                    assert.equal(res.app.name, app.name);
+
+                    assert.lengthOf(res.dispatch_details.channels, 0);
+                    assert.lengthOf(res.dispatch_details.device_ids, 0);
+                    assert.deepEqual(res.dispatch_details.device_type, ['ios']);
+
+                    assert.equal(res.summary.recipients_count, 1);
+                    assert.equal(res.summary.points, 0);
+                    assert.isNull(res.summary.error_code);
+
+                    assert.isNull(res.fallback.message);
+                    assert.isNull(res.fallback.from);
+                    assert.isNull(res.fallback.status);
+                    assert.equal(res.fallback.delay, 0);
+                }
+            });
+
+            it('should send push to android and ios devices', function() {
+                var alert = 'Test Push ' + randomString();
+
+                return smsapi.push.send()
+                    .appId(app.id)
+                    .alert(alert)
+                    .deviceTypes(['android', 'ios'])
+                    .execute()
+                    .then(assertResult);
+
+                /**
+                 * @param {PushSendResponseObject} res
+                 */
+                function assertResult(res) {
+                    assertResponseProperties(res);
+
+                    assert.equal(res.status, 'QUEUED');
+                    assert.equal(res.payload.alert, alert);
+
+                    assert.equal(res.app.id, app.id);
+                    assert.equal(res.app.name, app.name);
+
+                    assert.lengthOf(res.dispatch_details.channels, 0);
+                    assert.lengthOf(res.dispatch_details.device_ids, 0);
+                    assert.deepEqual(res.dispatch_details.device_type, ['android', 'ios']);
+
+                    assert.equal(res.summary.recipients_count, 3);
+                    assert.equal(res.summary.points, 0);
+                    assert.isNull(res.summary.error_code);
+
+                    assert.isNull(res.fallback.message);
+                    assert.isNull(res.fallback.from);
+                    assert.isNull(res.fallback.status);
+                    assert.equal(res.fallback.delay, 0);
+                }
+            });
+
+            it('should send push to channel devices', function() {
+                var alert = 'Test Push ' + randomString();
+
+                return smsapi.push.send()
+                    .appId(app.id)
+                    .alert(alert)
+                    .channels([channel.name])
+                    .execute()
+                    .then(assertResult);
+
+                /**
+                 * @param {PushSendResponseObject} res
+                 */
+                function assertResult(res) {
+                    assertResponseProperties(res);
+
+                    assert.equal(res.status, 'QUEUED');
+                    assert.equal(res.payload.alert, alert);
+
+                    assert.equal(res.app.id, app.id);
+                    assert.equal(res.app.name, app.name);
+
+                    assert.lengthOf(res.dispatch_details.channels, 1);
+                    assert.deepEqual(res.dispatch_details.channels, [channel.name]);
+                    assert.lengthOf(res.dispatch_details.device_ids, 0);
+                    assert.lengthOf(res.dispatch_details.device_type, 0);
+
+                    assert.equal(res.summary.recipients_count, 2);
+                    assert.equal(res.summary.points, 0);
+                    assert.isNull(res.summary.error_code);
+
+                    assert.isNull(res.fallback.message);
+                    assert.isNull(res.fallback.from);
+                    assert.isNull(res.fallback.status);
+                    assert.equal(res.fallback.delay, 0);
+                }
+            });
+
+            it('should send push with payload', function() {
+                var alert = 'Test Push ' + randomString();
+
+                return smsapi.push.send()
+                    .appId(app.id)
+                    .alert(alert)
+                    .badge(1)
+                    .sound('Test sound')
+                    .title('Test title')
+                    .execute()
+                    .then(assertResult);
+
+                /**
+                 * @param {PushSendResponseObject} res
+                 */
+                function assertResult(res) {
+                    assertResponseProperties(res);
+
+                    assert.equal(res.status, 'QUEUED');
+                    assert.equal(res.payload.alert, alert);
+                    assert.equal(res.payload.badge, 1);
+                    assert.equal(res.payload.sound, 'Test sound');
+                    assert.equal(res.payload.title, 'Test title');
+
+                    assert.equal(res.app.id, app.id);
+                    assert.equal(res.app.name, app.name);
+
+                    assert.lengthOf(res.dispatch_details.channels, 0);
+                    assert.lengthOf(res.dispatch_details.device_ids, 0);
+                    assert.lengthOf(res.dispatch_details.device_type, 0);
+
+                    assert.equal(res.summary.recipients_count, 3);
+                    assert.equal(res.summary.points, 0);
+                    assert.isNull(res.summary.error_code);
+
+                    assert.isNull(res.fallback.message);
+                    assert.isNull(res.fallback.from);
+                    assert.isNull(res.fallback.status);
+                    assert.equal(res.fallback.delay, 0);
+                }
+            });
+
+            /**
+             * @param {PushSendResponseObject} response
+             * @return {PushSendResponseObject}
+             */
+            function assertResponseProperties(response) {
+                assert.property(response, 'id');
+                assert.property(response, 'status');
+                assert.property(response, 'date_created');
+                assert.property(response, 'payload');
+                assert.property(response, 'scheduled_date');
+                assert.property(response, 'app');
+                assert.deepProperty(response, 'app.id');
+                assert.deepProperty(response, 'app.name');
+                assert.property(response, 'summary');
+                assert.deepProperty(response, 'summary.recipients_count');
+                assert.deepProperty(response, 'summary.points');
+                assert.deepProperty(response, 'summary.error_code');
+                assert.property(response, 'dispatch_details');
+                assert.deepProperty(response, 'dispatch_details.channels');
+                assert.deepProperty(response, 'dispatch_details.device_ids');
+                assert.deepProperty(response, 'dispatch_details.device_type');
+                assert.property(response, 'fallback');
+                assert.deepProperty(response, 'fallback.message');
+                assert.deepProperty(response, 'fallback.from');
+                assert.deepProperty(response, 'fallback.delay');
+                assert.deepProperty(response, 'fallback.status');
+
+                return response
+            }
+
+            /**
+             * @param {String} appId
+             * @param {[String]} [channels]
+             * @param {String} [deviceType]
+             * @returns {Promise.<PushAppObject>}
+             */
+            function addExampleDevice(appId, channels, deviceType) {
+                channels = channels || [];
+                deviceType = deviceType || 'android';
+
+                return smsapi.push.app.device.add(appId)
+                    .deviceId(randomString())
+                    .deviceType(deviceType)
+                    .channels(channels)
+                    .email('example@example.com')
+                    .execute();
+            }
+
+            /**
+             * @param {String} appId
+             * @returns {Promise.<PushAppChannelObject>}
+             */
+            function addExampleChannel(appId) {
+                return smsapi.push.app.channel.add(appId)
+                    .name('test' + randomString())
+                    .execute();
+            }
+        });
     });
 });
 
