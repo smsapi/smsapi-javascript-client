@@ -988,7 +988,7 @@ _.forEach(optionsByAuth, function(options, authName) {
                 function assertResult(res) {
                     assertResponseProperties(res);
 
-                    assert.equal(res.status, 'QUEUED');
+                    assert.isTrue(res.status === 'WAITING' || res.status === 'QUEUED');
                     assert.equal(res.payload.alert, alert);
                     assert.equal(res.payload.badge, 1);
                     assert.equal(res.payload.sound, 'Test sound');
