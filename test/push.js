@@ -800,7 +800,7 @@ _.forEach(optionsByAuth, function(options, authName) {
                 function assertResult(res) {
                     assertResponseProperties(res);
 
-                    assert.equal(res.status, 'QUEUED');
+                    assert.isTrue(res.status === 'WAITING' || res.status === 'QUEUED');
                     assert.equal(res.payload.alert, alert);
 
                     assert.equal(res.app.id, app.id);
@@ -837,7 +837,7 @@ _.forEach(optionsByAuth, function(options, authName) {
                 function assertResult(res) {
                     assertResponseProperties(res);
 
-                    assert.equal(res.status, 'QUEUED');
+                    assert.isTrue(res.status === 'WAITING' || res.status === 'QUEUED');
                     assert.equal(res.payload.alert, alert);
 
                     assert.equal(res.app.id, app.id);
@@ -874,7 +874,7 @@ _.forEach(optionsByAuth, function(options, authName) {
                 function assertResult(res) {
                     assertResponseProperties(res);
 
-                    assert.equal(res.status, 'QUEUED');
+                    assert.isTrue(res.status === 'WAITING' || res.status === 'QUEUED');
                     assert.equal(res.payload.alert, alert);
 
                     assert.equal(res.app.id, app.id);
@@ -911,7 +911,7 @@ _.forEach(optionsByAuth, function(options, authName) {
                 function assertResult(res) {
                     assertResponseProperties(res);
 
-                    assert.equal(res.status, 'QUEUED');
+                    assert.isTrue(res.status === 'WAITING' || res.status === 'QUEUED');
                     assert.equal(res.payload.alert, alert);
 
                     assert.equal(res.app.id, app.id);
@@ -948,7 +948,7 @@ _.forEach(optionsByAuth, function(options, authName) {
                 function assertResult(res) {
                     assertResponseProperties(res);
 
-                    assert.equal(res.status, 'QUEUED');
+                    assert.isTrue(res.status === 'WAITING' || res.status === 'QUEUED');
                     assert.equal(res.payload.alert, alert);
 
                     assert.equal(res.app.id, app.id);
