@@ -180,8 +180,8 @@ _.forEach(optionsByAuth, function (options, authName) {
                         .then(function (result) {
                             assert.equal(result.count, 2);
                             assert.isArray(result.list);
-                            assert.equal(_.first(result.list).number, config.testNumber);
-                            assert.equal(_.last(result.list).number, config.testNumber2);
+                            assert.isTrue(_.some(result.list, ['number', config.testNumber]));
+                            assert.isTrue(_.some(result.list, ['number', config.testNumber2]));
                             done();
                         })
                         .catch(done);
