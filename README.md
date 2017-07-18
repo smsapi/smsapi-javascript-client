@@ -130,7 +130,7 @@ function displayError(err){
 }
 ```
 
-Token można wygenerować w panelu SMSAPI pod adresem: https://ssl.smsapi.pl/oauth/tokens#/oauth/manage
+Token można wygenerować w panelu SMSAPI pod adresem: https://ssl.smsapi.pl/webapp#/oauth/manage
 
 # Dokumentacja
 
