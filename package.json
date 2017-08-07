@@ -21,14 +21,14 @@
   "author": "Adrian Olczyk <adrian@olczyk.me>",
   "license": "Apache-2.0",
   "devDependencies": {
-    "chai": "^3.0.0",
+    "chai": "^4.1.1",
     "randomstring": "^1.0.7"
   },
   "dependencies": {
     "js-base64": "^2.1.8",
     "lodash": "^4.6.1",
     "md5": "^2.0.0",
-    "rsvp": "^3.0.18",
-    "superagent": "^1.2.0"
+    "rsvp": "^4.0.1",
+    "superagent": "^3.5.2"
   }
 }

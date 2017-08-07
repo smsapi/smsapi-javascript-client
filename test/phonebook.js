@@ -128,8 +128,8 @@ _.forEach(optionsByAuth, function (options, authName) {
                         assert.property(result, 'total');
                         assert.property(result, 'count');
                         assert.property(result, 'list');
-                        assert.isAbove(result.total, 0);
-                        assert.isAbove(result.count, 0);
+                        assert.isAbove(parseInt(result.total), 0);
+                        assert.isAbove(parseInt(result.count), 0);
                         assert.isArray(result.list);
                         done();
                     })
