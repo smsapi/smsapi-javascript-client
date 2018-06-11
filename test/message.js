@@ -201,7 +201,7 @@ _.forEach(optionsByAuth, function (options, authName) {
 
         describe('mms', function () {
             it('should send mms', function (done) {
-                var smil = '<smil><head><layout><root-layout height="600" width="425"/> <region id="Image" top="0" left="0" height="100%" width="100%" fit="meet"/></layout></head><body><par dur="5000ms"><img src="http://www.smsapi.pl/assets/img/mms.jpg" region="Image"></img></par></body></smil>';
+                var smil = '<smil><head><layout><root-layout height="600" width="425"/> <region id="Image" top="0" left="0" height="100%" width="100%" fit="meet"/></layout></head><body><par dur="5000ms"><img src="https://www.smsapi.pl//public/images/smsapi.png" region="Image"></img></par></body></smil>';
 
                 smsapi.message
                     .mms()
