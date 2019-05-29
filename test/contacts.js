@@ -8,10 +8,10 @@ var RSVP = require('rsvp');
 
 var optionsByAuth = {
     AuthenticationSimple: {
-        server: config.serverContacts
+        server: config.server
     },
     AuthenticationOAuth: {
-        server: config.serverContacts,
+        server: config.server,
         oauth: config.oauth
     }
 };

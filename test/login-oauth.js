@@ -3,7 +3,10 @@ var assert = chai.assert;
 var SMSAPI = require('../index');
 var config = require('./config');
 
-var options = {oauth: config.oauth};
+var options = {
+    oauth: config.oauth,
+    server: config.server,
+};
 
 describe('authentication-oauth', function () {
     it('should login', function (done) {
