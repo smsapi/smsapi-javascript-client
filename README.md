@@ -14,7 +14,7 @@ $ npm install smsapi --save
 
 ## Przykład użycia
 
-```
+```javascript
 var SMSAPI = require('smsapi'),
     smsapi = new SMSAPI();
 
@@ -48,7 +48,7 @@ function displayError(err){
 
 var SMSAPI = require('smsapi'),
     smsapi = new SMSAPI({
-    	server: ‘https://api2.smsapi.pl/'
+        server: 'https://api2.smsapi.pl/'
     });
 
 smsapi.authentication
@@ -76,25 +76,25 @@ function displayError(err){
 
 ```
 
-# Autentykacja
+## Autentykacja
 
 Biblioteka pozwala na autentykację zarówno czystym hasłem, jak i hashem md5. Domyślnie używana jest metoda autentykacji [Basic auth](https://en.wikipedia.org/wiki/Basic_access_authentication).
 
-## Przykład autentykacji czystym hasłem
+### Przykład autentykacji czystym hasłem
 
 ```javascript
 var promise = smsapi.authentication
     .login('username', 'password');
 ```
 
-## Przykład autentykacji przy użyciu md5
+### Przykład autentykacji przy użyciu md5
 
 ```javascript
 var promise = smsapi.authentication
     .loginHashed('username', '5f4dcc3b5aa765d61d8327deb882cf99');
 ```
 
-## OAuth
+### OAuth
 
 Aby skorzystać z OAuth należy podczas tworzenia obiektu SMSAPI dodać parametr:
 
@@ -130,70 +130,70 @@ function displayError(err){
 }
 ```
 
-Token można wygenerować w panelu SMSAPI pod adresem: https://ssl.smsapi.pl/webapp#/oauth/manage
+Token można wygenerować w panelu SMSAPI pod adresem: [https://ssl.smsapi.pl/webapp#/oauth/manage](https://ssl.smsapi.pl/webapp#/oauth/manage)
 
-# Dokumentacja
+## Dokumentacja
 
 Dokumentacja interfejsu REST API znajduje się pod adresem [http://www.smsapi.pl/rest](http://www.smsapi.pl/rest).
 
-Wszystkie odwołania do API zwracają obiekt `Promise` zgodny ze standardem [Promises/A+](https://promisesaplus.com). Użyta implementacja: https://github.com/tildeio/rsvp.js
+Wszystkie odwołania do API zwracają obiekt `Promise` zgodny ze standardem [Promises/A+](https://promisesaplus.com). Użyta implementacja: [tildeio/rsvp.js](https://github.com/tildeio/rsvp.js)
 
-## Dostępne operacje
+### Dostępne operacje
 
 * message
-    * sms
-    * mms
-    * vms
+  * sms
+  * mms
+  * vms
 * points
-    * get
+  * get
 * sender
-    * add
-    * delete
-    * status
-    * default
-    * list
+  * add
+  * delete
+  * status
+  * default
+  * list
 * hlr
-    * check
+  * check
 * user
-    * add
-    * delete
-    * update
-    * get
-    * list
+  * add
+  * delete
+  * update
+  * get
+  * list
 * contacts
+  * list
+  * add
+  * get
+  * update
+  * delete
+  * fields
+    * list
+    * add
+    * update
+    * delete
+  * groups
     * list
     * add
     * get
     * update
     * delete
-    * fields
-        * list
-        * add
-        * update
-        * delete
-    * groups
-        * list
-        * add
-        * get
-        * update
-        * delete
-        * assignments
-            * list
-            * add
-            * get
-            * delete
-        * permissions
-            * list
-            * add
-            * get
-            * update
-            * delete
-        * members
-            * add
-            * get
-            * delete
+    * assignments
+      * list
+      * add
+      * get
+      * delete
+    * permissions
+      * list
+      * add
+      * get
+      * update
+      * delete
+    * members
+      * add
+      * get
+      * delete
 
-## Dodatkowe przykłady
+### Dodatkowe przykłady
 
 Dodatkowe przykłady użycia dostępnych operacji można znaleźć w testach (./test).
 
@@ -207,6 +207,6 @@ $ npm test
 
 ```
 
-# Licencja
+## Licencja
 
 [Apache 2.0 License](LICENSE)
