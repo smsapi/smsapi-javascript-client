@@ -160,19 +160,6 @@ Wszystkie odwołania do API zwracają obiekt `Promise` zgodny ze standardem [Pro
     * update
     * get
     * list
-* phonebook (deprecated)
-    * contact
-        * add
-        * get
-        * update
-        * list
-        * delete
-    * group
-        * get
-        * add
-        * update
-        * list
-        * delete
 * contacts
     * list
     * add
