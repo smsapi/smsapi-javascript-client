@@ -2,6 +2,7 @@ var chai = require('chai'),
     assert = chai.assert,
     SMSAPI = require('../lib/smsapi'),
     config = require('./config'),
+    randomString = require('randomstring').generate,
     _ = require('lodash');
 
 var optionsByAuth = {
@@ -17,7 +18,8 @@ var optionsByAuth = {
 _.forEach(optionsByAuth, function (options, authName) {
 
     describe('user (' + authName + ')', function () {
-        var smsapi = new SMSAPI(options);
+        var smsapi = new SMSAPI(options),
+            userName = ('test-' + randomString()).substring(0, 10);
 
         if (authName === 'AuthenticationSimple') {
             before(function (done) {
@@ -41,7 +43,7 @@ _.forEach(optionsByAuth, function (options, authName) {
         it('should add new subuser', function (done) {
             smsapi.user
                 .add()
-                .name('TestSubuser')
+                .name(userName)
                 .pass('SubuserPassword')
                 .execute()
                 .then(function (result) {
@@ -64,7 +66,7 @@ _.forEach(optionsByAuth, function (options, authName) {
 
         it('should get details of the added subuser', function (done) {
             smsapi.user
-                .get('TestSubuser')
+                .get(userName)
                 .execute()
                 .then(function (result) {
                     assert.property(result, 'username');
@@ -74,16 +76,18 @@ _.forEach(optionsByAuth, function (options, authName) {
                     assert.property(result, 'phonebook');
                     assert.property(result, 'active');
                     assert.property(result, 'info');
-                    assert.match(result.username, /TestSubuser/);
+                    assert.match(result.username, new RegExp(userName, 'g'));
                     done();
                 })
                 .catch(done);
         });
 
         it('should edit added subuser', function (done) {
+            var infoContent = 'Test';
+
             smsapi.user
-                .update('TestSubuser')
-                .limit(100)
+                .update(userName)
+                .info(infoContent)
                 .execute()
                 .then(function (result) {
                     assert.property(result, 'username');
@@ -93,8 +97,8 @@ _.forEach(optionsByAuth, function (options, authName) {
                     assert.property(result, 'phonebook');
                     assert.property(result, 'active');
                     assert.property(result, 'info');
-                    assert.match(result.username, /TestSubuser/);
-                    assert.equal(result.limit, 100);
+                    assert.match(result.username, new RegExp(userName, 'g'));
+                    assert.equal(result.info, infoContent);
                     done();
                 })
                 .catch(done);
