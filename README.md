@@ -156,7 +156,6 @@ Wszystkie odwołania do API zwracają obiekt `Promise` zgodny ze standardem [Pro
   * check
 * user
   * add
-  * delete
   * update
   * get
   * list
