@@ -19,6 +19,7 @@ _.forEach(optionsByAuth, function (options, authName) {
 
     describe('template (' + authName + ')', function () {
         var smsapi = new SMSAPI(options);
+        var createdTemplate;
 
         if (authName === 'AuthenticationSimple') {
             before(function (done) {
@@ -74,8 +75,6 @@ _.forEach(optionsByAuth, function (options, authName) {
         });
 
         it('should add new template', function (done) {
-            var createdTemplate;
-
             var template = generateTemplateData();
 
             smsapi.template
@@ -96,9 +95,6 @@ _.forEach(optionsByAuth, function (options, authName) {
                 })
                 .then(function (result) {
                     assert.deepEqual(result, createdTemplate);
-                })
-                .then(function () {
-                    deleteTemplate(smsapi, createdTemplate.id);
 
                     done();
                 })
@@ -106,21 +102,15 @@ _.forEach(optionsByAuth, function (options, authName) {
         });
 
         it('should update template', function (done) {
-            var createdTemplate;
+            createdTemplate['name'] = 'updated-' + createdTemplate['name'];
+            createdTemplate['template'] = 'updated-' + createdTemplate['template'];
 
-            createTemplate(smsapi, generateTemplateData())
-                .then(function (result) {
-                    createdTemplate = result;
-                    createdTemplate['name'] = 'updated-' + result['name'];
-                    createdTemplate['template'] = 'updated-' + result['template'];
-
-                    // update template
-                    return smsapi.template
-                        .update(createdTemplate.id)
-                        .name(createdTemplate['name'])
-                        .template(createdTemplate['template'])
-                        .execute();
-                })
+            // update template
+            smsapi.template
+                .update(createdTemplate.id)
+                .name(createdTemplate['name'])
+                .template(createdTemplate['template'])
+                .execute()
                 .then(function (result) {
                     // check response
                     assert.deepEqual(result, createdTemplate);
@@ -131,9 +121,6 @@ _.forEach(optionsByAuth, function (options, authName) {
                 .then(function (result) {
                     // check if server's template match our updated template
                     assert.deepEqual(result, createdTemplate);
-                })
-                .then(function () {
-                    deleteTemplate(smsapi, createdTemplate.id);
 
                     done();
                 })
@@ -141,17 +128,10 @@ _.forEach(optionsByAuth, function (options, authName) {
         });
 
         it('should delete template', function (done) {
-            var createdTemplate;
-
-            createTemplate(smsapi, generateTemplateData())
-                .then(function (result) {
-                    createdTemplate = result;
-
-                    smsapi.template
-                        .delete(result.id)
-                        .execute();
-                })
-                .then(function () {
+            smsapi.template
+                .delete(createdTemplate.id)
+                .execute()
+                .catch(function (err) {
                     getTemplatesList(smsapi)
                         .then(function (result) {
                             if (result.size > 0) {
@@ -162,9 +142,8 @@ _.forEach(optionsByAuth, function (options, authName) {
 
                             done();
                         })
-                        .catch(done)
-                })
-                .catch(done);
+                        .catch(done);
+                });
         });
     });
 
