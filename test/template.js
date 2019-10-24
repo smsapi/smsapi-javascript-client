@@ -131,7 +131,7 @@ _.forEach(optionsByAuth, function (options, authName) {
             smsapi.template
                 .delete(createdTemplate.id)
                 .execute()
-                .catch(function (err) {
+                .then(function (res) {
                     getTemplatesList(smsapi)
                         .then(function (result) {
                             if (result.size > 0) {
