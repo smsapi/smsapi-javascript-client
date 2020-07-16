@@ -1,5 +1,7 @@
 import axios, { AxiosInstance } from 'axios';
 
+import { Profile } from '../modules/profile';
+// @ts-ignore
 import { version } from '../../package.json';
 
 export class SMSAPI {
@@ -8,19 +10,23 @@ export class SMSAPI {
 
   private httpClient: AxiosInstance;
 
+  public profile: Profile;
+
   constructor(accessToken: string, apiUrl: string) {
     this.accessToken = accessToken;
     this.apiUrl = apiUrl;
 
-    this.setHttpClient();
+    this.httpClient = this.setHttpClient();
+
+    this.profile = new Profile(this.httpClient);
   }
 
   private getUserAgent(): string {
     return `smsapi/js-client:${version}`;
   }
 
-  private setHttpClient(): void {
-    this.httpClient = axios.create({
+  private setHttpClient(): AxiosInstance {
+    return axios.create({
       baseURL: this.apiUrl,
       headers: {
         Accept: 'application/json',
