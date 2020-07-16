@@ -6,9 +6,15 @@ function _inheritsLoose(subClass, superClass) {
   subClass.__proto__ = superClass;
 }
 
-var Profile = /*#__PURE__*/function () {
-  function Profile(httpClient) {
-    this.httpClient = httpClient;
+var BaseModule = function BaseModule(httpClient) {
+  this.httpClient = httpClient;
+};
+
+var Profile = /*#__PURE__*/function (_BaseModule) {
+  _inheritsLoose(Profile, _BaseModule);
+
+  function Profile() {
+    return _BaseModule.apply(this, arguments) || this;
   }
 
   var _proto = Profile.prototype;
@@ -35,7 +41,7 @@ var Profile = /*#__PURE__*/function () {
   };
 
   return Profile;
-}();
+}(BaseModule);
 
 var version = "1.7.1";
 

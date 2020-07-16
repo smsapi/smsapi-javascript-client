@@ -1,14 +1,8 @@
-import { AxiosInstance } from 'axios';
+import { BaseModule } from '../baseModule';
 
 import { ProfileResponse } from '../../types/ProfileResponse';
 
-export class Profile {
-  private httpClient: AxiosInstance;
-
-  constructor(httpClient: AxiosInstance) {
-    this.httpClient = httpClient;
-  }
-
+export class Profile extends BaseModule {
   async get(): Promise<ProfileResponse> {
     const { data } = await this.httpClient.get('/profile');
 
