@@ -1,4 +1,5 @@
 import axios from 'axios';
+import adapter from 'axios/lib/adapters/http';
 
 function _inheritsLoose(subClass, superClass) {
   subClass.prototype = Object.create(superClass.prototype);
@@ -61,6 +62,7 @@ var SMSAPI = /*#__PURE__*/function () {
 
   _proto.setHttpClient = function setHttpClient() {
     return axios.create({
+      adapter: adapter,
       baseURL: this.apiUrl,
       headers: {
         Accept: 'application/json',

@@ -1,4 +1,6 @@
 import axios, { AxiosInstance } from 'axios';
+// @ts-ignore
+import adapter from 'axios/lib/adapters/http';
 
 import { Profile } from '../modules/profile';
 // @ts-ignore
@@ -27,6 +29,7 @@ export class SMSAPI {
 
   private setHttpClient(): AxiosInstance {
     return axios.create({
+      adapter,
       baseURL: this.apiUrl,
       headers: {
         Accept: 'application/json',

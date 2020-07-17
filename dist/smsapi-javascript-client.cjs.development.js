@@ -5,6 +5,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
 var axios = _interopDefault(require('axios'));
+var adapter = _interopDefault(require('axios/lib/adapters/http'));
 
 function _inheritsLoose(subClass, superClass) {
   subClass.prototype = Object.create(superClass.prototype);
@@ -67,6 +68,7 @@ var SMSAPI = /*#__PURE__*/function () {
 
   _proto.setHttpClient = function setHttpClient() {
     return axios.create({
+      adapter: adapter,
       baseURL: this.apiUrl,
       headers: {
         Accept: 'application/json',
