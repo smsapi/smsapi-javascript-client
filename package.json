@@ -1,5 +1,5 @@
 {
-  "version": "1.7.1",
+  "version": "2.0.0",
   "license": "Apache-2.0",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -23,8 +23,6 @@
     }
   },
   "prettier": {
-    "printWidth": 80,
-    "semi": true,
     "singleQuote": true,
     "trailingComma": "es5"
   },

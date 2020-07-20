@@ -1,9 +1,9 @@
 import axios, { AxiosInstance } from 'axios';
-// @ts-ignore
+// @ts-ignore TS7016
 import adapter from 'axios/lib/adapters/http';
 
 import { Profile } from '../modules/profile';
-// @ts-ignore
+// @ts-ignore TS6059
 import { version } from '../../package.json';
 
 export class SMSAPI {

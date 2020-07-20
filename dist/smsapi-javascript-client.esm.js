@@ -44,7 +44,7 @@ var Profile = /*#__PURE__*/function (_BaseModule) {
   return Profile;
 }(BaseModule);
 
-var version = "1.7.1";
+var version = "2.0.0";
 
 var SMSAPI = /*#__PURE__*/function () {
   function SMSAPI(accessToken, apiUrl) {
@@ -79,7 +79,8 @@ var SMSAPIcom = /*#__PURE__*/function (_SMSAPI) {
   _inheritsLoose(SMSAPIcom, _SMSAPI);
 
   function SMSAPIcom(accessToken) {
-    return _SMSAPI.call(this, accessToken, 'https://api.smsapi.com') || this;
+    var API_URL = 'https://api.smsapi.com';
+    return _SMSAPI.call(this, accessToken, API_URL) || this;
   }
 
   return SMSAPIcom;
@@ -89,7 +90,8 @@ var SMSAPIpl = /*#__PURE__*/function (_SMSAPI) {
   _inheritsLoose(SMSAPIpl, _SMSAPI);
 
   function SMSAPIpl(accessToken) {
-    return _SMSAPI.call(this, accessToken, 'https://api.smsapi.pl') || this;
+    var API_URL = 'https://api.smsapi.pl';
+    return _SMSAPI.call(this, accessToken, API_URL) || this;
   }
 
   return SMSAPIpl;
