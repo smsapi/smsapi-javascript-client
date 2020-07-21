@@ -7,12 +7,8 @@ let nockCom: nock.Scope;
 
 describe('SMSAPI', () => {
   beforeEach(() => {
-    nockPl = nock('https://api.smsapi.pl/')
-      .get('/profile')
-      .reply(200);
-    nockCom = nock('https://api.smsapi.com/')
-      .get('/profile')
-      .reply(200);
+    nockPl = nock('https://api.smsapi.pl/').get('/profile').reply(200);
+    nockCom = nock('https://api.smsapi.com/').get('/profile').reply(200);
   });
 
   afterEach(() => {

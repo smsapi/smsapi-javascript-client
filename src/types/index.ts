@@ -4,4 +4,4 @@ import { ProfileResponse } from './ProfileResponse';
 export {
   PaymentType,
   ProfileResponse,
-}
+};

@@ -1,5 +1,4 @@
 import { BaseModule } from '../baseModule';
-
 import { PaymentType, ProfileResponse } from '../../types';
 
 interface ApiProfileResponse {
