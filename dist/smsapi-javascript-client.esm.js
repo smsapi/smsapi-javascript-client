@@ -97,5 +97,11 @@ var SMSAPIpl = /*#__PURE__*/function (_SMSAPI) {
   return SMSAPIpl;
 }(SMSAPI);
 
-export { SMSAPIcom, SMSAPIpl };
+
+
+var index = {
+  __proto__: null
+};
+
+export { index as SMSAPI, SMSAPIcom, SMSAPIpl };
 //# sourceMappingURL=smsapi-javascript-client.esm.js.map

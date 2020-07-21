@@ -103,6 +103,13 @@ var SMSAPIpl = /*#__PURE__*/function (_SMSAPI) {
   return SMSAPIpl;
 }(SMSAPI);
 
+
+
+var index = {
+  __proto__: null
+};
+
+exports.SMSAPI = index;
 exports.SMSAPIcom = SMSAPIcom;
 exports.SMSAPIpl = SMSAPIpl;
 //# sourceMappingURL=smsapi-javascript-client.cjs.development.js.map
