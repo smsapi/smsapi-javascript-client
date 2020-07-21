@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import axios, { AxiosInstance } from 'axios';
 // @ts-ignore TS7016
 import adapter from 'axios/lib/adapters/http';
@@ -5,6 +6,7 @@ import adapter from 'axios/lib/adapters/http';
 import { Profile } from '../modules/profile';
 // @ts-ignore TS6059
 import { version } from '../../package.json';
+/* eslint-enable @typescript-eslint/ban-ts-comment */
 
 export class SMSAPI {
   private apiUrl: string;
