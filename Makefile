@@ -36,3 +36,6 @@ build: ## build
 
 build-watch: ## build with watch
 	${DOCKER_RUN_NODE} yarn start
+
+test: ## run test
+	${DOCKER_RUN_NODE} yarn test
