@@ -14,7 +14,7 @@ NODE_IMAGE=node:12.8
 USERID=$(shell id -u)
 
 DOCKER_RUN = docker run \
-	--volume ${APP_VOLUME} \
+	--volume "${APP_VOLUME}" \
 	--workdir /app \
 	--env NODE_ENV \
 	--user ${USERID}:${USERID} \
