@@ -11,6 +11,41 @@ var BaseModule = function BaseModule(httpClient) {
   this.httpClient = httpClient;
 };
 
+var Hlr = /*#__PURE__*/function (_BaseModule) {
+  _inheritsLoose(Hlr, _BaseModule);
+
+  function Hlr() {
+    return _BaseModule.apply(this, arguments) || this;
+  }
+
+  var _proto = Hlr.prototype;
+
+  _proto.check = function check(numbers, idx) {
+    if (idx === void 0) {
+      idx = '';
+    }
+
+    try {
+      var _this2 = this;
+
+      return Promise.resolve(_this2.httpClient.get('/hlr.do', {
+        params: {
+          format: 'json',
+          idx: idx || undefined,
+          number: numbers.join(',')
+        }
+      })).then(function (_ref) {
+        var data = _ref.data;
+        return data;
+      });
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  };
+
+  return Hlr;
+}(BaseModule);
+
 var Profile = /*#__PURE__*/function (_BaseModule) {
   _inheritsLoose(Profile, _BaseModule);
 
@@ -46,11 +81,15 @@ var Profile = /*#__PURE__*/function (_BaseModule) {
 
 var version = "2.0.0";
 
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+/* eslint-enable @typescript-eslint/ban-ts-comment */
+
 var SMSAPI = /*#__PURE__*/function () {
   function SMSAPI(accessToken, apiUrl) {
     this.accessToken = accessToken;
     this.apiUrl = apiUrl;
     this.httpClient = this.setHttpClient();
+    this.hlr = new Hlr(this.httpClient);
     this.profile = new Profile(this.httpClient);
   }
 
