@@ -20,7 +20,6 @@ DOCKER_RUN = docker run \
 	--user ${USERID}:${USERID} \
 	--rm \
   --interactive \
-	--tty \
 
 DOCKER_RUN_NODE = ${DOCKER_RUN} \
 	${NODE_IMAGE}
