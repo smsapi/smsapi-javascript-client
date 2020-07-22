@@ -3,6 +3,7 @@ import axios, { AxiosInstance } from 'axios';
 // @ts-ignore TS7016
 import adapter from 'axios/lib/adapters/http';
 
+import { Hlr } from '../modules/hlr';
 import { Profile } from '../modules/profile';
 // @ts-ignore TS6059
 import { version } from '../../package.json';
@@ -14,6 +15,7 @@ export class SMSAPI {
 
   private httpClient: AxiosInstance;
 
+  public hlr: Hlr;
   public profile: Profile;
 
   constructor(accessToken: string, apiUrl: string) {
@@ -22,6 +24,7 @@ export class SMSAPI {
 
     this.httpClient = this.setHttpClient();
 
+    this.hlr = new Hlr(this.httpClient);
     this.profile = new Profile(this.httpClient);
   }
 
