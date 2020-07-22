@@ -36,6 +36,35 @@ describe('HLR', () => {
     expect(res).toEqual(apiResponse);
   });
 
+  it('should add number to HRL queue with idx', async () => {
+    // given
+    const smsapi = new SMSAPIpl('someToken');
+    const someNumber = 'someNumber';
+    const someIdx = 'someIdx';
+
+    const apiResponse = {
+      id: 'someId',
+      number: someNumber,
+      price: 0,
+      status: 'OK',
+    };
+
+    nock(API_URL)
+      .get('/hlr.do')
+      .query({
+        format: 'json',
+        number: someNumber,
+        idx: someIdx,
+      })
+      .reply(200, apiResponse);
+
+    // when
+    const res = await smsapi.hlr.check([someNumber], someIdx);
+
+    // then
+    expect(res).toEqual(apiResponse);
+  });
+
   it('should add numbers to HRL queue', async () => {
     // given
     const smsapi = new SMSAPIpl('someToken');
