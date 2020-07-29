@@ -79,6 +79,80 @@ var Profile = /*#__PURE__*/function (_BaseModule) {
   return Profile;
 }(BaseModule);
 
+var Templates = /*#__PURE__*/function (_BaseModule) {
+  _inheritsLoose(Templates, _BaseModule);
+
+  function Templates() {
+    return _BaseModule.apply(this, arguments) || this;
+  }
+
+  var _proto = Templates.prototype;
+
+  _proto.get = function get() {
+    try {
+      var _this2 = this;
+
+      return Promise.resolve(_this2.httpClient.get('/sms/templates')).then(function (_ref) {
+        var data = _ref.data;
+        return data;
+      });
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  };
+
+  _proto.getById = function getById(templateId) {
+    try {
+      var _this4 = this;
+
+      return Promise.resolve(_this4.httpClient.get("/sms/templates/" + templateId)).then(function (_ref2) {
+        var data = _ref2.data;
+        return data;
+      });
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  };
+
+  _proto.create = function create(newTemplate) {
+    try {
+      var _this6 = this;
+
+      return Promise.resolve(_this6.httpClient.post('/sms/templates', newTemplate)).then(function (_ref3) {
+        var data = _ref3.data;
+        return data;
+      });
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  };
+
+  _proto.update = function update(templateId, newTemplate) {
+    try {
+      var _this8 = this;
+
+      return Promise.resolve(_this8.httpClient.put("/sms/templates/" + templateId, newTemplate)).then(function (_ref4) {
+        var data = _ref4.data;
+        return data;
+      });
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  };
+
+  _proto.remove = function remove(templateId) {
+    try {
+      var _this10 = this;
+
+      return Promise.resolve(_this10.httpClient["delete"]("/sms/templates/" + templateId)).then(function () {});
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  };
+
+  return Templates;
+}(BaseModule);
+
 var version = "2.0.0";
 
 /* eslint-disable @typescript-eslint/ban-ts-comment */
@@ -91,6 +165,7 @@ var SMSAPI = /*#__PURE__*/function () {
     this.httpClient = this.setHttpClient();
     this.hlr = new Hlr(this.httpClient);
     this.profile = new Profile(this.httpClient);
+    this.templates = new Templates(this.httpClient);
   }
 
   var _proto = SMSAPI.prototype;

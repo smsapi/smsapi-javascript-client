@@ -4,3 +4,4 @@
 
 - [HLR](docs/hlr.md)
 - [Profile](docs/profile.md)
+- [Templates](docs/templates.md)
