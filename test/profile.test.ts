@@ -13,7 +13,7 @@ describe('Profile', () => {
     // given
     const smsapi = new SMSAPIpl('someToken');
 
-    nock(`${API_URL}`).get('/profile').reply(200, {
+    nock(API_URL).get('/profile').reply(200, {
       name: 'someName',
       email: 'some@email.com',
       username: 'someUsername',
