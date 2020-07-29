@@ -98,9 +98,9 @@ describe('HLR', () => {
     const someNumber = 'someInvalidNumber';
 
     const apiResponse = {
-      id: 'someId',
       error: 13,
       number: someNumber,
+      status: 'ERROR',
     };
 
     nock(API_URL)
@@ -131,9 +131,9 @@ describe('HLR', () => {
         status: 'OK',
       },
       {
-        id: 'someId',
         error: 13,
         number: someNumbers[1],
+        status: 'ERROR',
       },
     ];
 

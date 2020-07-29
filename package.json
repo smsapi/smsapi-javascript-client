@@ -14,6 +14,7 @@
     "start": "tsdx watch",
     "build": "tsdx build",
     "test": "tsdx test --verbose",
+    "test--e2e": "env-cmd -f .env.e2e yarn test --testMatch=\"**/*.e2e.ts\"",
     "lint": "eslint .",
     "prepare": "tsdx build"
   },
@@ -29,8 +30,10 @@
   "author": "SMSAPI <info@smsapi.pl>",
   "module": "dist/smsapi-javascript-client.esm.js",
   "devDependencies": {
+    "@types/uuid": "^8.0.0",
     "@typescript-eslint/eslint-plugin": "^3.7.0",
     "@typescript-eslint/parser": "^3.7.0",
+    "env-cmd": "^10.1.0",
     "eslint": "^7.5.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-config-standard": "^14.1.1",
@@ -44,7 +47,8 @@
     "prettier": "^2.0.5",
     "tsdx": "^0.13.2",
     "tslib": "^2.0.0",
-    "typescript": "^3.9.6"
+    "typescript": "^3.9.6",
+    "uuid": "^8.3.0"
   },
   "dependencies": {
     "axios": "^0.19.2"
