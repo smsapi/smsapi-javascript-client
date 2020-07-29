@@ -8,7 +8,7 @@ const smsapi = new SMSAPIpl('someToken');
 let profile;
 
 smsapi.profile.get()
-  .then((data) => {
-    profile = data;
+  .then((profile) => {
+    console.log(profile);
   });
 ```
