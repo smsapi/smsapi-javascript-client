@@ -5,6 +5,7 @@ import adapter from 'axios/lib/adapters/http';
 
 import { Hlr } from '../modules/hlr';
 import { Profile } from '../modules/profile';
+import { Templates } from '../modules/templates';
 // @ts-ignore TS6059
 import { version } from '../../package.json';
 /* eslint-enable @typescript-eslint/ban-ts-comment */
@@ -17,6 +18,7 @@ export class SMSAPI {
 
   public hlr: Hlr;
   public profile: Profile;
+  public templates: Templates;
 
   constructor(accessToken: string, apiUrl: string) {
     this.accessToken = accessToken;
@@ -26,6 +28,7 @@ export class SMSAPI {
 
     this.hlr = new Hlr(this.httpClient);
     this.profile = new Profile(this.httpClient);
+    this.templates = new Templates(this.httpClient);
   }
 
   private getUserAgent(): string {
