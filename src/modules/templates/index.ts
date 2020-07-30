@@ -6,40 +6,25 @@ import { Template } from './types/Template';
 
 export class Templates extends BaseModule {
   async get(): Promise<ApiCollection<Template>> {
-    const { data } = await this.httpClient.get<ApiCollection<Template>>(
-      '/sms/templates'
-    );
-
-    return data;
+    return await this.httpClient.get('/sms/templates');
   }
 
   async getById(templateId: string): Promise<Template> {
-    const { data } = await this.httpClient.get<Template>(
-      `/sms/templates/${templateId}`
-    );
-
-    return data;
+    return await this.httpClient.get(`/sms/templates/${templateId}`);
   }
 
   async create(newTemplate: NewTemplate): Promise<Template> {
-    const { data } = await this.httpClient.post<Template>(
-      '/sms/templates',
-      newTemplate
-    );
-
-    return data;
+    return await this.httpClient.post('/sms/templates', newTemplate);
   }
 
   async update(
     templateId: string,
     newTemplate: Partial<NewTemplate>
   ): Promise<Template> {
-    const { data } = await this.httpClient.put<Template>(
+    return await this.httpClient.put(
       `/sms/templates/${templateId}`,
       newTemplate
     );
-
-    return data;
   }
 
   async remove(templateId: string): Promise<void> {
