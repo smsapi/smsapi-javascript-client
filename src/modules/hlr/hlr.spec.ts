@@ -1,4 +1,4 @@
-import { SMSAPI } from '../src/smsapi';
+import { SMSAPI } from '../../smsapi';
 
 const { SMSAPI_OAUTH_TOKEN, SMSAPI_API_URL } = process.env;
 

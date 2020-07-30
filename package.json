@@ -15,8 +15,7 @@
     "lint": "eslint .",
     "prepare": "tsdx build",
     "start": "tsdx watch",
-    "test": "tsdx test --verbose",
-    "test--e2e": "env-cmd -f .env.e2e yarn test --testMatch=\"**/*.e2e.ts\""
+    "test": "env-cmd -f .env.test tsdx test --verbose"
   },
   "dependencies": {
     "axios": "^0.19.2"

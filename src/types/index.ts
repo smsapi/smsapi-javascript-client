@@ -1,11 +1,12 @@
+import { HlrCheck } from '../modules/hlr/types/HlrCheck';
+import { HlrCheckError } from '../modules/hlr/types/HlrCheckError';
+import { HlrCheckResponse } from '../modules/hlr/types/HlrCheckResponse';
+import { NewTemplate } from '../modules/templates/types/NewTemplate';
+import { PaymentType } from '../modules/profile/types/PaymentType';
+import { ProfileResponse } from '../modules/profile/types/ProfileResponse';
+import { Template } from '../modules/templates/types/Template';
+
 import { ApiCollection } from './ApiCollection';
-import { HlrCheck } from './HlrCheck';
-import { HlrCheckError } from './HlrCheckError';
-import { HlrCheckResponse } from './HlrCheckResponse';
-import { NewTemplate } from './NewTemplate';
-import { PaymentType } from './PaymentType';
-import { ProfileResponse } from './ProfileResponse';
-import { Template } from './Template';
 
 export {
   ApiCollection,
