@@ -1,34 +1,26 @@
 {
+  "name": "smsapi-javascript-client",
   "version": "2.0.0",
   "license": "Apache-2.0",
+  "author": "SMSAPI <info@smsapi.pl>",
   "main": "dist/index.js",
+  "module": "dist/smsapi-javascript-client.esm.js",
   "typings": "dist/index.d.ts",
   "files": [
     "dist",
     "src"
   ],
-  "engines": {
-    "node": ">=10"
-  },
   "scripts": {
-    "start": "tsdx watch",
     "build": "tsdx build",
-    "test": "tsdx test --verbose",
-    "test--e2e": "env-cmd -f .env.e2e yarn test --testMatch=\"**/*.e2e.ts\"",
     "lint": "eslint .",
-    "prepare": "tsdx build"
+    "prepare": "tsdx build",
+    "start": "tsdx watch",
+    "test": "tsdx test --verbose",
+    "test--e2e": "env-cmd -f .env.e2e yarn test --testMatch=\"**/*.e2e.ts\""
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "yarn lint"
-    }
+  "dependencies": {
+    "axios": "^0.19.2"
   },
-  "prettier": {
-    "singleQuote": true
-  },
-  "name": "smsapi-javascript-client",
-  "author": "SMSAPI <info@smsapi.pl>",
-  "module": "dist/smsapi-javascript-client.esm.js",
   "devDependencies": {
     "@types/uuid": "^8.0.0",
     "@typescript-eslint/eslint-plugin": "^3.7.0",
@@ -50,7 +42,7 @@
     "typescript": "^3.9.6",
     "uuid": "^8.3.0"
   },
-  "dependencies": {
-    "axios": "^0.19.2"
+  "engines": {
+    "node": ">=10"
   }
 }
