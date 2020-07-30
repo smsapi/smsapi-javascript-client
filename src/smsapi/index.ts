@@ -8,6 +8,8 @@ import { Profile } from '../modules/profile';
 import { Templates } from '../modules/templates';
 // @ts-ignore TS6059
 import { version } from '../../package.json';
+
+import { responseInterceptor } from './httpClient/responseInterceptor';
 /* eslint-enable @typescript-eslint/ban-ts-comment */
 
 export class SMSAPI {
@@ -36,7 +38,7 @@ export class SMSAPI {
   }
 
   private setHttpClient(): AxiosInstance {
-    return axios.create({
+    const httpClient = axios.create({
       adapter,
       baseURL: this.apiUrl,
       headers: {
@@ -45,5 +47,9 @@ export class SMSAPI {
         'User-Agent': this.getUserAgent(),
       },
     });
+
+    httpClient.interceptors.response.use(responseInterceptor);
+
+    return httpClient;
   }
 }

@@ -12,6 +12,7 @@ describe('Profile', () => {
 
     // then
     expect(profile).toEqual({
+      id: expect.any(String),
       name: expect.any(String),
       email: expect.any(String),
       username: expect.any(String),
