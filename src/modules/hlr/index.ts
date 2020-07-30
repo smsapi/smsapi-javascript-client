@@ -1,5 +1,6 @@
 import { BaseModule } from '../baseModule';
-import { HlrCheckResponse } from '../../types';
+
+import { HlrCheckResponse } from './types/HlrCheckResponse';
 
 export class Hlr extends BaseModule {
   async check(

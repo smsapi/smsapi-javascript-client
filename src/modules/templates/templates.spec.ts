@@ -1,7 +1,9 @@
 import { v4 as uuidv4 } from 'uuid';
 
-import { SMSAPI } from '../src/smsapi';
-import { Template, NewTemplate } from '../src/types';
+import { SMSAPI } from '../../smsapi';
+
+import { NewTemplate } from './types/NewTemplate';
+import { Template } from './types/Template';
 
 const { SMSAPI_OAUTH_TOKEN, SMSAPI_API_URL } = process.env;
 

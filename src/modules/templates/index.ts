@@ -1,5 +1,8 @@
 import { BaseModule } from '../baseModule';
-import { Template, ApiCollection, NewTemplate } from '../../types';
+import { ApiCollection } from '../../types';
+
+import { NewTemplate } from './types/NewTemplate';
+import { Template } from './types/Template';
 
 export class Templates extends BaseModule {
   async get(): Promise<ApiCollection<Template>> {

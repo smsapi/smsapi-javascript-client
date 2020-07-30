@@ -1,6 +1,6 @@
 import nock from 'nock';
 
-import { SMSAPIpl, SMSAPIcom } from '../src';
+import { SMSAPIpl, SMSAPIcom } from '../index';
 
 let nockPl: nock.Scope;
 let nockCom: nock.Scope;
