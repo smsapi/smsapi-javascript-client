@@ -137,35 +137,4 @@ describe('responseInterceptor', () => {
     // then
     expect(data).toBe(undefined);
   });
-
-  it(`2 should return data when it's not an object`, () => {
-    // given
-    const response = {
-      data: {
-        email: 'ittestingphpunit@smsapi.pl',
-        id: '193FAFB33361354EAF84E7A1',
-        name: 'phpunit',
-        payment_type: 'prepaid',
-        phone_number: '48781441344',
-        points: 92.8,
-        user_type: 'native',
-        username: 'phpunit',
-      },
-    };
-
-    // when
-    const data = responseInterceptor(response);
-
-    // then
-    expect(data).toEqual({
-      email: 'ittestingphpunit@smsapi.pl',
-      id: '193FAFB33361354EAF84E7A1',
-      name: 'phpunit',
-      paymentType: 'prepaid',
-      phoneNumber: '48781441344',
-      points: 92.8,
-      userType: 'native',
-      username: 'phpunit',
-    });
-  });
 });
