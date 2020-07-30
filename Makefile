@@ -38,6 +38,3 @@ build-watch: ## build with watch
 
 test-lib: ## run test
 	${DOCKER_RUN_NODE} yarn test
-
-test-lib--e2e: ## run e2e test
-	${DOCKER_RUN_NODE} yarn test--e2e
