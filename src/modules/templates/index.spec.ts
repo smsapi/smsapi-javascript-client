@@ -20,6 +20,10 @@ describe('Templates', () => {
     });
   });
 
+  afterAll(async () => {
+    await smsapi.templates.remove(createdTemplate.id);
+  });
+
   it('should get all templates', async () => {
     // when
     const response = await smsapi.templates.get();
@@ -52,6 +56,8 @@ describe('Templates', () => {
       id: expect.any(String),
       ...someNewTemplate,
     });
+
+    await smsapi.templates.remove(response.id);
   });
 
   it('should create template with normalize', async () => {
@@ -71,6 +77,8 @@ describe('Templates', () => {
       name: someNewTemplate.name,
       template: 'eolsazzcn',
     });
+
+    await smsapi.templates.remove(response.id);
   });
 
   it('should update template', async () => {
