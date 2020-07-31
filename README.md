@@ -4,4 +4,5 @@
 
 - [HLR](docs/hlr.md)
 - [Profile](docs/profile.md)
+- [Sendernames](docs/sendernames.md)
 - [Templates](docs/templates.md)
