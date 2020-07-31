@@ -7,7 +7,10 @@ export class Hlr extends BaseModule {
     numbers: string[],
     idx?: string
   ): Promise<HlrCheckResponse | HlrCheckResponse[]> {
-    return await this.httpClient.get('/hlr.do', {
+    return await this.httpClient.get<
+      any,
+      HlrCheckResponse | HlrCheckResponse[]
+    >('/hlr.do', {
       params: {
         format: 'json',
         idx,
