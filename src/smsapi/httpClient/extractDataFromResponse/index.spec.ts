@@ -1,17 +1,25 @@
-import { responseInterceptor } from './index';
+import { AxiosResponse } from 'axios';
 
-describe('responseInterceptor', () => {
+import { extractDataFromResponse } from './index';
+
+const getAxiosResponse = (data: any): AxiosResponse => ({
+  data,
+  status: 200,
+  config: {},
+  headers: {},
+  statusText: 'OK',
+});
+
+describe('extractDataFromResponse', () => {
   it('should return data from response', () => {
     // given
-    const response = {
-      data: {
-        a: 'someA',
-        b: 'someB',
-      },
-    };
+    const response = getAxiosResponse({
+      a: 'someA',
+      b: 'someB',
+    });
 
     // when
-    const data = responseInterceptor(response);
+    const data = extractDataFromResponse(response);
 
     // then
     expect(data).toEqual({
@@ -22,15 +30,13 @@ describe('responseInterceptor', () => {
 
   it('should return formatted data from response', () => {
     // given
-    const response = {
-      data: {
-        test_a: 'someA',
-        test_b: 'someB',
-      },
-    };
+    const response = getAxiosResponse({
+      test_a: 'someA',
+      test_b: 'someB',
+    });
 
     // when
-    const data = responseInterceptor(response);
+    const data = extractDataFromResponse(response);
 
     // then
     expect(data).toEqual({
@@ -56,15 +62,13 @@ describe('responseInterceptor', () => {
       },
     ];
 
-    const response = {
-      data: {
-        collection,
-        size: collection.length,
-      },
-    };
+    const response = getAxiosResponse({
+      collection,
+      size: collection.length,
+    });
 
     // when
-    const data = responseInterceptor(response);
+    const data = extractDataFromResponse(response);
 
     // then
     expect(data).toEqual({
@@ -88,25 +92,23 @@ describe('responseInterceptor', () => {
 
   it('should return formatted data from array response', () => {
     // given
-    const response = {
-      data: [
-        {
-          testa: 'someA',
-        },
-        {
-          test_b: 'someB',
-        },
-        {
-          'some-test-c': 'someC',
-        },
-        {
-          someTestD: 'someD',
-        },
-      ],
-    };
+    const response = getAxiosResponse([
+      {
+        testa: 'someA',
+      },
+      {
+        test_b: 'someB',
+      },
+      {
+        'some-test-c': 'someC',
+      },
+      {
+        someTestD: 'someD',
+      },
+    ]);
 
     // when
-    const data = responseInterceptor(response);
+    const data = extractDataFromResponse(response);
 
     // then
     expect(data).toEqual([
@@ -127,12 +129,10 @@ describe('responseInterceptor', () => {
 
   it(`should return data when it's not an object`, () => {
     // given
-    const response = {
-      data: undefined,
-    };
+    const response = getAxiosResponse(undefined);
 
     // when
-    const data = responseInterceptor(response);
+    const data = extractDataFromResponse(response);
 
     // then
     expect(data).toBe(undefined);

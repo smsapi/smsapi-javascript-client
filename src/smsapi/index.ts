@@ -9,7 +9,7 @@ import { Templates } from '../modules/templates';
 // @ts-ignore TS6059
 import { version } from '../../package.json';
 
-import { responseInterceptor } from './httpClient/responseInterceptor';
+import { extractDataFromResponse } from './httpClient/extractDataFromResponse';
 /* eslint-enable @typescript-eslint/ban-ts-comment */
 
 export class SMSAPI {
@@ -48,7 +48,7 @@ export class SMSAPI {
       },
     });
 
-    httpClient.interceptors.response.use(responseInterceptor);
+    httpClient.interceptors.response.use(extractDataFromResponse);
 
     return httpClient;
   }
