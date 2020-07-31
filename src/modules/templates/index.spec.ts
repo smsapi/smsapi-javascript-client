@@ -25,9 +25,7 @@ describe('Templates', () => {
     const response = await smsapi.templates.get();
 
     // then
-    expect(
-      response.collection.find((template) => template.id === createdTemplate.id)
-    ).toEqual(createdTemplate);
+    expect(response.collection).toContainEqual(createdTemplate);
     expect(response.size).toBeGreaterThan(0);
   });
 
