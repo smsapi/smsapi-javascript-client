@@ -1,3 +1,4 @@
+import { AxiosResponse } from 'axios';
 import camelCase from 'lodash/camelCase';
 import isArray from 'lodash/isArray';
 import mapKeys from 'lodash/mapKeys';
@@ -8,7 +9,7 @@ const formatResponse = (object: any) => {
   });
 };
 
-export const responseInterceptor = (response: any) => {
+export const extractDataFromResponse = (response: AxiosResponse) => {
   const { data } = response;
 
   if (!data) {
