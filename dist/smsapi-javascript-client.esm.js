@@ -1,5 +1,26 @@
 import axios from 'axios';
 import adapter from 'axios/lib/adapters/http';
+import camelCase from 'lodash-es/camelCase';
+import isArray from 'lodash-es/isArray';
+import mapKeys from 'lodash-es/mapKeys';
+
+function _extends() {
+  _extends = Object.assign || function (target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
+
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }
+
+    return target;
+  };
+
+  return _extends.apply(this, arguments);
+}
 
 function _inheritsLoose(subClass, superClass) {
   subClass.prototype = Object.create(superClass.prototype);
@@ -21,23 +42,16 @@ var Hlr = /*#__PURE__*/function (_BaseModule) {
   var _proto = Hlr.prototype;
 
   _proto.check = function check(numbers, idx) {
-    if (idx === void 0) {
-      idx = '';
-    }
-
     try {
       var _this2 = this;
 
       return Promise.resolve(_this2.httpClient.get('/hlr.do', {
         params: {
           format: 'json',
-          idx: idx || undefined,
+          idx: idx,
           number: numbers.join(',')
         }
-      })).then(function (_ref) {
-        var data = _ref.data;
-        return data;
-      });
+      }));
     } catch (e) {
       return Promise.reject(e);
     }
@@ -59,24 +73,87 @@ var Profile = /*#__PURE__*/function (_BaseModule) {
     try {
       var _this2 = this;
 
-      return Promise.resolve(_this2.httpClient.get('/profile')).then(function (_ref) {
-        var data = _ref.data;
-        return {
-          email: data.email,
-          name: data.name,
-          paymentType: data.payment_type,
-          phoneNumber: data.phone_number,
-          userType: data.user_type,
-          username: data.username,
-          points: data.points
-        };
-      });
+      return Promise.resolve(_this2.httpClient.get('/profile'));
     } catch (e) {
       return Promise.reject(e);
     }
   };
 
   return Profile;
+}(BaseModule);
+
+var dateFormatter = function dateFormatter(sendername) {
+  return _extends({}, sendername, {
+    createdAt: new Date(sendername.createdAt)
+  });
+};
+
+var Sendernames = /*#__PURE__*/function (_BaseModule) {
+  _inheritsLoose(Sendernames, _BaseModule);
+
+  function Sendernames() {
+    return _BaseModule.apply(this, arguments) || this;
+  }
+
+  var _proto = Sendernames.prototype;
+
+  _proto.get = function get() {
+    try {
+      var _this2 = this;
+
+      return Promise.resolve(_this2.httpClient.get('/sms/sendernames')).then(function (data) {
+        return _extends({}, data, {
+          collection: data.collection.map(dateFormatter)
+        });
+      });
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  };
+
+  _proto.getBySender = function getBySender(sender) {
+    try {
+      var _this4 = this;
+
+      return Promise.resolve(_this4.httpClient.get("/sms/sendernames/" + sender)).then(dateFormatter);
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  };
+
+  _proto.create = function create(sender) {
+    try {
+      var _this6 = this;
+
+      return Promise.resolve(_this6.httpClient.post('/sms/sendernames', {
+        sender: sender
+      })).then(dateFormatter);
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  };
+
+  _proto.makeDefault = function makeDefault(sender) {
+    try {
+      var _this8 = this;
+
+      return Promise.resolve(_this8.httpClient.post("/sms/sendernames/" + sender + "/commands/make_default")).then(function () {});
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  };
+
+  _proto.remove = function remove(sender) {
+    try {
+      var _this10 = this;
+
+      return Promise.resolve(_this10.httpClient["delete"]("/sms/sendernames/" + sender)).then(function () {});
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  };
+
+  return Sendernames;
 }(BaseModule);
 
 var Templates = /*#__PURE__*/function (_BaseModule) {
@@ -92,10 +169,7 @@ var Templates = /*#__PURE__*/function (_BaseModule) {
     try {
       var _this2 = this;
 
-      return Promise.resolve(_this2.httpClient.get('/sms/templates')).then(function (_ref) {
-        var data = _ref.data;
-        return data;
-      });
+      return Promise.resolve(_this2.httpClient.get('/sms/templates'));
     } catch (e) {
       return Promise.reject(e);
     }
@@ -105,10 +179,7 @@ var Templates = /*#__PURE__*/function (_BaseModule) {
     try {
       var _this4 = this;
 
-      return Promise.resolve(_this4.httpClient.get("/sms/templates/" + templateId)).then(function (_ref2) {
-        var data = _ref2.data;
-        return data;
-      });
+      return Promise.resolve(_this4.httpClient.get("/sms/templates/" + templateId));
     } catch (e) {
       return Promise.reject(e);
     }
@@ -118,10 +189,7 @@ var Templates = /*#__PURE__*/function (_BaseModule) {
     try {
       var _this6 = this;
 
-      return Promise.resolve(_this6.httpClient.post('/sms/templates', newTemplate)).then(function (_ref3) {
-        var data = _ref3.data;
-        return data;
-      });
+      return Promise.resolve(_this6.httpClient.post('/sms/templates', newTemplate));
     } catch (e) {
       return Promise.reject(e);
     }
@@ -131,10 +199,7 @@ var Templates = /*#__PURE__*/function (_BaseModule) {
     try {
       var _this8 = this;
 
-      return Promise.resolve(_this8.httpClient.put("/sms/templates/" + templateId, newTemplate)).then(function (_ref4) {
-        var data = _ref4.data;
-        return data;
-      });
+      return Promise.resolve(_this8.httpClient.put("/sms/templates/" + templateId, newTemplate));
     } catch (e) {
       return Promise.reject(e);
     }
@@ -155,6 +220,32 @@ var Templates = /*#__PURE__*/function (_BaseModule) {
 
 var version = "2.0.0";
 
+var formatResponse = function formatResponse(object) {
+  return mapKeys(object, function (_, key) {
+    return camelCase(key);
+  });
+};
+
+var extractDataFromResponse = function extractDataFromResponse(response) {
+  var data = response.data;
+
+  if (!data) {
+    return data;
+  }
+
+  if (isArray(data)) {
+    return data.map(formatResponse);
+  }
+
+  if (data.collection && data.size) {
+    return _extends({}, data, {
+      collection: data.collection.map(formatResponse)
+    });
+  }
+
+  return formatResponse(data);
+};
+
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-enable @typescript-eslint/ban-ts-comment */
 
@@ -165,6 +256,7 @@ var SMSAPI = /*#__PURE__*/function () {
     this.httpClient = this.setHttpClient();
     this.hlr = new Hlr(this.httpClient);
     this.profile = new Profile(this.httpClient);
+    this.sendernames = new Sendernames(this.httpClient);
     this.templates = new Templates(this.httpClient);
   }
 
@@ -175,7 +267,7 @@ var SMSAPI = /*#__PURE__*/function () {
   };
 
   _proto.setHttpClient = function setHttpClient() {
-    return axios.create({
+    var httpClient = axios.create({
       adapter: adapter,
       baseURL: this.apiUrl,
       headers: {
@@ -184,6 +276,8 @@ var SMSAPI = /*#__PURE__*/function () {
         'User-Agent': this.getUserAgent()
       }
     });
+    httpClient.interceptors.response.use(extractDataFromResponse);
+    return httpClient;
   };
 
   return SMSAPI;

@@ -1,5 +1,6 @@
 import { PaymentType } from './PaymentType';
 export interface ProfileResponse {
+    id: string;
     name: string;
     email: string;
     username: string;

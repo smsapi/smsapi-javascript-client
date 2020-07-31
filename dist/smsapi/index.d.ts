@@ -1,5 +1,6 @@
 import { Hlr } from '../modules/hlr';
 import { Profile } from '../modules/profile';
+import { Sendernames } from '../modules/sendernames';
 import { Templates } from '../modules/templates';
 export declare class SMSAPI {
     private apiUrl;
@@ -7,6 +8,7 @@ export declare class SMSAPI {
     private httpClient;
     hlr: Hlr;
     profile: Profile;
+    sendernames: Sendernames;
     templates: Templates;
     constructor(accessToken: string, apiUrl: string);
     private getUserAgent;
