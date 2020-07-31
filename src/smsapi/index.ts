@@ -6,6 +6,7 @@ import adapter from 'axios/lib/adapters/http';
 import { Hlr } from '../modules/hlr';
 import { Profile } from '../modules/profile';
 import { Sendernames } from '../modules/sendernames';
+import { Subusers } from '../modules/subusers';
 import { Templates } from '../modules/templates';
 // @ts-ignore TS6059
 import { version } from '../../package.json';
@@ -22,6 +23,7 @@ export class SMSAPI {
   public hlr: Hlr;
   public profile: Profile;
   public sendernames: Sendernames;
+  public subusers: Subusers;
   public templates: Templates;
 
   constructor(accessToken: string, apiUrl: string) {
@@ -33,6 +35,7 @@ export class SMSAPI {
     this.hlr = new Hlr(this.httpClient);
     this.profile = new Profile(this.httpClient);
     this.sendernames = new Sendernames(this.httpClient);
+    this.subusers = new Subusers(this.httpClient);
     this.templates = new Templates(this.httpClient);
   }
 
