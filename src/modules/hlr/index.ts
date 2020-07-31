@@ -5,12 +5,12 @@ import { HlrCheckResponse } from './types/HlrCheckResponse';
 export class Hlr extends BaseModule {
   async check(
     numbers: string[],
-    idx = ''
+    idx?: string
   ): Promise<HlrCheckResponse | HlrCheckResponse[]> {
     return await this.httpClient.get('/hlr.do', {
       params: {
         format: 'json',
-        idx: idx || undefined,
+        idx,
         number: numbers.join(','),
       },
     });
