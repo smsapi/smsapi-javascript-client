@@ -19,7 +19,7 @@ DOCKER_RUN = docker run \
 	--env NODE_ENV \
 	--user ${USERID}:${USERID} \
 	--rm \
-  --interactive \
+  --interactive
 
 DOCKER_RUN_NODE = ${DOCKER_RUN} \
 	${NODE_IMAGE}
@@ -37,4 +37,4 @@ build-watch: ## build with watch
 	${DOCKER_RUN_NODE} yarn start
 
 test-lib: ## run test
-	${DOCKER_RUN_NODE} yarn test
+	${DOCKER_RUN} --env-file ./.env.test ${NODE_IMAGE} yarn test
