@@ -28,6 +28,27 @@ describe('extractDataFromResponse', () => {
     });
   });
 
+  it('should return formatted date from response with object 1 level deep', () => {
+    // given
+    const response = getAxiosResponse({
+      some_a: 'someA',
+      some_b: {
+        some_c: 'someC',
+      },
+    });
+
+    // when
+    const data = extractDataFromResponse(response);
+
+    // then
+    expect(data).toEqual({
+      someA: 'someA',
+      someB: {
+        someC: 'someC',
+      },
+    });
+  });
+
   it('should return formatted data from response', () => {
     // given
     const response = getAxiosResponse({
@@ -123,6 +144,35 @@ describe('extractDataFromResponse', () => {
       },
       {
         someTestD: 'someD',
+      },
+    ]);
+  });
+
+  it('should return formatted data from array response with object 1 level deep', () => {
+    // given
+    const response = getAxiosResponse([
+      {
+        test_a: 'someA',
+      },
+      {
+        test_b: {
+          test_c: 'someTestC',
+        },
+      },
+    ]);
+
+    // when
+    const data = extractDataFromResponse(response);
+
+    // then
+    expect(data).toEqual([
+      {
+        testA: 'someA',
+      },
+      {
+        testB: {
+          testC: 'someTestC',
+        },
       },
     ]);
   });
