@@ -7,7 +7,9 @@ function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'defau
 var axios = _interopDefault(require('axios'));
 var adapter = _interopDefault(require('axios/lib/adapters/http'));
 var camelCase = _interopDefault(require('lodash/camelCase'));
+var forEach = _interopDefault(require('lodash/forEach'));
 var isArray = _interopDefault(require('lodash/isArray'));
+var isObject = _interopDefault(require('lodash/isObject'));
 var mapKeys = _interopDefault(require('lodash/mapKeys'));
 
 function _extends() {
@@ -162,6 +164,91 @@ var Sendernames = /*#__PURE__*/function (_BaseModule) {
   return Sendernames;
 }(BaseModule);
 
+var Subusers = /*#__PURE__*/function (_BaseModule) {
+  _inheritsLoose(Subusers, _BaseModule);
+
+  function Subusers() {
+    return _BaseModule.apply(this, arguments) || this;
+  }
+
+  var _proto = Subusers.prototype;
+
+  _proto.get = function get() {
+    try {
+      var _this2 = this;
+
+      return Promise.resolve(_this2.httpClient.get('/subusers'));
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  };
+
+  _proto.getById = function getById(subuserId) {
+    try {
+      var _this4 = this;
+
+      return Promise.resolve(_this4.httpClient.get("/subusers/" + subuserId));
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  };
+
+  _proto.create = function create(newSubuser) {
+    try {
+      var _this6 = this;
+
+      var credentials = newSubuser.credentials,
+          points = newSubuser.points;
+      return Promise.resolve(_this6.httpClient.post('/subusers', _extends({}, newSubuser, {
+        credentials: {
+          username: credentials.username,
+          password: credentials.password,
+          api_password: credentials.apiPassword
+        },
+        points: points ? {
+          from_account: points.fromAccount,
+          per_month: points.perMonth
+        } : undefined
+      })));
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  };
+
+  _proto.update = function update(subuserId, updateSubuser) {
+    try {
+      var _this8 = this;
+
+      var credentials = updateSubuser.credentials,
+          points = updateSubuser.points;
+      return Promise.resolve(_this8.httpClient.put("/subusers/" + subuserId, _extends({}, updateSubuser, {
+        credentials: credentials && (credentials.password || credentials.apiPassword) ? {
+          password: credentials.password,
+          api_password: credentials.apiPassword
+        } : undefined,
+        points: points && (points.fromAccount || points.perMonth) ? {
+          from_account: points.fromAccount,
+          per_month: points.perMonth
+        } : undefined
+      })));
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  };
+
+  _proto.remove = function remove(subuserId) {
+    try {
+      var _this10 = this;
+
+      return Promise.resolve(_this10.httpClient["delete"]("/subusers/" + subuserId)).then(function () {});
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  };
+
+  return Subusers;
+}(BaseModule);
+
 var Templates = /*#__PURE__*/function (_BaseModule) {
   _inheritsLoose(Templates, _BaseModule);
 
@@ -226,10 +313,20 @@ var Templates = /*#__PURE__*/function (_BaseModule) {
 
 var version = "2.0.0";
 
-var formatResponse = function formatResponse(object) {
+var formatKeys = function formatKeys(object) {
   return mapKeys(object, function (_, key) {
     return camelCase(key);
   });
+};
+
+var formatResponse = function formatResponse(object) {
+  var newResponse = formatKeys(object);
+  forEach(newResponse, function (value, key) {
+    if (isObject(value)) {
+      newResponse[key] = formatKeys(value);
+    }
+  });
+  return newResponse;
 };
 
 var extractDataFromResponse = function extractDataFromResponse(response) {
@@ -263,6 +360,7 @@ var SMSAPI = /*#__PURE__*/function () {
     this.hlr = new Hlr(this.httpClient);
     this.profile = new Profile(this.httpClient);
     this.sendernames = new Sendernames(this.httpClient);
+    this.subusers = new Subusers(this.httpClient);
     this.templates = new Templates(this.httpClient);
   }
 
