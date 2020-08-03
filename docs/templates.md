@@ -22,26 +22,9 @@ import { SMSAPIpl } from 'smsapi';
 
 const smsapi = new SMSAPIpl('someToken');
 
-let template = [];
-
 smsapi.templates.getById('someTemplateId')
-  .then((data) => {
-    template = data;
-  });
-```
-
-- Get template by template's id
-
-```ts
-import { SMSAPIpl } from 'smsapi';
-
-const smsapi = new SMSAPIpl('someToken');
-
-let template = [];
-
-smsapi.templates.getById('someTemplateId')
-  .then((data) => {
-    template = data;
+  .then((template) => {
+    console.log(template);
   });
 ```
 
