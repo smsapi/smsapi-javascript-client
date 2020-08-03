@@ -5,18 +5,20 @@ import isArray from 'lodash/isArray';
 import isObject from 'lodash/isObject';
 import mapKeys from 'lodash/mapKeys';
 
-const formatKeys = (object: any) => {
+const formatKeys = (
+  object: Record<string, unknown>
+): Record<string, unknown> => {
   return mapKeys(object, (_, key) => {
     return camelCase(key);
   });
 };
 
-const formatResponse = (object: any) => {
+const formatResponse = (object: Record<string, unknown>) => {
   const newResponse = formatKeys(object);
 
   forEach(newResponse, (value, key) => {
     if (isObject(value)) {
-      newResponse[key] = formatKeys(value);
+      newResponse[key] = formatKeys(value as Record<string, unknown>);
     }
   });
 
