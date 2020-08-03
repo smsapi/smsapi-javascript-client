@@ -2,6 +2,7 @@ import { AxiosResponse } from 'axios';
 
 import { extractDataFromResponse } from './index';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const getAxiosResponse = (data: any): AxiosResponse => ({
   data,
   status: 200,
