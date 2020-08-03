@@ -8,7 +8,7 @@ export class Hlr extends BaseModule {
     idx?: string
   ): Promise<HlrCheckResponse | HlrCheckResponse[]> {
     return await this.httpClient.get<
-      any,
+      HlrCheckResponse | HlrCheckResponse[],
       HlrCheckResponse | HlrCheckResponse[]
     >('/hlr.do', {
       params: {

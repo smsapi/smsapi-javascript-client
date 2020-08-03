@@ -13,9 +13,10 @@ interface ApiSendername {
 
 export class Sendernames extends BaseModule {
   async get(): Promise<ApiCollection<Sendername>> {
-    const data = await this.httpClient.get<any, ApiCollection<ApiSendername>>(
-      '/sms/sendernames'
-    );
+    const data = await this.httpClient.get<
+      ApiCollection<ApiSendername>,
+      ApiCollection<ApiSendername>
+    >('/sms/sendernames');
 
     return {
       ...data,
@@ -24,7 +25,7 @@ export class Sendernames extends BaseModule {
   }
 
   async getBySender(sender: string): Promise<Sendername> {
-    const data = await this.httpClient.get<any, ApiSendername>(
+    const data = await this.httpClient.get<ApiSendername, ApiSendername>(
       `/sms/sendernames/${sender}`
     );
 
@@ -32,7 +33,7 @@ export class Sendernames extends BaseModule {
   }
 
   async create(sender: string): Promise<Sendername> {
-    const data = await this.httpClient.post<any, ApiSendername>(
+    const data = await this.httpClient.post<ApiSendername, ApiSendername>(
       '/sms/sendernames',
       {
         sender,
@@ -43,13 +44,13 @@ export class Sendernames extends BaseModule {
   }
 
   async makeDefault(sender: string): Promise<void> {
-    await this.httpClient.post<any, void>(
+    await this.httpClient.post<void, void>(
       `/sms/sendernames/${sender}/commands/make_default`
     );
   }
 
   async remove(sender: string): Promise<void> {
-    await this.httpClient.delete<any, void>(`/sms/sendernames/${sender}`);
+    await this.httpClient.delete<void, void>(`/sms/sendernames/${sender}`);
   }
 
   private formatSendernameDates(sendername: ApiSendername): Sendername {

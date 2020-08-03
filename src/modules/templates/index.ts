@@ -6,19 +6,20 @@ import { Template } from './types/Template';
 
 export class Templates extends BaseModule {
   async get(): Promise<ApiCollection<Template>> {
-    return await this.httpClient.get<any, ApiCollection<Template>>(
-      '/sms/templates'
-    );
+    return await this.httpClient.get<
+      ApiCollection<Template>,
+      ApiCollection<Template>
+    >('/sms/templates');
   }
 
   async getById(templateId: string): Promise<Template> {
-    return await this.httpClient.get<any, Template>(
+    return await this.httpClient.get<Template, Template>(
       `/sms/templates/${templateId}`
     );
   }
 
   async create(newTemplate: NewTemplate): Promise<Template> {
-    return await this.httpClient.post<any, Template>(
+    return await this.httpClient.post<Template, Template>(
       '/sms/templates',
       newTemplate
     );
@@ -28,13 +29,13 @@ export class Templates extends BaseModule {
     templateId: string,
     newTemplate: Partial<NewTemplate>
   ): Promise<Template> {
-    return await this.httpClient.put<any, Template>(
+    return await this.httpClient.put<Template, Template>(
       `/sms/templates/${templateId}`,
       newTemplate
     );
   }
 
   async remove(templateId: string): Promise<void> {
-    await this.httpClient.delete<any, void>(`/sms/templates/${templateId}`);
+    await this.httpClient.delete<void, void>(`/sms/templates/${templateId}`);
   }
 }
