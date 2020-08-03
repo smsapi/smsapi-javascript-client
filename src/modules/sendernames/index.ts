@@ -3,9 +3,8 @@ import { ApiCollection } from '../../types';
 
 import { Sendername } from './types/Sendername';
 import { SendernameStatus } from './types/SendernameStatus';
-import { dateFormatter } from './helpers/dateFormatter';
 
-export interface ApiSendername {
+interface ApiSendername {
   createdAt: string;
   isDefault: boolean;
   sender: string;
@@ -20,7 +19,7 @@ export class Sendernames extends BaseModule {
 
     return {
       ...data,
-      collection: data.collection.map(dateFormatter),
+      collection: data.collection.map(this.formatSendernameDates),
     };
   }
 
@@ -29,7 +28,7 @@ export class Sendernames extends BaseModule {
       `/sms/sendernames/${sender}`
     );
 
-    return dateFormatter(data);
+    return this.formatSendernameDates(data);
   }
 
   async create(sender: string): Promise<Sendername> {
@@ -40,7 +39,7 @@ export class Sendernames extends BaseModule {
       }
     );
 
-    return dateFormatter(data);
+    return this.formatSendernameDates(data);
   }
 
   async makeDefault(sender: string): Promise<void> {
@@ -51,5 +50,12 @@ export class Sendernames extends BaseModule {
 
   async remove(sender: string): Promise<void> {
     await this.httpClient.delete<any, void>(`/sms/sendernames/${sender}`);
+  }
+
+  private formatSendernameDates(sendername: ApiSendername): Sendername {
+    return {
+      ...sendername,
+      createdAt: new Date(sendername.createdAt),
+    };
   }
 }
