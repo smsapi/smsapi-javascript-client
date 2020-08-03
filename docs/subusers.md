@@ -45,7 +45,7 @@ const newSubuser: SMSAPI.NewSubuser = {
   description: 'Just a typical subuser',            // OPTIONAL - default null
   points: {
     fromAccount: 100,                               // OPTIONAL - default 0
-    per_month: 100,                                 // OPTIONAL - default 0
+    perMonth: 100,                                  // OPTIONAL - default 0
   },
 };
 
@@ -62,7 +62,7 @@ import { SMSAPIpl, SMSAPI } from 'smsapi';
 
 const smsapi = new SMSAPIpl('someToken');
 
-// Only provided properties will be updated, expect credentials.username
+// Only provided properties will be updated, except credentials.username
 const updateSubuser: SMSAPI.UpdateSubuser = {
   active: true,
   description: 'Just a typical subuser number 2',
