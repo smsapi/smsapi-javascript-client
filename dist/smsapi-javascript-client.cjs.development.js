@@ -90,12 +90,6 @@ var Profile = /*#__PURE__*/function (_BaseModule) {
   return Profile;
 }(BaseModule);
 
-var dateFormatter = function dateFormatter(sendername) {
-  return _extends({}, sendername, {
-    createdAt: new Date(sendername.createdAt)
-  });
-};
-
 var Sendernames = /*#__PURE__*/function (_BaseModule) {
   _inheritsLoose(Sendernames, _BaseModule);
 
@@ -111,7 +105,7 @@ var Sendernames = /*#__PURE__*/function (_BaseModule) {
 
       return Promise.resolve(_this2.httpClient.get('/sms/sendernames')).then(function (data) {
         return _extends({}, data, {
-          collection: data.collection.map(dateFormatter)
+          collection: data.collection.map(_this2.formatSendernameDates)
         });
       });
     } catch (e) {
@@ -123,7 +117,9 @@ var Sendernames = /*#__PURE__*/function (_BaseModule) {
     try {
       var _this4 = this;
 
-      return Promise.resolve(_this4.httpClient.get("/sms/sendernames/" + sender)).then(dateFormatter);
+      return Promise.resolve(_this4.httpClient.get("/sms/sendernames/" + sender)).then(function (data) {
+        return _this4.formatSendernameDates(data);
+      });
     } catch (e) {
       return Promise.reject(e);
     }
@@ -135,7 +131,9 @@ var Sendernames = /*#__PURE__*/function (_BaseModule) {
 
       return Promise.resolve(_this6.httpClient.post('/sms/sendernames', {
         sender: sender
-      })).then(dateFormatter);
+      })).then(function (data) {
+        return _this6.formatSendernameDates(data);
+      });
     } catch (e) {
       return Promise.reject(e);
     }
@@ -159,6 +157,12 @@ var Sendernames = /*#__PURE__*/function (_BaseModule) {
     } catch (e) {
       return Promise.reject(e);
     }
+  };
+
+  _proto.formatSendernameDates = function formatSendernameDates(sendername) {
+    return _extends({}, sendername, {
+      createdAt: new Date(sendername.createdAt)
+    });
   };
 
   return Sendernames;
