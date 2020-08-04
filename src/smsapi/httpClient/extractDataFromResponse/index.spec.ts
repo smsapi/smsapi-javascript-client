@@ -177,6 +177,33 @@ describe('extractDataFromResponse', () => {
     ]);
   });
 
+  it('should return formatted data from sms response', () => {
+    // given
+    const response = getAxiosResponse({
+      count: 1,
+      list: [
+        {
+          date_sent: 1596539492,
+        },
+      ],
+      message: 'someMessage',
+    });
+
+    // when
+    const data = extractDataFromResponse(response);
+
+    // then
+    expect(data).toEqual({
+      count: 1,
+      list: [
+        {
+          dateSent: 1596539492,
+        },
+      ],
+      message: 'someMessage',
+    });
+  });
+
   it(`should return data when it's not an object`, () => {
     // given
     const response = getAxiosResponse(undefined);

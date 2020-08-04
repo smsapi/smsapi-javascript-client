@@ -25,6 +25,14 @@ const formatResponse = (object: Record<string, unknown>) => {
   return newResponse;
 };
 
+const isApiCollection = (data: Record<string, unknown>): boolean => {
+  return !!data.collection && !!data.size;
+};
+
+const isSmsResponse = (data: Record<string, unknown>): boolean => {
+  return !!data.list && !!data.message && !!data.count;
+};
+
 export const extractDataFromResponse = (response: AxiosResponse) => {
   const { data } = response;
 
@@ -36,10 +44,17 @@ export const extractDataFromResponse = (response: AxiosResponse) => {
     return data.map(formatResponse);
   }
 
-  if (data.collection && data.size) {
+  if (isApiCollection(data)) {
     return {
       ...data,
       collection: data.collection.map(formatResponse),
+    };
+  }
+
+  if (isSmsResponse(data)) {
+    return {
+      ...data,
+      list: data.list.map(formatResponse),
     };
   }
 
