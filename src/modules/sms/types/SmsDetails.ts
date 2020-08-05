@@ -34,4 +34,5 @@ export interface SmsDetails {
   param3?: string;
   param4?: string;
   template?: string;
+  datacoding?: 'bin';
 }
