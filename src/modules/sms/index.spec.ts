@@ -107,6 +107,37 @@ describe('Sms', () => {
         parts: 1,
       });
     });
+
+    it('should send single sms with params', async () => {
+      // given
+      const numbers = ['500000000', '500000001'];
+      const message = 'someMessageWithParams - [%1%] - [%2%] - [%3%] - [%4%]';
+      const params: SmsDetails = {
+        param1: 'param1number1|param1number2',
+        param2: 'param2number1|param2number2',
+        param3: 'param3number1|param3number2',
+        param4: 'param4number1|param4number2',
+      };
+
+      // when
+      const response = await smsapi.sms.sendSms(numbers, message, {
+        test: true,
+        ...params,
+      });
+
+      // then
+      expect(response).toMatchObject({
+        count: numbers.length,
+        list: numbers.map((number, index) => ({
+          number: expect.stringContaining(number),
+          submittedNumber: number,
+          smsText: `someMessageWithParams - ${Array(4)
+            .fill(0)
+            .map((_, paramIndex) => `param${paramIndex + 1}number${index + 1}`)
+            .join(' - ')}`,
+        })),
+      });
+    });
   });
 
   // TODO: add group to send messages - task-7312

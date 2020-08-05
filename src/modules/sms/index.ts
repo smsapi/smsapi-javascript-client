@@ -92,6 +92,10 @@ export class Sms extends BaseModule {
     }
 
     return mapKeys(formattedDetails, (_, key) => {
+      if (/param[1-4]/.test(key)) {
+        return key;
+      }
+
       if (key === 'noUnicode') {
         return key.toLowerCase();
       }
