@@ -7,6 +7,9 @@ import { PaymentType } from '../modules/profile/types/PaymentType';
 import { ProfileResponse } from '../modules/profile/types/ProfileResponse';
 import { Sendername } from '../modules/sendernames/types/Sendername';
 import { SendernameStatus } from '../modules/sendernames/types/SendernameStatus';
+import { SmsDetails } from '../modules/sms/types/SmsDetails';
+import { SmsResponse } from '../modules/sms/types/SmsResponse';
+import { SmsStatus } from '../modules/sms/types/SmsStatus';
 import { Subuser } from '../modules/subusers/types/Subuser';
 import { SubuserCredentials } from '../modules/subusers/types/SubuserCredentials';
 import { SubuserPoints } from '../modules/subusers/types/SubuserPoints';
@@ -26,6 +29,9 @@ export {
   ProfileResponse,
   Sendername,
   SendernameStatus,
+  SmsDetails,
+  SmsResponse,
+  SmsStatus,
   Subuser,
   SubuserCredentials,
   SubuserPoints,
