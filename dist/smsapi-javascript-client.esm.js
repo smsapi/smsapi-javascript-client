@@ -256,6 +256,10 @@ var Sms = /*#__PURE__*/function (_BaseModule) {
     }
 
     return mapKeys(formattedDetails, function (_, key) {
+      if (/param[1-4]/.test(key)) {
+        return key;
+      }
+
       if (key === 'noUnicode') {
         return key.toLowerCase();
       }

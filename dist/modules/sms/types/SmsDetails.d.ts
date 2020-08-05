@@ -19,5 +19,9 @@ export interface SmsDetails {
     discountGroup?: string;
     notifyUrl?: string;
     test?: boolean;
+    param1?: string;
+    param2?: string;
+    param3?: string;
+    param4?: string;
 }
 export {};
