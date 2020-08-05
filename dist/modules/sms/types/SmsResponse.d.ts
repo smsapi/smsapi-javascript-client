@@ -10,7 +10,6 @@ export interface SmsResponse {
         status: SmsStatus;
         idx: string | null;
         parts: number;
-        smsText: string;
     }[];
     message: string;
     length: number;
