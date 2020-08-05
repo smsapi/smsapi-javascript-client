@@ -25,7 +25,7 @@ describe('Sms', () => {
       });
 
       // then
-      expect(response).toEqual({
+      expect(response).toMatchObject({
         count: 1,
         length: message.length,
         list: [
@@ -37,7 +37,6 @@ describe('Sms', () => {
             number: expect.stringContaining(number),
             parts: 1,
             points: expect.any(Number),
-            smsText: message,
             status: 'QUEUE',
             submittedNumber: number,
           },
@@ -58,7 +57,7 @@ describe('Sms', () => {
       });
 
       // then
-      expect(response).toEqual({
+      expect(response).toMatchObject({
         count: numbers.length,
         length: message.length,
         list: numbers.map((number) => ({
@@ -69,7 +68,6 @@ describe('Sms', () => {
           number: expect.stringContaining(number),
           parts: 1,
           points: expect.any(Number),
-          smsText: message,
           status: 'QUEUE',
           submittedNumber: number,
         })),
@@ -89,7 +87,7 @@ describe('Sms', () => {
       });
 
       // then
-      expect(response).toEqual({
+      expect(response).toMatchObject({
         count: 1,
         length: message.length,
         list: [
@@ -101,7 +99,6 @@ describe('Sms', () => {
             number: expect.stringContaining(number),
             parts: 1,
             points: expect.any(Number),
-            smsText: message,
             status: 'QUEUE',
             submittedNumber: number,
           },
@@ -125,7 +122,7 @@ describe('Sms', () => {
       });
 
       // then
-      expect(response).toEqual({
+      expect(response).toMatchObject({
         //   count: 1,
         //   length: message.length,
         //   list: [
@@ -137,7 +134,6 @@ describe('Sms', () => {
         //       number: expect.stringContaining(number),
         //       parts: 1,
         //       points: expect.any(Number),
-        //       smsText: message,
         //       status: 'QUEUE',
         //       submittedNumber: number,
         //     },
@@ -158,7 +154,7 @@ describe('Sms', () => {
       });
 
       // then
-      expect(response).toEqual({
+      expect(response).toMatchObject({
         //   count: 1,
         //   length: message.length,
         //   list: [
@@ -170,7 +166,6 @@ describe('Sms', () => {
         //       number: expect.stringContaining(number),
         //       parts: 1,
         //       points: expect.any(Number),
-        //       smsText: message,
         //       status: 'QUEUE',
         //       submittedNumber: number,
         //     },
@@ -195,7 +190,7 @@ describe('Sms', () => {
       );
 
       // then
-      expect(response).toEqual({
+      expect(response).toMatchObject({
         //   count: 1,
         //   length: message.length,
         //   list: [
@@ -207,7 +202,6 @@ describe('Sms', () => {
         //       number: expect.stringContaining(number),
         //       parts: 1,
         //       points: expect.any(Number),
-        //       smsText: message,
         //       status: 'QUEUE',
         //       submittedNumber: number,
         //     },
@@ -229,7 +223,7 @@ describe('Sms', () => {
     });
 
     // then
-    expect(response).toEqual({
+    expect(response).toMatchObject({
       count: 1,
       length: message.length,
       list: [
@@ -241,7 +235,6 @@ describe('Sms', () => {
           number: expect.stringContaining(number),
           parts: 1,
           points: expect.any(Number),
-          smsText: message,
           status: 'QUEUE',
           submittedNumber: number,
         },
