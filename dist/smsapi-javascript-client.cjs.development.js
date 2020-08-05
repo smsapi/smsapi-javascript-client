@@ -6,11 +6,12 @@ function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'defau
 
 var axios = _interopDefault(require('axios'));
 var adapter = _interopDefault(require('axios/lib/adapters/http'));
+var isArray = _interopDefault(require('lodash/isArray'));
+var mapKeys = _interopDefault(require('lodash/mapKeys'));
+var snakeCase = _interopDefault(require('lodash/snakeCase'));
 var camelCase = _interopDefault(require('lodash/camelCase'));
 var forEach = _interopDefault(require('lodash/forEach'));
-var isArray = _interopDefault(require('lodash/isArray'));
 var isObject = _interopDefault(require('lodash/isObject'));
-var mapKeys = _interopDefault(require('lodash/mapKeys'));
 
 function _extends() {
   _extends = Object.assign || function (target) {
@@ -166,6 +167,120 @@ var Sendernames = /*#__PURE__*/function (_BaseModule) {
   };
 
   return Sendernames;
+}(BaseModule);
+
+var Sms = /*#__PURE__*/function (_BaseModule) {
+  _inheritsLoose(Sms, _BaseModule);
+
+  function Sms() {
+    return _BaseModule.apply(this, arguments) || this;
+  }
+
+  var _proto = Sms.prototype;
+
+  _proto.sendSms = function sendSms(numbers, message, details) {
+    try {
+      var _this2 = this;
+
+      var to = isArray(numbers) ? numbers.join(',') : numbers;
+      return Promise.resolve(_this2.send(message, to, undefined, details));
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  };
+
+  _proto.sendFlashSms = function sendFlashSms(numbers, message, details) {
+    try {
+      var _this4 = this;
+
+      return Promise.resolve(_this4.sendSms(numbers, message, _extends({}, details, {
+        flash: true
+      })));
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  };
+
+  _proto.sendSmsToGroup = function sendSmsToGroup(groups, message, details) {
+    try {
+      var _this6 = this;
+
+      var group = isArray(groups) ? groups.join(',') : groups;
+      return Promise.resolve(_this6.send(message, undefined, group, details));
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  };
+
+  _proto.sendFlashSmsToGroup = function sendFlashSmsToGroup(groups, message, details) {
+    try {
+      var _this8 = this;
+
+      return Promise.resolve(_this8.sendSmsToGroup(groups, message, _extends({}, details, {
+        flash: true
+      })));
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  };
+
+  _proto.send = function send(message, to, group, details) {
+    try {
+      var _this10 = this;
+
+      var body = _extends({
+        message: message.trim(),
+        details: true,
+        encoding: 'utf-8',
+        format: 'json'
+      }, _this10.formatSmsDetails(details || {}));
+
+      if (to) {
+        body.to = to;
+      } else {
+        body.group = group;
+      }
+
+      return Promise.resolve(_this10.httpClient.post('/sms.do', body)).then(function (data) {
+        return _this10.formatSmsResponse(data);
+      });
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  };
+
+  _proto.formatSmsDetails = function formatSmsDetails(details) {
+    var formattedDetails = details;
+
+    if (details.date) {
+      formattedDetails.dateValidate = true;
+      formattedDetails.date = details.date.toISOString();
+    }
+
+    if (details.expirationDate) {
+      formattedDetails.expirationDate = details.expirationDate.toISOString();
+    }
+
+    return mapKeys(formattedDetails, function (_, key) {
+      if (key === 'noUnicode') {
+        return key.toLowerCase();
+      }
+
+      return snakeCase(key);
+    });
+  };
+
+  _proto.formatSmsResponse = function formatSmsResponse(response) {
+    return _extends({}, response, {
+      list: response.list.map(function (sms) {
+        return _extends({}, sms, {
+          dateSent: new Date(sms.dateSent)
+        });
+      })
+    });
+  };
+
+  return Sms;
 }(BaseModule);
 
 var Subusers = /*#__PURE__*/function (_BaseModule) {
@@ -333,6 +448,14 @@ var formatResponse = function formatResponse(object) {
   return newResponse;
 };
 
+var isApiCollection = function isApiCollection(data) {
+  return !!data.collection && !!data.size;
+};
+
+var isSmsResponse = function isSmsResponse(data) {
+  return !!data.list && !!data.message && !!data.count;
+};
+
 var extractDataFromResponse = function extractDataFromResponse(response) {
   var data = response.data;
 
@@ -344,9 +467,15 @@ var extractDataFromResponse = function extractDataFromResponse(response) {
     return data.map(formatResponse);
   }
 
-  if (data.collection && data.size) {
+  if (isApiCollection(data)) {
     return _extends({}, data, {
       collection: data.collection.map(formatResponse)
+    });
+  }
+
+  if (isSmsResponse(data)) {
+    return _extends({}, data, {
+      list: data.list.map(formatResponse)
     });
   }
 
@@ -364,6 +493,7 @@ var SMSAPI = /*#__PURE__*/function () {
     this.hlr = new Hlr(this.httpClient);
     this.profile = new Profile(this.httpClient);
     this.sendernames = new Sendernames(this.httpClient);
+    this.sms = new Sms(this.httpClient);
     this.subusers = new Subusers(this.httpClient);
     this.templates = new Templates(this.httpClient);
   }
