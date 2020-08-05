@@ -306,6 +306,7 @@ describe('Sms', () => {
       param3: 'someParam3',
       param4: 'someParam4',
       template: 'someTemplate',
+      datacoding: 'bin',
     };
 
     const req = nock(`${SMSAPI_API_URL}`)
@@ -340,6 +341,7 @@ describe('Sms', () => {
         param3: details.param3,
         param4: details.param4,
         template: details.template,
+        datacoding: details.datacoding,
       })
       .reply(200);
 
