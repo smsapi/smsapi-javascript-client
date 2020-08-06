@@ -1,13 +1,13 @@
 export type SmsStatus =
-  | 'NOT_FOUND'
-  | 'EXPIRED'
-  | 'SENT'
-  | 'DELIVERED'
-  | 'UNDELIVERED'
-  | 'FAILED'
-  | 'REJECTED'
-  | 'UNKNOWN'
-  | 'QUEUE'
   | 'ACCEPTED'
+  | 'DELIVERED'
+  | 'EXPIRED'
+  | 'FAILED'
+  | 'NOT_FOUND'
+  | 'QUEUE'
+  | 'REJECTED'
   | 'RENEWAL'
-  | 'STOP';
+  | 'SENT'
+  | 'STOP'
+  | 'UNDELIVERED'
+  | 'UNKNOWN';
