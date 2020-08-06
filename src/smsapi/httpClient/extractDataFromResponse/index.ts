@@ -30,7 +30,7 @@ const isApiCollection = (data: Record<string, unknown>): boolean => {
 };
 
 const isSmsResponse = (data: Record<string, unknown>): boolean => {
-  return !!data.list && !!data.message && !!data.count;
+  return !!data.list && !!data.count;
 };
 
 export const extractDataFromResponse = (response: AxiosResponse) => {
