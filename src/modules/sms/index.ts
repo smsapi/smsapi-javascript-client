@@ -4,6 +4,7 @@ import snakeCase from 'lodash/snakeCase';
 
 import { BaseModule } from '../baseModule';
 
+import { ScheduledSmsResponse } from './types/ScheduledSmsResponse';
 import { SmsDetails } from './types/SmsDetails';
 import { SmsResponse } from './types/SmsResponse';
 
@@ -48,6 +49,20 @@ export class Sms extends BaseModule {
     return await this.sendSmsToGroup(groups, message, {
       ...details,
       flash: true,
+    });
+  }
+
+  async removeScheduledSms(
+    smsId: string | string[]
+  ): Promise<ScheduledSmsResponse> {
+    const ids = isArray(smsId) ? smsId.join(',') : smsId;
+
+    return await this.httpClient.post<
+      ScheduledSmsResponse,
+      ScheduledSmsResponse
+    >('/sms.do', {
+      format: 'json',
+      sch_del: ids,
     });
   }
 

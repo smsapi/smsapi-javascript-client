@@ -5,6 +5,7 @@ import { NewSubuser } from '../modules/subusers/types/NewSubuser';
 import { NewTemplate } from '../modules/templates/types/NewTemplate';
 import { PaymentType } from '../modules/profile/types/PaymentType';
 import { ProfileResponse } from '../modules/profile/types/ProfileResponse';
+import { ScheduledSmsResponse } from '../modules/sms/types/ScheduledSmsResponse';
 import { Sendername } from '../modules/sendernames/types/Sendername';
 import { SendernameStatus } from '../modules/sendernames/types/SendernameStatus';
 import { SmsDetails } from '../modules/sms/types/SmsDetails';
@@ -27,6 +28,7 @@ export {
   NewTemplate,
   PaymentType,
   ProfileResponse,
+  ScheduledSmsResponse,
   Sendername,
   SendernameStatus,
   SmsDetails,

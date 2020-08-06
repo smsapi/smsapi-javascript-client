@@ -212,6 +212,55 @@ describe('Sms', () => {
     });
   });
 
+  describe('Remove scheduled sms', () => {
+    it('should remove single sms', async () => {
+      // given
+      const date = new Date();
+
+      date.setHours(date.getHours() + 1);
+
+      const scheduledSms = await smsapi.sms.sendSms(
+        '500000000',
+        'someMessage',
+        {
+          date,
+        }
+      );
+
+      const scheduledSmsId = scheduledSms.list[0].id;
+
+      // when
+      const response = await smsapi.sms.removeScheduledSms(scheduledSmsId);
+
+      // then
+      expect(response.list[0].id).toEqual(scheduledSmsId);
+    });
+
+    it('should remove single sms scheduled for many numbers', async () => {
+      // given
+      const date = new Date();
+
+      date.setHours(date.getHours() + 1);
+
+      const scheduledSms = await smsapi.sms.sendSms(
+        '500000000,500000001',
+        'someMessage',
+        {
+          date,
+        }
+      );
+
+      const scheduledSmsIds = scheduledSms.list.map((sms) => sms.id);
+
+      // when
+      const response = await smsapi.sms.removeScheduledSms(scheduledSmsIds);
+      const removedIds = response.list.map((sms) => sms.id);
+
+      // then
+      expect(removedIds).toEqual(expect.arrayContaining(scheduledSmsIds));
+    });
+  });
+
   it('should trim message', async () => {
     // given
     const number = '500000000';
