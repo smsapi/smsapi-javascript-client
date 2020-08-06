@@ -1,5 +1,4 @@
 import nock from 'nock';
-import { v4 as uuidv4 } from 'uuid';
 
 import { SMSAPI } from '../../smsapi';
 import { Sendername } from '../../types';
@@ -8,22 +7,35 @@ const { SMSAPI_OAUTH_TOKEN, SMSAPI_API_URL } = process.env;
 
 const smsapi = new SMSAPI(SMSAPI_OAUTH_TOKEN || '', SMSAPI_API_URL || '');
 
-let createdSendername: Sendername;
+let createdSendername: Sendername | null = null;
+
+const generateSendername = (): string => {
+  let result = '';
+
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  const MAX_SENDERNAME_LENGTH = 11;
+
+  for (let i = 0; i < MAX_SENDERNAME_LENGTH; i++) {
+    result += characters.charAt(Math.floor(Math.random() * characters.length));
+  }
+
+  return result;
+};
 
 describe('Sendernames', () => {
-  beforeAll(async () => {
-    createdSendername = await smsapi.sendernames.create('sendername');
-  });
-
-  afterAll(async () => {
-    await smsapi.sendernames.remove(createdSendername.sender);
-  });
-
-  afterEach(() => {
+  afterEach(async () => {
     nock.cleanAll();
+
+    if (createdSendername !== null) {
+      await smsapi.sendernames.remove(createdSendername.sender);
+      createdSendername = null;
+    }
   });
 
   it('should get all sendernames', async () => {
+    // given
+    createdSendername = await smsapi.sendernames.create(generateSendername());
+
     // when
     const response = await smsapi.sendernames.get();
 
@@ -33,6 +45,9 @@ describe('Sendernames', () => {
   });
 
   it('should get sendername by sender', async () => {
+    // given
+    createdSendername = await smsapi.sendernames.create(generateSendername());
+
     // when
     const response = await smsapi.sendernames.getBySender(
       createdSendername.sender
@@ -44,20 +59,18 @@ describe('Sendernames', () => {
 
   it('should create sendername', async () => {
     // given
-    const someSenderName = `sender${uuidv4()}`.slice(0, 11);
+    const someSenderName = generateSendername();
 
     // when
-    const response = await smsapi.sendernames.create(someSenderName);
+    createdSendername = await smsapi.sendernames.create(someSenderName);
 
     // then
-    expect(response).toEqual({
+    expect(createdSendername).toEqual({
       createdAt: expect.any(Date),
       isDefault: false,
       sender: someSenderName,
       status: expect.any(String),
     });
-
-    await smsapi.sendernames.remove(response.sender);
   });
 
   it('should make sender default', async () => {
@@ -76,8 +89,13 @@ describe('Sendernames', () => {
   });
 
   it('should remove sendername', async () => {
+    // given
+    createdSendername = await smsapi.sendernames.create(generateSendername());
+
     // when
     const response = await smsapi.sendernames.remove(createdSendername.sender);
+
+    createdSendername = null;
 
     // then
     expect(response).toBeUndefined();
