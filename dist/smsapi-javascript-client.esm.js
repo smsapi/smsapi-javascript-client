@@ -218,16 +218,30 @@ var Sms = /*#__PURE__*/function (_BaseModule) {
     }
   };
 
-  _proto.send = function send(message, to, group, details) {
+  _proto.removeScheduledSms = function removeScheduledSms(smsId) {
     try {
       var _this10 = this;
+
+      var ids = isArray(smsId) ? smsId.join(',') : smsId;
+      return Promise.resolve(_this10.httpClient.post('/sms.do', {
+        format: 'json',
+        sch_del: ids
+      }));
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  };
+
+  _proto.send = function send(message, to, group, details) {
+    try {
+      var _this12 = this;
 
       var body = _extends({
         message: message.trim(),
         details: true,
         encoding: 'utf-8',
         format: 'json'
-      }, _this10.formatSmsDetails(details || {}));
+      }, _this12.formatSmsDetails(details || {}));
 
       if (to) {
         body.to = to;
@@ -235,8 +249,8 @@ var Sms = /*#__PURE__*/function (_BaseModule) {
         body.group = group;
       }
 
-      return Promise.resolve(_this10.httpClient.post('/sms.do', body)).then(function (data) {
-        return _this10.formatSmsResponse(data);
+      return Promise.resolve(_this12.httpClient.post('/sms.do', body)).then(function (data) {
+        return _this12.formatSmsResponse(data);
       });
     } catch (e) {
       return Promise.reject(e);
@@ -451,7 +465,7 @@ var isApiCollection = function isApiCollection(data) {
 };
 
 var isSmsResponse = function isSmsResponse(data) {
-  return !!data.list && !!data.message && !!data.count;
+  return !!data.list && !!data.count;
 };
 
 var extractDataFromResponse = function extractDataFromResponse(response) {
