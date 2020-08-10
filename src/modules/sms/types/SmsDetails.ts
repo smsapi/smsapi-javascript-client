@@ -1,3 +1,5 @@
+import { BaseSmsDetails } from '../../baseMessageModule/types/BaseSmsDetails';
+
 type SmsEncoding =
   | 'iso-8859-1'
   | 'iso-8859-2'
@@ -9,16 +11,14 @@ type SmsEncoding =
   | 'windows-1251'
   | 'utf-8';
 
-export interface SmsDetails {
+export interface SmsDetails extends BaseSmsDetails {
   from?: string | '2way';
   encoding?: SmsEncoding;
   flash?: boolean;
-  date?: Date;
   timeRestriction?: 'follow' | 'ignore' | 'nearest_available';
   udh?: string;
   skipForeign?: boolean;
   allowDuplicates?: boolean;
-  idx?: string;
   checkIdx?: boolean;
   noUnicode?: boolean;
   normalize?: boolean;
@@ -27,8 +27,6 @@ export interface SmsDetails {
   maxParts?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
   expirationDate?: Date;
   discountGroup?: string;
-  notifyUrl?: string;
-  test?: boolean;
   param1?: string;
   param2?: string;
   param3?: string;
