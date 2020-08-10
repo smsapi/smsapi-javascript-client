@@ -1,14 +1,12 @@
-import { BaseModule } from '../baseModule';
+import { BaseMessageModule } from '../baseMessageModule';
+import { MessageResponse } from '../../types/MessageResponse';
 import { ScheduledSmsResponse } from './types/ScheduledSmsResponse';
 import { SmsDetails } from './types/SmsDetails';
-import { SmsResponse } from './types/SmsResponse';
-export declare class Sms extends BaseModule {
-    sendSms(numbers: string | string[], message: string, details?: SmsDetails): Promise<SmsResponse>;
-    sendFlashSms(numbers: string | string[], message: string, details?: SmsDetails): Promise<SmsResponse>;
-    sendSmsToGroup(groups: string | string[], message: string, details?: SmsDetails): Promise<SmsResponse>;
-    sendFlashSmsToGroup(groups: string | string[], message: string, details?: SmsDetails): Promise<SmsResponse>;
+export declare class Sms extends BaseMessageModule {
+    endpoint: string;
+    sendSms(numbers: string | string[], message: string, details?: SmsDetails): Promise<MessageResponse>;
+    sendFlashSms(numbers: string | string[], message: string, details?: SmsDetails): Promise<MessageResponse>;
+    sendSmsToGroup(groups: string | string[], message: string, details?: SmsDetails): Promise<MessageResponse>;
+    sendFlashSmsToGroup(groups: string | string[], message: string, details?: SmsDetails): Promise<MessageResponse>;
     removeScheduledSms(smsId: string | string[]): Promise<ScheduledSmsResponse>;
-    private send;
-    private formatSmsDetails;
-    private formatSmsResponse;
 }
