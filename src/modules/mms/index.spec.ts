@@ -19,7 +19,7 @@ const smil = `<smil>
 </smil>`;
 
 describe('Mms', () => {
-  describe('Single sms', () => {
+  describe('Single mms', () => {
     it('should send single mms', async () => {
       // given
       const number = '500000000';
