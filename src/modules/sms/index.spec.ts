@@ -261,68 +261,6 @@ describe('Sms', () => {
     });
   });
 
-  it('should trim message', async () => {
-    // given
-    const number = '500000000';
-    const message = 'someMessage';
-
-    // when
-    const response = await smsapi.sms.sendSms(number, `  ${message} `, {
-      test: true,
-    });
-
-    // then
-    expect(response).toMatchObject({
-      count: 1,
-      length: message.length,
-      list: [
-        {
-          dateSent: expect.any(Date),
-          error: null,
-          id: expect.any(String),
-          idx: null,
-          number: expect.stringContaining(number),
-          parts: 1,
-          points: expect.any(Number),
-          status: 'QUEUE',
-          submittedNumber: number,
-        },
-      ],
-      message,
-      parts: 1,
-    });
-  });
-
-  it('should add dateValidate when date is present', async () => {
-    // given
-    const number = '500000000';
-    const message = 'someMessage';
-
-    const date = new Date();
-
-    const req = nock(`${SMSAPI_API_URL}`)
-      .post('/sms.do', {
-        date: date.toISOString(),
-        date_validate: true,
-        details: true,
-        encoding: 'utf-8',
-        format: 'json',
-        message,
-        to: number,
-      })
-      .reply(200);
-
-    // when
-    try {
-      await smsapi.sms.sendSms(number, message, {
-        date,
-      });
-    } catch {} // eslint-disable-line
-
-    // then
-    expect(req.isDone()).toBeTruthy();
-  });
-
   it('should make proper request when all details are present', async () => {
     // given
     const number = '500000005';

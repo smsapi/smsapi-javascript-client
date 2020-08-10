@@ -100,6 +100,8 @@ export class BaseMessageModule extends BaseModule {
       list: response.list.map((sms) => ({
         ...sms,
         dateSent: new Date(sms.dateSent),
+        points:
+          typeof sms.points === 'string' ? parseFloat(sms.points) : sms.points,
       })),
     };
   }
