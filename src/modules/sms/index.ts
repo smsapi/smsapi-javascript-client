@@ -14,7 +14,14 @@ export class Sms extends BaseMessageModule {
     message: string,
     details?: SmsDetails
   ): Promise<SmsResponse> {
-    return await this.send(message, numbers, undefined, details);
+    return await this.send(
+      {
+        message,
+      },
+      numbers,
+      undefined,
+      details
+    );
   }
 
   async sendFlashSms(
@@ -30,7 +37,14 @@ export class Sms extends BaseMessageModule {
     message: string,
     details?: SmsDetails
   ): Promise<SmsResponse> {
-    return await this.send(message, undefined, groups, details);
+    return await this.send(
+      {
+        message,
+      },
+      undefined,
+      groups,
+      details
+    );
   }
 
   async sendFlashSmsToGroup(

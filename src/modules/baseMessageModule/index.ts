@@ -10,17 +10,20 @@ interface SmsApiDetails {
   [key: string]: unknown;
 }
 
+interface SmsContent {
+  message: string;
+}
+
 export class BaseMessageModule extends BaseModule {
   protected endpoint: string;
 
   protected async send(
-    message: string,
+    content: SmsContent,
     to?: string | string[],
     group?: string | string[],
     details?: SmsDetails
   ): Promise<SmsResponse> {
     const body: Record<string, unknown> = {
-      message: message.trim(),
       details: true,
       encoding: 'utf-8',
       format: 'json',
@@ -33,12 +36,20 @@ export class BaseMessageModule extends BaseModule {
       body.group = isArray(group) ? group.join(',') : group;
     }
 
+    if (this.isSms(content)) {
+      body.message = content.message.trim();
+    }
+
     const data = await this.httpClient.post<SmsResponse, SmsResponse>(
       this.endpoint,
       body
     );
 
     return this.formatSmsResponse(data);
+  }
+
+  private isSms(content: SmsContent): content is SmsContent {
+    return (content as SmsContent).message !== undefined;
   }
 
   private formatSmsDetails(details: SmsDetails): SmsApiDetails {
