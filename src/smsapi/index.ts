@@ -60,11 +60,7 @@ export class SMSAPI {
       },
     });
 
-    httpClient.interceptors.response.use(extractDataFromResponse, (error) => {
-      console.error(error.response.config.data, error.response.data);
-
-      return Promise.reject(error);
-    });
+    httpClient.interceptors.response.use(extractDataFromResponse);
 
     return httpClient;
   }
