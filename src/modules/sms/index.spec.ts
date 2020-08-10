@@ -27,7 +27,6 @@ describe('Sms', () => {
       // then
       expect(response).toMatchObject({
         count: 1,
-        length: message.length,
         list: [
           {
             dateSent: expect.any(Date),
@@ -41,8 +40,6 @@ describe('Sms', () => {
             submittedNumber: number,
           },
         ],
-        message,
-        parts: 1,
       });
     });
 
@@ -59,7 +56,6 @@ describe('Sms', () => {
       // then
       expect(response).toMatchObject({
         count: numbers.length,
-        length: message.length,
         list: numbers.map((number) => ({
           dateSent: expect.any(Date),
           error: null,
@@ -71,8 +67,6 @@ describe('Sms', () => {
           status: 'QUEUE',
           submittedNumber: number,
         })),
-        message,
-        parts: 1,
       });
     });
 
@@ -89,7 +83,6 @@ describe('Sms', () => {
       // then
       expect(response).toMatchObject({
         count: 1,
-        length: message.length,
         list: [
           {
             dateSent: expect.any(Date),
@@ -103,8 +96,6 @@ describe('Sms', () => {
             submittedNumber: number,
           },
         ],
-        message,
-        parts: 1,
       });
     });
   });
@@ -297,35 +288,36 @@ describe('Sms', () => {
     };
 
     const req = nock(`${SMSAPI_API_URL}`)
-      .post('/sms.do', {
-        allow_duplicates: details.allowDuplicates,
-        check_idx: details.checkIdx,
+      .post('/sms.do')
+      .query({
+        allow_duplicates: details.allowDuplicates ? 1 : 0,
+        check_idx: details.checkIdx ? 1 : 0,
         datacoding: details.datacoding,
         date: details.date && details.date.toISOString(),
-        date_validate: true,
-        details: true,
+        date_validate: 1,
+        details: 1,
         discount_group: details.discountGroup,
         encoding: details.encoding,
         expiration_date:
           details.expirationDate && details.expirationDate.toISOString(),
-        fast: details.fast,
-        flash: details.flash,
+        fast: details.fast ? 1 : 0,
+        flash: details.flash ? 1 : 0,
         format: 'json',
         from: details.from,
         idx: details.idx,
         max_parts: details.maxParts,
         message,
-        normalize: details.normalize,
+        normalize: details.normalize ? 1 : 0,
         notify_url: details.notifyUrl,
-        nounicode: details.noUnicode,
+        nounicode: details.noUnicode ? 1 : 0,
         param1: details.param1,
         param2: details.param2,
         param3: details.param3,
         param4: details.param4,
         partner_id: details.partnerId,
-        skip_foreign: details.skipForeign,
+        skip_foreign: details.skipForeign ? 1 : 0,
         template: details.template,
-        test: details.test,
+        test: details.test ? 1 : 0,
         time_restriction: details.timeRestriction,
         to: number,
         udh: details.udh,
