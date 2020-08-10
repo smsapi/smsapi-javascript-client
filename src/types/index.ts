@@ -1,6 +1,7 @@
 import { HlrCheck } from '../modules/hlr/types/HlrCheck';
 import { HlrCheckError } from '../modules/hlr/types/HlrCheckError';
 import { HlrCheckResponse } from '../modules/hlr/types/HlrCheckResponse';
+import { MmsDetails } from '../modules/mms/types/MmsDetails';
 import { NewSubuser } from '../modules/subusers/types/NewSubuser';
 import { NewTemplate } from '../modules/templates/types/NewTemplate';
 import { PaymentType } from '../modules/profile/types/PaymentType';
@@ -26,6 +27,7 @@ export {
   HlrCheckResponse,
   MessageResponse,
   MessageStatus,
+  MmsDetails,
   NewSubuser,
   NewTemplate,
   PaymentType,

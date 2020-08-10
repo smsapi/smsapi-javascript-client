@@ -14,11 +14,16 @@ interface SmsContent {
   message: string;
 }
 
+interface MmsContent {
+  smil: string;
+  subject: string;
+}
+
 export class BaseMessageModule extends BaseModule {
   protected endpoint: string;
 
   protected async send(
-    content: SmsContent,
+    content: SmsContent | MmsContent,
     to?: string | string[],
     group?: string | string[],
     details?: SmsDetails
@@ -40,6 +45,11 @@ export class BaseMessageModule extends BaseModule {
       body.message = content.message.trim();
     }
 
+    if (this.isMms(content)) {
+      body.subject = content.subject.trim();
+      body.smil = content.smil;
+    }
+
     const data = await this.httpClient.post<MessageResponse, MessageResponse>(
       this.endpoint,
       body
@@ -48,8 +58,15 @@ export class BaseMessageModule extends BaseModule {
     return this.formatSmsResponse(data);
   }
 
-  private isSms(content: SmsContent): content is SmsContent {
+  private isSms(content: SmsContent | MmsContent): content is SmsContent {
     return (content as SmsContent).message !== undefined;
+  }
+
+  private isMms(content: SmsContent | MmsContent): content is MmsContent {
+    return (
+      (content as MmsContent).smil !== undefined &&
+      (content as MmsContent).subject !== undefined
+    );
   }
 
   private formatSmsDetails(details: SmsDetails): SmsApiDetails {

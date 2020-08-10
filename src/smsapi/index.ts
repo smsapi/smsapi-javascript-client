@@ -4,6 +4,7 @@ import axios, { AxiosInstance } from 'axios';
 import adapter from 'axios/lib/adapters/http';
 
 import { Hlr } from '../modules/hlr';
+import { Mms } from '../modules/mms';
 import { Profile } from '../modules/profile';
 import { Sendernames } from '../modules/sendernames';
 import { Sms } from '../modules/sms';
@@ -22,6 +23,7 @@ export class SMSAPI {
   private httpClient: AxiosInstance;
 
   public hlr: Hlr;
+  public mms: Mms;
   public profile: Profile;
   public sendernames: Sendernames;
   public subusers: Subusers;
@@ -35,6 +37,7 @@ export class SMSAPI {
     this.httpClient = this.setHttpClient();
 
     this.hlr = new Hlr(this.httpClient);
+    this.mms = new Mms(this.httpClient);
     this.profile = new Profile(this.httpClient);
     this.sendernames = new Sendernames(this.httpClient);
     this.sms = new Sms(this.httpClient);
@@ -57,7 +60,11 @@ export class SMSAPI {
       },
     });
 
-    httpClient.interceptors.response.use(extractDataFromResponse);
+    httpClient.interceptors.response.use(extractDataFromResponse, (error) => {
+      console.error(error.response.config.data, error.response.data);
+
+      return Promise.reject(error);
+    });
 
     return httpClient;
   }
