@@ -1,4 +1,4 @@
-import { BaseSmsDetails } from '../../baseMessageModule/types/BaseSmsDetails';
+import { BaseMessageDetails } from '../../baseMessageModule/types/BaseMessageDetails';
 
 type SmsEncoding =
   | 'iso-8859-1'
@@ -11,7 +11,7 @@ type SmsEncoding =
   | 'windows-1251'
   | 'utf-8';
 
-export interface SmsDetails extends BaseSmsDetails {
+export interface SmsDetails extends BaseMessageDetails {
   from?: string | '2way';
   encoding?: SmsEncoding;
   flash?: boolean;
