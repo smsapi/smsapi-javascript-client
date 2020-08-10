@@ -5,6 +5,7 @@ import { Sendernames } from '../modules/sendernames';
 import { Sms } from '../modules/sms';
 import { Subusers } from '../modules/subusers';
 import { Templates } from '../modules/templates';
+import { Vms } from '../modules/vms';
 export declare class SMSAPI {
     private apiUrl;
     private accessToken;
@@ -13,9 +14,10 @@ export declare class SMSAPI {
     mms: Mms;
     profile: Profile;
     sendernames: Sendernames;
-    subusers: Subusers;
     sms: Sms;
+    subusers: Subusers;
     templates: Templates;
+    vms: Vms;
     constructor(accessToken: string, apiUrl: string);
     private getUserAgent;
     private setHttpClient;

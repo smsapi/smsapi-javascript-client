@@ -1,8 +1,11 @@
 import axios from 'axios';
 import adapter from 'axios/lib/adapters/http';
+import fs from 'fs';
 import isArray from 'lodash-es/isArray';
 import mapKeys from 'lodash-es/mapKeys';
+import mapValues from 'lodash-es/mapValues';
 import snakeCase from 'lodash-es/snakeCase';
+import FormData from 'form-data';
 import camelCase from 'lodash-es/camelCase';
 import forEach from 'lodash-es/forEach';
 import isObject from 'lodash-es/isObject';
@@ -66,21 +69,41 @@ var Hlr = /*#__PURE__*/function (_BaseModule) {
 var BaseMessageModule = /*#__PURE__*/function (_BaseModule) {
   _inheritsLoose(BaseMessageModule, _BaseModule);
 
-  function BaseMessageModule() {
-    return _BaseModule.apply(this, arguments) || this;
+  function BaseMessageModule(httpClient) {
+    var _this;
+
+    _this = _BaseModule.call(this, httpClient) || this;
+
+    _this.httpClient.interceptors.request.use(function (config) {
+      var params = config.params;
+      return _extends({}, config, {
+        params: mapValues(params, function (param) {
+          if (typeof param !== 'boolean') {
+            return param;
+          }
+
+          return +param;
+        })
+      });
+    });
+
+    return _this;
   }
 
   var _proto = BaseMessageModule.prototype;
 
   _proto.send = function send(content, to, group, details) {
     try {
-      var _this2 = this;
+      var _this3 = this;
+
+      var form = new FormData();
+      var headers = undefined;
 
       var body = _extends({
         details: true,
         encoding: 'utf-8',
         format: 'json'
-      }, _this2.formatSmsDetails(details || {}));
+      }, _this3.formatSmsDetails(details || {}));
 
       if (to) {
         body.to = isArray(to) ? to.join(',') : to;
@@ -88,17 +111,38 @@ var BaseMessageModule = /*#__PURE__*/function (_BaseModule) {
         body.group = isArray(group) ? group.join(',') : group;
       }
 
-      if (_this2.isSms(content)) {
+      if (_this3.isSms(content)) {
         body.message = content.message.trim();
       }
 
-      if (_this2.isMms(content)) {
+      if (_this3.isMms(content)) {
         body.subject = content.subject.trim();
         body.smil = content.smil;
       }
 
-      return Promise.resolve(_this2.httpClient.post(_this2.endpoint, body)).then(function (data) {
-        return _this2.formatSmsResponse(data);
+      if (_this3.isVmsText(content)) {
+        body.tts = content.tts.trim();
+        body.tts_lector = content.ttsLector || 'ewa';
+      }
+
+      if (_this3.isVmsRemotePath(content)) {
+        body.file = content.remotePath;
+      }
+
+      if (_this3.isVmsLocalFile(content)) {
+        var file = fs.createReadStream(content.localPath);
+        form.append('file', file);
+        headers = form.getHeaders();
+      }
+
+      return Promise.resolve(_this3.httpClient.request({
+        data: form,
+        headers: headers,
+        method: 'post',
+        params: body,
+        url: _this3.endpoint
+      })).then(function (data) {
+        return _this3.formatSmsResponse(data);
       });
     } catch (e) {
       return Promise.reject(e);
@@ -111,6 +155,18 @@ var BaseMessageModule = /*#__PURE__*/function (_BaseModule) {
 
   _proto.isMms = function isMms(content) {
     return content.smil !== undefined && content.subject !== undefined;
+  };
+
+  _proto.isVmsText = function isVmsText(content) {
+    return content.tts !== undefined;
+  };
+
+  _proto.isVmsLocalFile = function isVmsLocalFile(content) {
+    return content.localPath !== undefined;
+  };
+
+  _proto.isVmsRemotePath = function isVmsRemotePath(content) {
+    return content.remotePath !== undefined;
   };
 
   _proto.formatSmsDetails = function formatSmsDetails(details) {
@@ -142,7 +198,8 @@ var BaseMessageModule = /*#__PURE__*/function (_BaseModule) {
     return _extends({}, response, {
       list: response.list.map(function (sms) {
         return _extends({}, sms, {
-          dateSent: new Date(sms.dateSent)
+          dateSent: new Date(sms.dateSent),
+          points: typeof sms.points === 'string' ? parseFloat(sms.points) : sms.points
         });
       })
     });
@@ -518,6 +575,96 @@ var Templates = /*#__PURE__*/function (_BaseModule) {
   return Templates;
 }(BaseModule);
 
+var Vms = /*#__PURE__*/function (_BaseMessageModule) {
+  _inheritsLoose(Vms, _BaseMessageModule);
+
+  function Vms() {
+    var _this;
+
+    _this = _BaseMessageModule.apply(this, arguments) || this;
+    _this.endpoint = '/vms.do';
+    return _this;
+  }
+
+  var _proto = Vms.prototype;
+
+  _proto.sendVms = function sendVms(numbers, tts, ttsLector, details) {
+    try {
+      var _this3 = this;
+
+      return Promise.resolve(_this3.send({
+        tts: tts,
+        ttsLector: ttsLector
+      }, numbers, undefined, details));
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  };
+
+  _proto.sendVmsWithLocalFile = function sendVmsWithLocalFile(numbers, pathToLocaleFile, details) {
+    try {
+      var _this5 = this;
+
+      return Promise.resolve(_this5.send({
+        localPath: pathToLocaleFile
+      }, numbers, undefined, details));
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  };
+
+  _proto.sendVmsWithRemoteFile = function sendVmsWithRemoteFile(numbers, pathToRemoteFile, details) {
+    try {
+      var _this7 = this;
+
+      return Promise.resolve(_this7.send({
+        remotePath: pathToRemoteFile
+      }, numbers, undefined, details));
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  };
+
+  _proto.sendVmsToGroup = function sendVmsToGroup(groups, tts, ttsLector, details) {
+    try {
+      var _this9 = this;
+
+      return Promise.resolve(_this9.send({
+        tts: tts,
+        ttsLector: ttsLector
+      }, undefined, groups, details));
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  };
+
+  _proto.sendVmsWithLocalFileToGroup = function sendVmsWithLocalFileToGroup(groups, pathToLocaleFile, details) {
+    try {
+      var _this11 = this;
+
+      return Promise.resolve(_this11.send({
+        localPath: pathToLocaleFile
+      }, undefined, groups, details));
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  };
+
+  _proto.sendVmsWithRemoteFileToGroup = function sendVmsWithRemoteFileToGroup(groups, pathToRemoteFile, details) {
+    try {
+      var _this13 = this;
+
+      return Promise.resolve(_this13.send({
+        remotePath: pathToRemoteFile
+      }, undefined, groups, details));
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  };
+
+  return Vms;
+}(BaseMessageModule);
+
 var version = "2.0.0";
 
 var formatKeys = function formatKeys(object) {
@@ -585,6 +732,7 @@ var SMSAPI = /*#__PURE__*/function () {
     this.sms = new Sms(this.httpClient);
     this.subusers = new Subusers(this.httpClient);
     this.templates = new Templates(this.httpClient);
+    this.vms = new Vms(this.httpClient);
   }
 
   var _proto = SMSAPI.prototype;
@@ -603,10 +751,7 @@ var SMSAPI = /*#__PURE__*/function () {
         'User-Agent': this.getUserAgent()
       }
     });
-    httpClient.interceptors.response.use(extractDataFromResponse, function (error) {
-      console.error(error.response.config.data, error.response.data);
-      return Promise.reject(error);
-    });
+    httpClient.interceptors.response.use(extractDataFromResponse);
     return httpClient;
   };
 

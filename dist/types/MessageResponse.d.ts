@@ -9,9 +9,9 @@ export interface MessageResponse {
         submittedNumber: string;
         status: MessageStatus;
         idx: string | null;
-        parts: number;
+        parts?: number;
     }[];
-    message: string;
+    message?: string;
     length: number;
-    parts: number;
+    parts?: number;
 }
