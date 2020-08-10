@@ -1,5 +1,5 @@
-import { SmsStatus } from './SmsStatus';
-export interface SmsResponse {
+import { MessageStatus } from './MessageStatus';
+export interface MessageResponse {
     count: number;
     list: {
         id: string;
@@ -7,7 +7,7 @@ export interface SmsResponse {
         number: string;
         dateSent: Date;
         submittedNumber: string;
-        status: SmsStatus;
+        status: MessageStatus;
         idx: string | null;
         parts: number;
     }[];

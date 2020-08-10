@@ -69,6 +69,136 @@ var Hlr = /*#__PURE__*/function (_BaseModule) {
   return Hlr;
 }(BaseModule);
 
+var BaseMessageModule = /*#__PURE__*/function (_BaseModule) {
+  _inheritsLoose(BaseMessageModule, _BaseModule);
+
+  function BaseMessageModule() {
+    return _BaseModule.apply(this, arguments) || this;
+  }
+
+  var _proto = BaseMessageModule.prototype;
+
+  _proto.send = function send(content, to, group, details) {
+    try {
+      var _this2 = this;
+
+      var body = _extends({
+        details: true,
+        encoding: 'utf-8',
+        format: 'json'
+      }, _this2.formatSmsDetails(details || {}));
+
+      if (to) {
+        body.to = isArray(to) ? to.join(',') : to;
+      } else {
+        body.group = isArray(group) ? group.join(',') : group;
+      }
+
+      if (_this2.isSms(content)) {
+        body.message = content.message.trim();
+      }
+
+      if (_this2.isMms(content)) {
+        body.subject = content.subject.trim();
+        body.smil = content.smil;
+      }
+
+      return Promise.resolve(_this2.httpClient.post(_this2.endpoint, body)).then(function (data) {
+        return _this2.formatSmsResponse(data);
+      });
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  };
+
+  _proto.isSms = function isSms(content) {
+    return content.message !== undefined;
+  };
+
+  _proto.isMms = function isMms(content) {
+    return content.smil !== undefined && content.subject !== undefined;
+  };
+
+  _proto.formatSmsDetails = function formatSmsDetails(details) {
+    var formattedDetails = details;
+
+    if (details.date) {
+      formattedDetails.dateValidate = true;
+      formattedDetails.date = details.date.toISOString();
+    }
+
+    if (details.expirationDate) {
+      formattedDetails.expirationDate = details.expirationDate.toISOString();
+    }
+
+    return mapKeys(formattedDetails, function (_, key) {
+      if (/param[1-4]/.test(key)) {
+        return key;
+      }
+
+      if (key === 'noUnicode') {
+        return key.toLowerCase();
+      }
+
+      return snakeCase(key);
+    });
+  };
+
+  _proto.formatSmsResponse = function formatSmsResponse(response) {
+    return _extends({}, response, {
+      list: response.list.map(function (sms) {
+        return _extends({}, sms, {
+          dateSent: new Date(sms.dateSent)
+        });
+      })
+    });
+  };
+
+  return BaseMessageModule;
+}(BaseModule);
+
+var Mms = /*#__PURE__*/function (_BaseMessageModule) {
+  _inheritsLoose(Mms, _BaseMessageModule);
+
+  function Mms() {
+    var _this;
+
+    _this = _BaseMessageModule.apply(this, arguments) || this;
+    _this.endpoint = '/mms.do';
+    return _this;
+  }
+
+  var _proto = Mms.prototype;
+
+  _proto.sendMms = function sendMms(numbers, subject, smil, details) {
+    try {
+      var _this3 = this;
+
+      return Promise.resolve(_this3.send({
+        smil: smil,
+        subject: subject
+      }, numbers, undefined, details));
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  };
+
+  _proto.sendMmsToGroup = function sendMmsToGroup(groups, subject, smil, details) {
+    try {
+      var _this5 = this;
+
+      return Promise.resolve(_this5.send({
+        smil: smil,
+        subject: subject
+      }, undefined, groups, details));
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  };
+
+  return Mms;
+}(BaseMessageModule);
+
 var Profile = /*#__PURE__*/function (_BaseModule) {
   _inheritsLoose(Profile, _BaseModule);
 
@@ -169,21 +299,26 @@ var Sendernames = /*#__PURE__*/function (_BaseModule) {
   return Sendernames;
 }(BaseModule);
 
-var Sms = /*#__PURE__*/function (_BaseModule) {
-  _inheritsLoose(Sms, _BaseModule);
+var Sms = /*#__PURE__*/function (_BaseMessageModule) {
+  _inheritsLoose(Sms, _BaseMessageModule);
 
   function Sms() {
-    return _BaseModule.apply(this, arguments) || this;
+    var _this;
+
+    _this = _BaseMessageModule.apply(this, arguments) || this;
+    _this.endpoint = '/sms.do';
+    return _this;
   }
 
   var _proto = Sms.prototype;
 
   _proto.sendSms = function sendSms(numbers, message, details) {
     try {
-      var _this2 = this;
+      var _this3 = this;
 
-      var to = isArray(numbers) ? numbers.join(',') : numbers;
-      return Promise.resolve(_this2.send(message, to, undefined, details));
+      return Promise.resolve(_this3.send({
+        message: message
+      }, numbers, undefined, details));
     } catch (e) {
       return Promise.reject(e);
     }
@@ -191,9 +326,9 @@ var Sms = /*#__PURE__*/function (_BaseModule) {
 
   _proto.sendFlashSms = function sendFlashSms(numbers, message, details) {
     try {
-      var _this4 = this;
+      var _this5 = this;
 
-      return Promise.resolve(_this4.sendSms(numbers, message, _extends({}, details, {
+      return Promise.resolve(_this5.sendSms(numbers, message, _extends({}, details, {
         flash: true
       })));
     } catch (e) {
@@ -203,10 +338,11 @@ var Sms = /*#__PURE__*/function (_BaseModule) {
 
   _proto.sendSmsToGroup = function sendSmsToGroup(groups, message, details) {
     try {
-      var _this6 = this;
+      var _this7 = this;
 
-      var group = isArray(groups) ? groups.join(',') : groups;
-      return Promise.resolve(_this6.send(message, undefined, group, details));
+      return Promise.resolve(_this7.send({
+        message: message
+      }, undefined, groups, details));
     } catch (e) {
       return Promise.reject(e);
     }
@@ -214,9 +350,9 @@ var Sms = /*#__PURE__*/function (_BaseModule) {
 
   _proto.sendFlashSmsToGroup = function sendFlashSmsToGroup(groups, message, details) {
     try {
-      var _this8 = this;
+      var _this9 = this;
 
-      return Promise.resolve(_this8.sendSmsToGroup(groups, message, _extends({}, details, {
+      return Promise.resolve(_this9.sendSmsToGroup(groups, message, _extends({}, details, {
         flash: true
       })));
     } catch (e) {
@@ -226,10 +362,10 @@ var Sms = /*#__PURE__*/function (_BaseModule) {
 
   _proto.removeScheduledSms = function removeScheduledSms(smsId) {
     try {
-      var _this10 = this;
+      var _this11 = this;
 
       var ids = isArray(smsId) ? smsId.join(',') : smsId;
-      return Promise.resolve(_this10.httpClient.post('/sms.do', {
+      return Promise.resolve(_this11.httpClient.post(_this11.endpoint, {
         format: 'json',
         sch_del: ids
       }));
@@ -238,68 +374,8 @@ var Sms = /*#__PURE__*/function (_BaseModule) {
     }
   };
 
-  _proto.send = function send(message, to, group, details) {
-    try {
-      var _this12 = this;
-
-      var body = _extends({
-        message: message.trim(),
-        details: true,
-        encoding: 'utf-8',
-        format: 'json'
-      }, _this12.formatSmsDetails(details || {}));
-
-      if (to) {
-        body.to = to;
-      } else {
-        body.group = group;
-      }
-
-      return Promise.resolve(_this12.httpClient.post('/sms.do', body)).then(function (data) {
-        return _this12.formatSmsResponse(data);
-      });
-    } catch (e) {
-      return Promise.reject(e);
-    }
-  };
-
-  _proto.formatSmsDetails = function formatSmsDetails(details) {
-    var formattedDetails = details;
-
-    if (details.date) {
-      formattedDetails.dateValidate = true;
-      formattedDetails.date = details.date.toISOString();
-    }
-
-    if (details.expirationDate) {
-      formattedDetails.expirationDate = details.expirationDate.toISOString();
-    }
-
-    return mapKeys(formattedDetails, function (_, key) {
-      if (/param[1-4]/.test(key)) {
-        return key;
-      }
-
-      if (key === 'noUnicode') {
-        return key.toLowerCase();
-      }
-
-      return snakeCase(key);
-    });
-  };
-
-  _proto.formatSmsResponse = function formatSmsResponse(response) {
-    return _extends({}, response, {
-      list: response.list.map(function (sms) {
-        return _extends({}, sms, {
-          dateSent: new Date(sms.dateSent)
-        });
-      })
-    });
-  };
-
   return Sms;
-}(BaseModule);
+}(BaseMessageModule);
 
 var Subusers = /*#__PURE__*/function (_BaseModule) {
   _inheritsLoose(Subusers, _BaseModule);
@@ -338,9 +414,9 @@ var Subusers = /*#__PURE__*/function (_BaseModule) {
           points = newSubuser.points;
       return Promise.resolve(_this6.httpClient.post('/subusers', _extends({}, newSubuser, {
         credentials: {
-          username: credentials.username,
+          api_password: credentials.apiPassword,
           password: credentials.password,
-          api_password: credentials.apiPassword
+          username: credentials.username
         },
         points: points ? {
           from_account: points.fromAccount,
@@ -360,8 +436,8 @@ var Subusers = /*#__PURE__*/function (_BaseModule) {
           points = updateSubuser.points;
       return Promise.resolve(_this8.httpClient.put("/subusers/" + subuserId, _extends({}, updateSubuser, {
         credentials: credentials && (credentials.password || credentials.apiPassword) ? {
-          password: credentials.password,
-          api_password: credentials.apiPassword
+          api_password: credentials.apiPassword,
+          password: credentials.password
         } : undefined,
         points: points && (points.fromAccount || points.perMonth) ? {
           from_account: points.fromAccount,
@@ -509,6 +585,7 @@ var SMSAPI = /*#__PURE__*/function () {
     this.apiUrl = apiUrl;
     this.httpClient = this.setHttpClient();
     this.hlr = new Hlr(this.httpClient);
+    this.mms = new Mms(this.httpClient);
     this.profile = new Profile(this.httpClient);
     this.sendernames = new Sendernames(this.httpClient);
     this.sms = new Sms(this.httpClient);
@@ -532,7 +609,10 @@ var SMSAPI = /*#__PURE__*/function () {
         'User-Agent': this.getUserAgent()
       }
     });
-    httpClient.interceptors.response.use(extractDataFromResponse);
+    httpClient.interceptors.response.use(extractDataFromResponse, function (error) {
+      console.error(error.response.config.data, error.response.data);
+      return Promise.reject(error);
+    });
     return httpClient;
   };
 
