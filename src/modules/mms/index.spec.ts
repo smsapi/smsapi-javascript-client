@@ -48,7 +48,7 @@ describe('Mms', () => {
       });
     });
 
-    it('should send single sms to many numbers', async () => {
+    it('should send single mms to many numbers', async () => {
       // given
       const numbers = ['500000000', '500000001'];
       const subject = 'Some subject';
