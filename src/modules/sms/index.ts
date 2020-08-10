@@ -1,10 +1,10 @@
 import isArray from 'lodash/isArray';
 
 import { BaseMessageModule } from '../baseMessageModule';
+import { MessageResponse } from '../../types/MessageResponse';
 
 import { ScheduledSmsResponse } from './types/ScheduledSmsResponse';
 import { SmsDetails } from './types/SmsDetails';
-import { SmsResponse } from './types/SmsResponse';
 
 export class Sms extends BaseMessageModule {
   endpoint = '/sms.do';
@@ -13,7 +13,7 @@ export class Sms extends BaseMessageModule {
     numbers: string | string[],
     message: string,
     details?: SmsDetails
-  ): Promise<SmsResponse> {
+  ): Promise<MessageResponse> {
     return await this.send(
       {
         message,
@@ -28,7 +28,7 @@ export class Sms extends BaseMessageModule {
     numbers: string | string[],
     message: string,
     details?: SmsDetails
-  ): Promise<SmsResponse> {
+  ): Promise<MessageResponse> {
     return await this.sendSms(numbers, message, { ...details, flash: true });
   }
 
@@ -36,7 +36,7 @@ export class Sms extends BaseMessageModule {
     groups: string | string[],
     message: string,
     details?: SmsDetails
-  ): Promise<SmsResponse> {
+  ): Promise<MessageResponse> {
     return await this.send(
       {
         message,
@@ -51,7 +51,7 @@ export class Sms extends BaseMessageModule {
     groups: string | string[],
     message: string,
     details?: SmsDetails
-  ): Promise<SmsResponse> {
+  ): Promise<MessageResponse> {
     return await this.sendSmsToGroup(groups, message, {
       ...details,
       flash: true,

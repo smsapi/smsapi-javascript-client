@@ -1,4 +1,4 @@
-export type SmsStatus =
+export type MessageStatus =
   | 'ACCEPTED'
   | 'DELIVERED'
   | 'EXPIRED'

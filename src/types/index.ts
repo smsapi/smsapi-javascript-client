@@ -9,14 +9,14 @@ import { ScheduledSmsResponse } from '../modules/sms/types/ScheduledSmsResponse'
 import { Sendername } from '../modules/sendernames/types/Sendername';
 import { SendernameStatus } from '../modules/sendernames/types/SendernameStatus';
 import { SmsDetails } from '../modules/sms/types/SmsDetails';
-import { SmsResponse } from '../modules/sms/types/SmsResponse';
-import { SmsStatus } from '../modules/sms/types/SmsStatus';
 import { Subuser } from '../modules/subusers/types/Subuser';
 import { SubuserCredentials } from '../modules/subusers/types/SubuserCredentials';
 import { SubuserPoints } from '../modules/subusers/types/SubuserPoints';
 import { Template } from '../modules/templates/types/Template';
 import { UpdateSubuser } from '../modules/subusers/types/UpdateSubuser';
 
+import { MessageStatus } from './MessageStatus';
+import { MessageResponse } from './MessageResponse';
 import { ApiCollection } from './ApiCollection';
 
 export {
@@ -24,6 +24,8 @@ export {
   HlrCheck,
   HlrCheckError,
   HlrCheckResponse,
+  MessageResponse,
+  MessageStatus,
   NewSubuser,
   NewTemplate,
   PaymentType,
@@ -32,8 +34,6 @@ export {
   Sendername,
   SendernameStatus,
   SmsDetails,
-  SmsResponse,
-  SmsStatus,
   Subuser,
   SubuserCredentials,
   SubuserPoints,
