@@ -12,14 +12,14 @@ describe('Profile', () => {
 
     // then
     expect(profile).toEqual({
+      email: expect.any(String),
       id: expect.any(String),
       name: expect.any(String),
-      email: expect.any(String),
-      username: expect.any(String),
-      phoneNumber: expect.any(String),
       paymentType: expect.any(String),
-      userType: expect.any(String),
+      phoneNumber: expect.any(String),
       points: expect.any(Number),
+      userType: expect.any(String),
+      username: expect.any(String),
     });
   });
 });

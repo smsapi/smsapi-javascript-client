@@ -18,8 +18,8 @@ describe('Subusers', () => {
     // given
     const subuser: NewSubuser = {
       credentials: {
-        username: `user-${uuidv4()}`,
         password: 'SomeSuperStrongPassword123',
+        username: `user-${uuidv4()}`,
       },
     };
 
@@ -39,8 +39,8 @@ describe('Subusers', () => {
     // given
     const subuser: NewSubuser = {
       credentials: {
-        username: `user-${uuidv4()}`,
         password: 'SomeSuperStrongPassword123',
+        username: `user-${uuidv4()}`,
       },
     };
 
@@ -59,8 +59,8 @@ describe('Subusers', () => {
     // given
     const subuser: NewSubuser = {
       credentials: {
-        username: `user-${uuidv4()}`,
         password: 'SomeSuperStrongPassword123',
+        username: `user-${uuidv4()}`,
       },
     };
 
@@ -76,12 +76,12 @@ describe('Subusers', () => {
   it('should create subuser with all details', async () => {
     // given
     const subuser = {
-      credentials: {
-        username: `user-${uuidv4()}`,
-        password: 'SomeSuperStrongPassword123',
-        apiPassword: 'SomeSuperStrongApiPassword123',
-      },
       active: true,
+      credentials: {
+        apiPassword: 'SomeSuperStrongApiPassword123',
+        password: 'SomeSuperStrongPassword123',
+        username: `user-${uuidv4()}`,
+      },
       description: 'Some subuser description',
       points: {
         fromAccount: 100,
@@ -93,9 +93,9 @@ describe('Subusers', () => {
       .post('/subusers', {
         ...subuser,
         credentials: {
-          username: subuser.credentials.username,
-          password: subuser.credentials.password,
           api_password: subuser.credentials.apiPassword,
+          password: subuser.credentials.password,
+          username: subuser.credentials.username,
         },
         points: {
           from_account: subuser.points.fromAccount,
@@ -115,8 +115,8 @@ describe('Subusers', () => {
     // given
     const subuser: NewSubuser = {
       credentials: {
-        username: `user-${uuidv4()}`,
         password: 'SomeSuperStrongPassword123',
+        username: `user-${uuidv4()}`,
       },
     };
 
@@ -143,11 +143,11 @@ describe('Subusers', () => {
     const subuserId = 'someSubuserId';
 
     const subuser = {
-      credentials: {
-        password: 'SomeSuperStrongPassword123',
-        apiPassword: 'SomeSuperStrongApiPassword123',
-      },
       active: true,
+      credentials: {
+        apiPassword: 'SomeSuperStrongApiPassword123',
+        password: 'SomeSuperStrongPassword123',
+      },
       description: 'Some subuser description',
       points: {
         fromAccount: 100,
@@ -159,8 +159,8 @@ describe('Subusers', () => {
       .put(`/subusers/${subuserId}`, {
         ...subuser,
         credentials: {
-          password: subuser.credentials.password,
           api_password: subuser.credentials.apiPassword,
+          password: subuser.credentials.password,
         },
         points: {
           from_account: subuser.points.fromAccount,
@@ -180,8 +180,8 @@ describe('Subusers', () => {
     // given
     const subuser: NewSubuser = {
       credentials: {
-        username: `user-${uuidv4()}`,
         password: 'SomeSuperStrongPassword123',
+        username: `user-${uuidv4()}`,
       },
     };
 

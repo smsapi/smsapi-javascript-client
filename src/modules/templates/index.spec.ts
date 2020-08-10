@@ -64,8 +64,8 @@ describe('Templates', () => {
     // given
     const someNewTemplate: NewTemplate = {
       name: `template-name-${uuidv4()}`.slice(0, 32),
-      template: 'ęółśążźćń',
       normalize: true,
+      template: 'ęółśążźćń',
     };
 
     // when

@@ -3,10 +3,10 @@ import { AxiosResponse } from 'axios';
 import { extractDataFromResponse } from './index';
 
 const getAxiosResponse = (data: unknown): AxiosResponse => ({
-  data,
-  status: 200,
   config: {},
+  data,
   headers: {},
+  status: 200,
   statusText: 'OK',
 });
 
