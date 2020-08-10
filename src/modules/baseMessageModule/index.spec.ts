@@ -17,8 +17,9 @@ describe('Base message module', () => {
     const message = 'someMessage';
 
     const req = nock(`${SMSAPI_API_URL}`)
-      .post('/sms.do', {
-        details: true,
+      .post('/sms.do')
+      .query({
+        details: 1,
         encoding: 'utf-8',
         format: 'json',
         message,
@@ -43,8 +44,9 @@ describe('Base message module', () => {
     const points = '0.1';
 
     const req = nock(`${SMSAPI_API_URL}`)
-      .post('/sms.do', {
-        details: true,
+      .post('/sms.do')
+      .query({
+        details: 1,
         encoding: 'utf-8',
         format: 'json',
         message,
@@ -76,10 +78,11 @@ describe('Base message module', () => {
     const date = new Date();
 
     const req = nock(`${SMSAPI_API_URL}`)
-      .post('/sms.do', {
+      .post('/sms.do')
+      .query({
         date: date.toISOString(),
-        date_validate: true,
-        details: true,
+        date_validate: 1,
+        details: 1,
         encoding: 'utf-8',
         format: 'json',
         message,
