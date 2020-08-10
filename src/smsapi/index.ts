@@ -26,8 +26,8 @@ export class SMSAPI {
   public mms: Mms;
   public profile: Profile;
   public sendernames: Sendernames;
-  public subusers: Subusers;
   public sms: Sms;
+  public subusers: Subusers;
   public templates: Templates;
 
   constructor(accessToken: string, apiUrl: string) {
