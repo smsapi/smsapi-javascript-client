@@ -4,7 +4,7 @@ import snakeCase from 'lodash/snakeCase';
 
 import { BaseModule } from '../baseModule';
 import { SmsDetails } from '../sms/types/SmsDetails';
-import { SmsResponse } from '../sms/types/SmsResponse';
+import { MessageResponse } from '../../types/MessageResponse';
 
 interface SmsApiDetails {
   [key: string]: unknown;
@@ -22,7 +22,7 @@ export class BaseMessageModule extends BaseModule {
     to?: string | string[],
     group?: string | string[],
     details?: SmsDetails
-  ): Promise<SmsResponse> {
+  ): Promise<MessageResponse> {
     const body: Record<string, unknown> = {
       details: true,
       encoding: 'utf-8',
@@ -40,7 +40,7 @@ export class BaseMessageModule extends BaseModule {
       body.message = content.message.trim();
     }
 
-    const data = await this.httpClient.post<SmsResponse, SmsResponse>(
+    const data = await this.httpClient.post<MessageResponse, MessageResponse>(
       this.endpoint,
       body
     );
@@ -77,7 +77,7 @@ export class BaseMessageModule extends BaseModule {
     });
   }
 
-  protected formatSmsResponse(response: SmsResponse): SmsResponse {
+  protected formatSmsResponse(response: MessageResponse): MessageResponse {
     return {
       ...response,
       list: response.list.map((sms) => ({
