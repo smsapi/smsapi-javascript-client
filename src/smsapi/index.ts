@@ -10,6 +10,7 @@ import { Sendernames } from '../modules/sendernames';
 import { Sms } from '../modules/sms';
 import { Subusers } from '../modules/subusers';
 import { Templates } from '../modules/templates';
+import { Vms } from '../modules/vms';
 // @ts-ignore TS6059
 import { version } from '../../package.json';
 
@@ -29,6 +30,7 @@ export class SMSAPI {
   public sms: Sms;
   public subusers: Subusers;
   public templates: Templates;
+  public vms: Vms;
 
   constructor(accessToken: string, apiUrl: string) {
     this.accessToken = accessToken;
@@ -43,6 +45,7 @@ export class SMSAPI {
     this.sms = new Sms(this.httpClient);
     this.subusers = new Subusers(this.httpClient);
     this.templates = new Templates(this.httpClient);
+    this.vms = new Vms(this.httpClient);
   }
 
   private getUserAgent(): string {
