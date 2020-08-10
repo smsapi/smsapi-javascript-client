@@ -1,3 +1,3 @@
-import { BaseMessageDetails } from 'modules/baseMessageModule/types/BaseMessageDetails';
+import { BaseMessageDetails } from '../../baseMessageModule/types/BaseMessageDetails';
 
 export type MmsDetails = BaseMessageDetails;
