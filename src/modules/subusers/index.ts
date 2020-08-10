@@ -37,9 +37,9 @@ export class Subusers extends BaseModule {
     return await this.httpClient.post<Subuser, Subuser>('/subusers', {
       ...newSubuser,
       credentials: {
-        username: credentials.username,
-        password: credentials.password,
         api_password: credentials.apiPassword,
+        password: credentials.password,
+        username: credentials.username,
       },
       points: points
         ? {
@@ -63,8 +63,8 @@ export class Subusers extends BaseModule {
         credentials:
           credentials && (credentials.password || credentials.apiPassword)
             ? {
-                password: credentials.password,
                 api_password: credentials.apiPassword,
+                password: credentials.password,
               }
             : undefined,
         points:

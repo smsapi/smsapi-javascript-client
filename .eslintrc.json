@@ -21,6 +21,7 @@
     "rules": {
       "prettier/prettier": "error",
       "import/no-unresolved": "off",
+      "sort-keys": "error",
       "import/order": [
         "error",
         {
