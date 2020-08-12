@@ -1,3 +1,4 @@
+import { Contacts } from '../modules/contacts';
 import { Hlr } from '../modules/hlr';
 import { Mms } from '../modules/mms';
 import { Profile } from '../modules/profile';
@@ -10,6 +11,7 @@ export declare class SMSAPI {
     private apiUrl;
     private accessToken;
     private httpClient;
+    contacts: Contacts;
     hlr: Hlr;
     mms: Mms;
     profile: Profile;

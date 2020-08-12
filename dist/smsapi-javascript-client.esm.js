@@ -1,10 +1,11 @@
 import axios from 'axios';
 import adapter from 'axios/lib/adapters/http';
-import fs from 'fs';
-import isArray from 'lodash-es/isArray';
+import { stringify } from 'querystring';
 import mapKeys from 'lodash-es/mapKeys';
 import mapValues from 'lodash-es/mapValues';
+import isArray from 'lodash-es/isArray';
 import snakeCase from 'lodash-es/snakeCase';
+import fs from 'fs';
 import FormData from 'form-data';
 import camelCase from 'lodash-es/camelCase';
 import forEach from 'lodash-es/forEach';
@@ -37,6 +38,109 @@ function _inheritsLoose(subClass, superClass) {
 var BaseModule = function BaseModule(httpClient) {
   this.httpClient = httpClient;
 };
+
+var Contacts = /*#__PURE__*/function (_BaseModule) {
+  _inheritsLoose(Contacts, _BaseModule);
+
+  function Contacts(httpClient) {
+    var _this;
+
+    _this = _BaseModule.call(this, httpClient) || this;
+
+    _this.httpClient.interceptors.request.use(function (config) {
+      var data = config.data,
+          method = config.method,
+          params = config.params;
+
+      if ((method === null || method === void 0 ? void 0 : method.toLowerCase()) === 'get') {
+        var formattedParams = mapValues(params, function (value, key) {
+          if (key === 'birthdayDate') {
+            if (isArray(value)) {
+              return value.map(_this.formatDate);
+            }
+
+            return _this.formatDate(value);
+          }
+
+          return value;
+        });
+        formattedParams = mapKeys(formattedParams, function (_, key) {
+          return snakeCase(key);
+        });
+        return _extends({}, config, {
+          params: formattedParams,
+          paramsSerializer: function paramsSerializer(params) {
+            return stringify(params);
+          }
+        });
+      }
+
+      if (data) {
+        return _extends({}, config, {
+          data: stringify(data)
+        });
+      }
+
+      return config;
+    });
+
+    return _this;
+  }
+
+  var _proto = Contacts.prototype;
+
+  _proto.get = function get(params) {
+    try {
+      var _this3 = this;
+
+      return Promise.resolve(_this3.httpClient.get('/contacts', {
+        params: params
+      }));
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  };
+
+  _proto.create = function create(phoneNumber, details) {
+    try {
+      var _this5 = this;
+
+      return Promise.resolve(_this5.httpClient.post('/contacts', _extends({
+        phone_number: phoneNumber
+      }, _this5.formatContactDetails(details || {}))));
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  };
+
+  _proto.remove = function remove(contactId) {
+    try {
+      var _this7 = this;
+
+      return Promise.resolve(_this7.httpClient["delete"]("/contacts/" + contactId)).then(function () {});
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  };
+
+  _proto.formatDate = function formatDate(date) {
+    return date.toISOString().slice(0, 10);
+  };
+
+  _proto.formatContactDetails = function formatContactDetails(details) {
+    var formattedDetails = details;
+
+    if (details.birthdayDate) {
+      formattedDetails.birthdayDate = this.formatDate(details.birthdayDate);
+    }
+
+    return mapKeys(formattedDetails, function (_, key) {
+      return snakeCase(key);
+    });
+  };
+
+  return Contacts;
+}(BaseModule);
 
 var Hlr = /*#__PURE__*/function (_BaseModule) {
   _inheritsLoose(Hlr, _BaseModule);
@@ -725,6 +829,7 @@ var SMSAPI = /*#__PURE__*/function () {
     this.accessToken = accessToken;
     this.apiUrl = apiUrl;
     this.httpClient = this.setHttpClient();
+    this.contacts = new Contacts(this.httpClient);
     this.hlr = new Hlr(this.httpClient);
     this.mms = new Mms(this.httpClient);
     this.profile = new Profile(this.httpClient);
