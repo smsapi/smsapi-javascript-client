@@ -1,11 +1,12 @@
 import { stringify } from 'querystring';
 
-import { AxiosInstance } from 'axios';
+import axios, { AxiosInstance } from 'axios';
 import mapKeys from 'lodash/mapKeys';
 import mapValues from 'lodash/mapValues';
 import isArray from 'lodash/isArray';
 import snakeCase from 'lodash/snakeCase';
 
+import { extractDataFromResponse } from '../../smsapi/httpClient/extractDataFromResponse';
 import { BaseModule } from '../baseModule';
 import { ApiCollection } from '../../types/ApiCollection';
 
@@ -14,10 +15,18 @@ import { NewContact } from './types/NewContact';
 import { GetContactsQueryParams } from './types/GetContactsQueryParams';
 
 export class Contacts extends BaseModule {
+  private contactHttpClient: AxiosInstance;
+
   constructor(httpClient: AxiosInstance) {
     super(httpClient);
 
-    this.httpClient.interceptors.request.use((config) => {
+    this.contactHttpClient = axios.create({
+      adapter: httpClient.defaults.adapter,
+      baseURL: httpClient.defaults.baseURL,
+      headers: httpClient.defaults.headers,
+    });
+
+    this.contactHttpClient.interceptors.request.use((config) => {
       const { data, method, params } = config;
 
       if (method?.toLowerCase() === 'get') {
@@ -53,10 +62,12 @@ export class Contacts extends BaseModule {
 
       return config;
     });
+
+    this.contactHttpClient.interceptors.response.use(extractDataFromResponse);
   }
 
   async get(params?: GetContactsQueryParams): Promise<ApiCollection<Contact>> {
-    return await this.httpClient.get<
+    return await this.contactHttpClient.get<
       ApiCollection<Contact>,
       ApiCollection<Contact>
     >('/contacts', {
@@ -65,14 +76,14 @@ export class Contacts extends BaseModule {
   }
 
   async create(phoneNumber: string, details?: NewContact): Promise<Contact> {
-    return await this.httpClient.post<Contact, Contact>('/contacts', {
+    return await this.contactHttpClient.post<Contact, Contact>('/contacts', {
       phone_number: phoneNumber,
       ...this.formatContactDetails(details || {}),
     });
   }
 
   async remove(contactId: string): Promise<void> {
-    await this.httpClient.delete(`/contacts/${contactId}`);
+    await this.contactHttpClient.delete(`/contacts/${contactId}`);
   }
 
   private formatDate(date: Date): string {
