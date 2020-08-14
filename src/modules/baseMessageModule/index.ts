@@ -1,11 +1,6 @@
-import fs from 'fs';
-
 import isArray from 'lodash/isArray';
 import mapKeys from 'lodash/mapKeys';
-import mapValues from 'lodash/mapValues';
 import snakeCase from 'lodash/snakeCase';
-import FormData from 'form-data';
-import { AxiosRequestConfig, AxiosInstance } from 'axios';
 
 import { BaseModule } from '../baseModule';
 import { SmsDetails } from '../sms/types/SmsDetails';
@@ -27,24 +22,24 @@ interface SmsApiDetails {
 export class BaseMessageModule extends BaseModule {
   protected endpoint: string;
 
-  constructor(httpClient: AxiosInstance) {
-    super(httpClient);
+  // constructor(httpClient: AxiosInstance) {
+  //   super(httpClient);
 
-    this.httpClient.interceptors.request.use((config) => {
-      const params = config.params;
+  //   this.httpClient.interceptors.request.use((config) => {
+  //     const params = config.params;
 
-      return {
-        ...config,
-        params: mapValues(params, (param) => {
-          if (typeof param !== 'boolean') {
-            return param;
-          }
+  //     return {
+  //       ...config,
+  //       params: mapValues(params, (param) => {
+  //         if (typeof param !== 'boolean') {
+  //           return param;
+  //         }
 
-          return +param;
-        }),
-      };
-    });
-  }
+  //         return +param;
+  //       }),
+  //     };
+  //   });
+  // }
 
   protected async send(
     content: MessageContent,
@@ -52,9 +47,6 @@ export class BaseMessageModule extends BaseModule {
     group?: string | string[],
     details?: SmsDetails
   ): Promise<MessageResponse> {
-    const form = new FormData();
-    let headers: AxiosRequestConfig | undefined = undefined;
-
     const body: Record<string, unknown> = {
       details: true,
       encoding: 'utf-8',
@@ -87,23 +79,29 @@ export class BaseMessageModule extends BaseModule {
     }
 
     if (this.isVmsLocalFile(content)) {
-      const file = fs.createReadStream(content.localPath);
-
-      form.append('file', file);
-
-      headers = form.getHeaders();
+      // const options = {
+      //   knownLength: fs.statSync(content.localPath).size,
+      // };
+      // const file = fs.createReadStream(content.localPath);
+      // const form = new FormData();
+      // form.append('file', file, options);
+      // const ret = form.pipe(
+      //   concat((data: FormData) => {
+      //     this.httpClient.post(this.endpoint, data, {
+      //       headers: {
+      //         ...form.getHeaders(),
+      //         'Content-length': options.knownLength,
+      //       },
+      //       params: body,
+      //     });
+      //   })
+      // );
     }
 
-    const data = await this.httpClient.request<
-      MessageResponse,
-      MessageResponse
-    >({
-      data: form,
-      headers,
-      method: 'post',
-      params: body,
-      url: this.endpoint,
-    });
+    const data = await this.httpClient.post<MessageResponse, MessageResponse>(
+      this.endpoint,
+      body
+    );
 
     return this.formatSmsResponse(data);
   }

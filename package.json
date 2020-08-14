@@ -15,7 +15,7 @@
     "lint": "eslint .",
     "prepare": "tsdx build",
     "start": "tsdx watch",
-    "test": "env-cmd -f .env.test tsdx test"
+    "test": "env-cmd -f .env.test tsdx test --runInBand"
   },
   "dependencies": {
     "axios": "^0.19.2",

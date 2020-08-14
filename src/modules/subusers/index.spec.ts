@@ -14,7 +14,7 @@ describe('Subusers', () => {
     nock.cleanAll();
   });
 
-  it('should get all templates', async () => {
+  it('should get all subusers', async () => {
     // given
     const subuser: NewSubuser = {
       credentials: {
@@ -35,7 +35,7 @@ describe('Subusers', () => {
     await smsapi.subusers.remove(createdSubuser.id);
   });
 
-  it('should get template by id', async () => {
+  it('should get subuser by id', async () => {
     // given
     const subuser: NewSubuser = {
       credentials: {
