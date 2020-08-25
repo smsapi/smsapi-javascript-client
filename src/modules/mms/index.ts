@@ -17,8 +17,9 @@ export class Mms extends BaseMessageModule {
         smil,
         subject,
       },
-      numbers,
-      undefined,
+      {
+        to: numbers,
+      },
       details
     );
   }
@@ -34,8 +35,9 @@ export class Mms extends BaseMessageModule {
         smil,
         subject,
       },
-      undefined,
-      groups,
+      {
+        group: groups,
+      },
       details
     );
   }
