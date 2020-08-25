@@ -1,9 +1,5 @@
-import { stringify } from 'querystring';
-
 import axios, { AxiosInstance } from 'axios';
 import mapKeys from 'lodash/mapKeys';
-import mapValues from 'lodash/mapValues';
-import isArray from 'lodash/isArray';
 import snakeCase from 'lodash/snakeCase';
 
 import { extractDataFromResponse } from '../../smsapi/httpClient/extractDataFromResponse';
@@ -13,6 +9,8 @@ import { ApiCollection } from '../../types/ApiCollection';
 import { Contact } from './types/Contact';
 import { NewContact } from './types/NewContact';
 import { GetContactsQueryParams } from './types/GetContactsQueryParams';
+import { formatDate } from './helpers/formatDate';
+import { prepareParamsForRequest } from './httpClient/prepareParamsForRequest';
 
 export class Contacts extends BaseModule {
   private contactHttpClient: AxiosInstance;
@@ -26,43 +24,7 @@ export class Contacts extends BaseModule {
       headers: httpClient.defaults.headers,
     });
 
-    this.contactHttpClient.interceptors.request.use((config) => {
-      const { data, method, params } = config;
-
-      if (method?.toLowerCase() === 'get') {
-        let formattedParams = mapValues(params, (value, key) => {
-          if (key === 'birthdayDate') {
-            if (isArray(value)) {
-              return value.map(this.formatDate);
-            }
-
-            return this.formatDate(value);
-          }
-
-          return value;
-        });
-
-        formattedParams = mapKeys(formattedParams, (_, key) => {
-          return snakeCase(key);
-        });
-
-        return {
-          ...config,
-          params: formattedParams,
-          paramsSerializer: (params) => stringify(params),
-        };
-      }
-
-      if (data) {
-        return {
-          ...config,
-          data: stringify(data),
-        };
-      }
-
-      return config;
-    });
-
+    this.contactHttpClient.interceptors.request.use(prepareParamsForRequest);
     this.contactHttpClient.interceptors.response.use(extractDataFromResponse);
   }
 
@@ -86,15 +48,11 @@ export class Contacts extends BaseModule {
     await this.contactHttpClient.delete(`/contacts/${contactId}`);
   }
 
-  private formatDate(date: Date): string {
-    return date.toISOString().slice(0, 10);
-  }
-
   private formatContactDetails(details: NewContact): Record<string, unknown> {
     const formattedDetails = details as Record<string, unknown>;
 
     if (details.birthdayDate) {
-      formattedDetails.birthdayDate = this.formatDate(details.birthdayDate);
+      formattedDetails.birthdayDate = formatDate(details.birthdayDate);
     }
 
     return mapKeys(formattedDetails, (_, key) => {
