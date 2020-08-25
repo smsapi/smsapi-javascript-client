@@ -19,6 +19,16 @@ interface SmsApiDetails {
   [key: string]: unknown;
 }
 
+interface NumberRecipient {
+  to: string | string[];
+}
+
+interface GroupRecipient {
+  group: string | string[];
+}
+
+type Recipient = NumberRecipient | GroupRecipient;
+
 export class BaseMessageModule extends BaseModule {
   protected endpoint: string;
 
@@ -43,8 +53,7 @@ export class BaseMessageModule extends BaseModule {
 
   protected async send(
     content: MessageContent,
-    to?: string | string[],
-    group?: string | string[],
+    recipient: Recipient,
     details?: SmsDetails
   ): Promise<MessageResponse> {
     const body: Record<string, unknown> = {
@@ -54,9 +63,15 @@ export class BaseMessageModule extends BaseModule {
       ...this.formatSmsDetails(details || {}),
     };
 
-    if (to) {
+    if (this.isNumberRecipient(recipient)) {
+      const { to } = recipient;
+
       body.to = isArray(to) ? to.join(',') : to;
-    } else {
+    }
+
+    if (this.isGroupRecipient(recipient)) {
+      const { group } = recipient;
+
       body.group = isArray(group) ? group.join(',') : group;
     }
 
@@ -104,6 +119,16 @@ export class BaseMessageModule extends BaseModule {
     );
 
     return this.formatSmsResponse(data);
+  }
+
+  private isNumberRecipient(
+    recipient: Recipient
+  ): recipient is NumberRecipient {
+    return (recipient as NumberRecipient).to !== undefined;
+  }
+
+  private isGroupRecipient(recipient: Recipient): recipient is GroupRecipient {
+    return (recipient as GroupRecipient).group !== undefined;
   }
 
   private isSms(content: MessageContent): content is SmsContent {

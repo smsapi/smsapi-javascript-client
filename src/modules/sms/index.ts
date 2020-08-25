@@ -18,8 +18,9 @@ export class Sms extends BaseMessageModule {
       {
         message,
       },
-      numbers,
-      undefined,
+      {
+        to: numbers,
+      },
       details
     );
   }
@@ -41,8 +42,9 @@ export class Sms extends BaseMessageModule {
       {
         message,
       },
-      undefined,
-      groups,
+      {
+        group: groups,
+      },
       details
     );
   }

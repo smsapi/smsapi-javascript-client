@@ -18,8 +18,9 @@ export class Vms extends BaseMessageModule {
         tts,
         ttsLector,
       },
-      numbers,
-      undefined,
+      {
+        to: numbers,
+      },
       details
     );
   }
@@ -33,8 +34,9 @@ export class Vms extends BaseMessageModule {
       {
         localPath: pathToLocaleFile,
       },
-      numbers,
-      undefined,
+      {
+        to: numbers,
+      },
       details
     );
   }
@@ -48,8 +50,9 @@ export class Vms extends BaseMessageModule {
       {
         remotePath: pathToRemoteFile,
       },
-      numbers,
-      undefined,
+      {
+        to: numbers,
+      },
       details
     );
   }
@@ -65,8 +68,9 @@ export class Vms extends BaseMessageModule {
         tts,
         ttsLector,
       },
-      undefined,
-      groups,
+      {
+        group: groups,
+      },
       details
     );
   }
@@ -80,8 +84,9 @@ export class Vms extends BaseMessageModule {
       {
         localPath: pathToLocaleFile,
       },
-      undefined,
-      groups,
+      {
+        group: groups,
+      },
       details
     );
   }
@@ -95,8 +100,9 @@ export class Vms extends BaseMessageModule {
       {
         remotePath: pathToRemoteFile,
       },
-      undefined,
-      groups,
+      {
+        group: groups,
+      },
       details
     );
   }
