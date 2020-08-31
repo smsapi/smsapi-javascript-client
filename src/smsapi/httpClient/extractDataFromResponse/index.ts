@@ -17,7 +17,7 @@ const formatResponse = (object: Record<string, unknown>) => {
   const newResponse = formatKeys(object);
 
   forEach(newResponse, (value, key) => {
-    if (isObject(value)) {
+    if (isObject(value) && !isArray(value)) {
       newResponse[key] = formatKeys(value as Record<string, unknown>);
     }
   });
