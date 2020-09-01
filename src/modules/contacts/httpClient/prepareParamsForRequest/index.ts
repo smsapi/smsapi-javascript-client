@@ -8,6 +8,12 @@ import snakeCase from 'lodash/snakeCase';
 
 import { formatDate } from '../../helpers/formatDate';
 
+const formatKeys = (data: Record<string, string | boolean | number>) => {
+  return mapKeys(data, (_, key) => {
+    return snakeCase(key);
+  });
+};
+
 export const prepareParamsForRequest = (
   config: AxiosRequestConfig
 ): AxiosRequestConfig => {
@@ -26,9 +32,7 @@ export const prepareParamsForRequest = (
       return value;
     });
 
-    formattedParams = mapKeys(formattedParams, (_, key) => {
-      return snakeCase(key);
-    });
+    formattedParams = formatKeys(formattedParams);
 
     return {
       ...config,
@@ -40,7 +44,7 @@ export const prepareParamsForRequest = (
   if (data) {
     return {
       ...config,
-      data: stringify(data),
+      data: stringify(formatKeys(data)),
     };
   }
 
