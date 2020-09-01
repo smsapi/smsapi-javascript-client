@@ -11,9 +11,12 @@ import { NewContact } from './types/NewContact';
 import { GetContactsQueryParams } from './types/GetContactsQueryParams';
 import { formatDate } from './helpers/formatDate';
 import { prepareParamsForRequest } from './httpClient/prepareParamsForRequest';
+import { Groups } from './modules/groups';
 
 export class Contacts extends BaseModule {
   private contactHttpClient: AxiosInstance;
+
+  public groups: Groups;
 
   constructor(httpClient: AxiosInstance) {
     super(httpClient);
@@ -26,6 +29,8 @@ export class Contacts extends BaseModule {
 
     this.contactHttpClient.interceptors.request.use(prepareParamsForRequest);
     this.contactHttpClient.interceptors.response.use(extractDataFromResponse);
+
+    this.groups = new Groups(this.contactHttpClient);
   }
 
   async get(params?: GetContactsQueryParams): Promise<ApiCollection<Contact>> {
