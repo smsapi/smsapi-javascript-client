@@ -1,3 +1,5 @@
+import nock from 'nock';
+
 import { SMSAPI } from '../../smsapi';
 
 const { SMSAPI_OAUTH_TOKEN, SMSAPI_API_URL } = process.env;
@@ -71,6 +73,132 @@ describe('Mms', () => {
           status: 'QUEUE',
           submittedNumber: number,
         })),
+      });
+    });
+  });
+
+  describe('Group mms', () => {
+    afterEach(() => {
+      nock.cleanAll();
+    });
+
+    it('should send mms to group', async () => {
+      // given
+      const groupName = 'someGroupName';
+      const subject = 'Some subject';
+
+      const req = nock(`${SMSAPI_API_URL}`)
+        .post('/mms.do', {
+          details: true,
+          encoding: 'utf-8',
+          format: 'json',
+          group: groupName,
+          smil,
+          subject,
+          test: true,
+        })
+        .reply(200, {
+          count: 1,
+          list: [
+            {
+              date_sent: 1598964973,
+              error: null,
+              id: 'someId',
+              idx: null,
+              number: 'someNumber',
+              points: 0.16,
+              status: 'QUEUE',
+              submitted_number: 'someNumber',
+            },
+          ],
+        });
+
+      // when
+      const response = await smsapi.mms.sendMmsToGroup(
+        groupName,
+        subject,
+        smil,
+        {
+          test: true,
+        }
+      );
+
+      // then
+      expect(req.isDone()).toBeTruthy();
+      expect(response).toEqual({
+        count: 1,
+        list: [
+          {
+            dateSent: expect.any(Date),
+            error: null,
+            id: 'someId',
+            idx: null,
+            number: 'someNumber',
+            points: 0.16,
+            status: 'QUEUE',
+            submittedNumber: 'someNumber',
+          },
+        ],
+      });
+    });
+
+    it('should send mms to many groups', async () => {
+      // given
+      const groupNames = ['someGroupName1', 'someGroupName2'];
+      const subject = 'Some subject';
+
+      const req = nock(`${SMSAPI_API_URL}`)
+        .post('/mms.do', {
+          details: true,
+          encoding: 'utf-8',
+          format: 'json',
+          group: groupNames.join(','),
+          smil,
+          subject,
+          test: true,
+        })
+        .reply(200, {
+          count: 1,
+          list: [
+            {
+              date_sent: 1598964973,
+              error: null,
+              id: 'someId',
+              idx: null,
+              number: 'someNumber',
+              points: 0.16,
+              status: 'QUEUE',
+              submitted_number: 'someNumber',
+            },
+          ],
+        });
+
+      // when
+      const response = await smsapi.mms.sendMmsToGroup(
+        groupNames,
+        subject,
+        smil,
+        {
+          test: true,
+        }
+      );
+
+      // then
+      expect(req.isDone()).toBeTruthy();
+      expect(response).toEqual({
+        count: 1,
+        list: [
+          {
+            dateSent: expect.any(Date),
+            error: null,
+            id: 'someId',
+            idx: null,
+            number: 'someNumber',
+            points: 0.16,
+            status: 'QUEUE',
+            submittedNumber: 'someNumber',
+          },
+        ],
       });
     });
   });
