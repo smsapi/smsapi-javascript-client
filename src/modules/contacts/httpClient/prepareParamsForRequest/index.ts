@@ -19,7 +19,7 @@ export const prepareParamsForRequest = (
 ): AxiosRequestConfig => {
   const { data, method, params } = config;
 
-  if (method?.toLowerCase() === 'get') {
+  if (['get', 'delete'].includes((method as string).toLowerCase())) {
     let formattedParams = mapValues(params, (value, key) => {
       if (key === 'birthdayDate') {
         if (isArray(value)) {
