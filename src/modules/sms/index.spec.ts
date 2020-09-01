@@ -113,7 +113,6 @@ describe('Sms', () => {
           format: 'json',
           group: groupName,
           message,
-          test: true,
         })
         .reply(200, {
           count: 1,
@@ -136,9 +135,7 @@ describe('Sms', () => {
         });
 
       // when
-      const response = await smsapi.sms.sendSmsToGroup(groupName, message, {
-        test: true,
-      });
+      const response = await smsapi.sms.sendSmsToGroup(groupName, message);
 
       // then
       expect(req.isDone()).toBeTruthy();
@@ -175,7 +172,6 @@ describe('Sms', () => {
           format: 'json',
           group: groupsNames.join(','),
           message,
-          test: true,
         })
         .reply(200, {
           count: 1,
@@ -198,9 +194,7 @@ describe('Sms', () => {
         });
 
       // when
-      const response = await smsapi.sms.sendSmsToGroup(groupsNames, message, {
-        test: true,
-      });
+      const response = await smsapi.sms.sendSmsToGroup(groupsNames, message);
 
       // then
       expect(req.isDone()).toBeTruthy();
@@ -238,7 +232,6 @@ describe('Sms', () => {
           format: 'json',
           group: groupName,
           message,
-          test: true,
         })
         .reply(200, {
           count: 1,
@@ -261,13 +254,7 @@ describe('Sms', () => {
         });
 
       // when
-      const response = await smsapi.sms.sendFlashSmsToGroup(
-        groupName,
-        message,
-        {
-          test: true,
-        }
-      );
+      const response = await smsapi.sms.sendFlashSmsToGroup(groupName, message);
 
       // then
       expect(req.isDone()).toBeTruthy();

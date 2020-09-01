@@ -95,7 +95,6 @@ describe('Mms', () => {
           group: groupName,
           smil,
           subject,
-          test: true,
         })
         .reply(200, {
           count: 1,
@@ -117,10 +116,7 @@ describe('Mms', () => {
       const response = await smsapi.mms.sendMmsToGroup(
         groupName,
         subject,
-        smil,
-        {
-          test: true,
-        }
+        smil
       );
 
       // then
@@ -155,7 +151,6 @@ describe('Mms', () => {
           group: groupNames.join(','),
           smil,
           subject,
-          test: true,
         })
         .reply(200, {
           count: 1,
@@ -177,10 +172,7 @@ describe('Mms', () => {
       const response = await smsapi.mms.sendMmsToGroup(
         groupNames,
         subject,
-        smil,
-        {
-          test: true,
-        }
+        smil
       );
 
       // then
