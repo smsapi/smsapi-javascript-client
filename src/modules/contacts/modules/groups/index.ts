@@ -25,7 +25,7 @@ export class Groups extends BaseModule {
   }
 
   async remove(groupId: string, deleteContacts = false): Promise<void> {
-    return this.httpClient.delete(`/contacts/groups/${groupId}`, {
+    await this.httpClient.delete(`/contacts/groups/${groupId}`, {
       params: {
         deleteContacts,
       },

@@ -1,16 +1,16 @@
 import { SMSAPI } from '../../../../../smsapi';
 import { Group } from '../types/Group';
 
-export const createTestGroup = (
+export const createTestGroup = async (
   groupName: string,
   smsapi: SMSAPI
 ): Promise<Group> => {
-  return smsapi.contacts.groups.create(groupName);
+  return await smsapi.contacts.groups.create(groupName);
 };
 
-export const removeTestGroup = (
+export const removeTestGroup = async (
   groupId: string,
   smsapi: SMSAPI
 ): Promise<void> => {
-  return smsapi.contacts.groups.remove(groupId);
+  await smsapi.contacts.groups.remove(groupId, true);
 };
