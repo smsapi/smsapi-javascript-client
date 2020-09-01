@@ -100,12 +100,40 @@ describe('Sms', () => {
     });
   });
 
-  // TODO: add group to send messages - task-7312
-  xdescribe('Group sms', () => {
+  describe('Group sms', () => {
     it('should send sms to group', async () => {
       // given
       const groupName = 'someGroupName';
       const message = 'someMessage';
+
+      const req = nock(`${SMSAPI_API_URL}`)
+        .post('/sms.do', {
+          details: true,
+          encoding: 'utf-8',
+          format: 'json',
+          group: groupName,
+          message,
+          test: true,
+        })
+        .reply(200, {
+          count: 1,
+          length: message.length,
+          list: [
+            {
+              date_sent: 1598964973,
+              error: null,
+              id: 'someId',
+              idx: null,
+              number: 'someNumber',
+              parts: 1,
+              points: 0.16,
+              status: 'QUEUE',
+              submitted_number: 'someNumber',
+            },
+          ],
+          message,
+          parts: 1,
+        });
 
       // when
       const response = await smsapi.sms.sendSmsToGroup(groupName, message, {
@@ -113,24 +141,25 @@ describe('Sms', () => {
       });
 
       // then
+      expect(req.isDone()).toBeTruthy();
       expect(response).toMatchObject({
-        //   count: 1,
-        //   length: message.length,
-        //   list: [
-        //     {
-        //       dateSent: expect.any(Date),
-        //       error: null,
-        //       id: expect.any(String),
-        //       idx: null,
-        //       number: expect.stringContaining(number),
-        //       parts: 1,
-        //       points: expect.any(Number),
-        //       status: 'QUEUE',
-        //       submittedNumber: number,
-        //     },
-        //   ],
-        //   message,
-        //   parts: 1,
+        count: 1,
+        length: message.length,
+        list: [
+          {
+            dateSent: expect.any(Date),
+            error: null,
+            id: 'someId',
+            idx: null,
+            number: 'someNumber',
+            parts: 1,
+            points: 0.16,
+            status: 'QUEUE',
+            submittedNumber: 'someNumber',
+          },
+        ],
+        message,
+        parts: 1,
       });
     });
 
@@ -139,30 +168,60 @@ describe('Sms', () => {
       const groupsNames = ['someGroupName1', 'someGroupName2'];
       const message = 'someMessage';
 
+      const req = nock(`${SMSAPI_API_URL}`)
+        .post('/sms.do', {
+          details: true,
+          encoding: 'utf-8',
+          format: 'json',
+          group: groupsNames.join(','),
+          message,
+          test: true,
+        })
+        .reply(200, {
+          count: 1,
+          length: message.length,
+          list: [
+            {
+              date_sent: 1598964973,
+              error: null,
+              id: 'someId',
+              idx: null,
+              number: 'someNumber',
+              parts: 1,
+              points: 0.16,
+              status: 'QUEUE',
+              submitted_number: 'someNumber',
+            },
+          ],
+          message,
+          parts: 1,
+        });
+
       // when
       const response = await smsapi.sms.sendSmsToGroup(groupsNames, message, {
         test: true,
       });
 
       // then
+      expect(req.isDone()).toBeTruthy();
       expect(response).toMatchObject({
-        //   count: 1,
-        //   length: message.length,
-        //   list: [
-        //     {
-        //       dateSent: expect.any(Date),
-        //       error: null,
-        //       id: expect.any(String),
-        //       idx: null,
-        //       number: expect.stringContaining(number),
-        //       parts: 1,
-        //       points: expect.any(Number),
-        //       status: 'QUEUE',
-        //       submittedNumber: number,
-        //     },
-        //   ],
-        //   message,
-        //   parts: 1,
+        count: 1,
+        length: message.length,
+        list: [
+          {
+            dateSent: expect.any(Date),
+            error: null,
+            id: 'someId',
+            idx: null,
+            number: 'someNumber',
+            parts: 1,
+            points: 0.16,
+            status: 'QUEUE',
+            submittedNumber: 'someNumber',
+          },
+        ],
+        message,
+        parts: 1,
       });
     });
 
@@ -170,6 +229,36 @@ describe('Sms', () => {
       // given
       const groupName = 'someGroupName';
       const message = 'someMessage';
+
+      const req = nock(`${SMSAPI_API_URL}`)
+        .post('/sms.do', {
+          details: true,
+          encoding: 'utf-8',
+          flash: true,
+          format: 'json',
+          group: groupName,
+          message,
+          test: true,
+        })
+        .reply(200, {
+          count: 1,
+          length: message.length,
+          list: [
+            {
+              date_sent: 1598964973,
+              error: null,
+              id: 'someId',
+              idx: null,
+              number: 'someNumber',
+              parts: 1,
+              points: 0.16,
+              status: 'QUEUE',
+              submitted_number: 'someNumber',
+            },
+          ],
+          message,
+          parts: 1,
+        });
 
       // when
       const response = await smsapi.sms.sendFlashSmsToGroup(
@@ -181,24 +270,25 @@ describe('Sms', () => {
       );
 
       // then
+      expect(req.isDone()).toBeTruthy();
       expect(response).toMatchObject({
-        //   count: 1,
-        //   length: message.length,
-        //   list: [
-        //     {
-        //       dateSent: expect.any(Date),
-        //       error: null,
-        //       id: expect.any(String),
-        //       idx: null,
-        //       number: expect.stringContaining(number),
-        //       parts: 1,
-        //       points: expect.any(Number),
-        //       status: 'QUEUE',
-        //       submittedNumber: number,
-        //     },
-        //   ],
-        //   message,
-        //   parts: 1,
+        count: 1,
+        length: message.length,
+        list: [
+          {
+            dateSent: expect.any(Date),
+            error: null,
+            id: 'someId',
+            idx: null,
+            number: 'someNumber',
+            parts: 1,
+            points: 0.16,
+            status: 'QUEUE',
+            submittedNumber: 'someNumber',
+          },
+        ],
+        message,
+        parts: 1,
       });
     });
   });
