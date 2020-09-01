@@ -10,7 +10,7 @@ describe('HLR', () => {
     const someNumber = '48500000000';
 
     // when
-    const res = await smsapi.hlr.check([someNumber]);
+    const res = await smsapi.hlr.check(someNumber);
 
     // then
     expect(res).toEqual({
@@ -27,7 +27,7 @@ describe('HLR', () => {
     const someIdx = 'someIdx';
 
     // when
-    const res = await smsapi.hlr.check([someNumber], someIdx);
+    const res = await smsapi.hlr.check(someNumber, someIdx);
 
     // then
     expect(res).toEqual({
@@ -56,12 +56,31 @@ describe('HLR', () => {
     );
   });
 
+  it('should add numbers to HRL queue with idx', async () => {
+    // given
+    const someNumbers = ['48500000000', '48500000001'];
+    const someIdx = ['someIdx1', 'someIdx2'];
+
+    // when
+    const res = await smsapi.hlr.check(someNumbers, someIdx);
+
+    // then
+    expect(res).toEqual(
+      someNumbers.map((number) => ({
+        id: expect.any(String),
+        number,
+        price: expect.any(Number),
+        status: 'OK',
+      }))
+    );
+  });
+
   it('should handle one invalid number', async () => {
     // given
     const someNumber = '48500';
 
     // when
-    const res = await smsapi.hlr.check([someNumber]);
+    const res = await smsapi.hlr.check(someNumber);
 
     // then
     expect(res).toEqual({
