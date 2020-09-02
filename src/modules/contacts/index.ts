@@ -12,6 +12,7 @@ import { GetContactsQueryParams } from './types/GetContactsQueryParams';
 import { formatDate } from './helpers/formatDate';
 import { prepareParamsForRequest } from './httpClient/prepareParamsForRequest';
 import { Groups } from './modules/groups';
+import { Group } from './modules/groups/types/Group';
 import { formatResponseDates } from './httpClient/formatResponseDates';
 
 export class Contacts extends BaseModule {
@@ -53,6 +54,38 @@ export class Contacts extends BaseModule {
 
   async remove(contactId: string): Promise<void> {
     await this.contactHttpClient.delete(`/contacts/${contactId}`);
+  }
+
+  async getGroups(contactId: string): Promise<ApiCollection<Group>> {
+    return await this.contactHttpClient.get<
+      ApiCollection<Group>,
+      ApiCollection<Group>
+    >(`/contacts/${contactId}/groups`);
+  }
+
+  async getGroupById(contactId: string, groupId: string): Promise<Group> {
+    return await this.contactHttpClient.get<Group, Group>(
+      `/contacts/${contactId}/groups/${groupId}`
+    );
+  }
+
+  async assignContactToGroup(
+    contactId: string,
+    groupId: string
+  ): Promise<ApiCollection<Group>> {
+    return await this.contactHttpClient.put<
+      ApiCollection<Group>,
+      ApiCollection<Group>
+    >(`/contacts/${contactId}/groups/${groupId}`);
+  }
+
+  async unpinContactFromGroup(
+    contactId: string,
+    groupId: string
+  ): Promise<void> {
+    await this.contactHttpClient.delete(
+      `/contacts/${contactId}/groups/${groupId}`
+    );
   }
 
   private formatContactDetails(details: NewContact): Record<string, unknown> {

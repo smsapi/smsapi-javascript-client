@@ -99,4 +99,203 @@ describe('Contacts', () => {
     // then
     expect(response).toBeUndefined();
   });
+
+  describe(`contact's groups`, () => {
+    it('should get all groups', async () => {
+      // given
+      const contactId = 'someContactId';
+
+      const req = nock(`${SMSAPI_API_URL}`)
+        .get(`/contacts/${contactId}/groups`)
+        .reply(200, {
+          collection: [
+            {
+              contact_expire_after: null,
+              contacts_count: 4,
+              created_by: 'someUser',
+              date_created: '2020-09-01T14:49:00+02:00',
+              date_updated: '2020-09-01T14:49:00+02:00',
+              description: '',
+              id: 'someId',
+              idx: null,
+              name: 'someGroup',
+              permissions: [
+                {
+                  group_id: 'someId',
+                  read: true,
+                  send: true,
+                  username: 'someUser',
+                  write: true,
+                },
+              ],
+            },
+          ],
+          size: 1,
+        });
+
+      // when
+      const response = await smsapi.contacts.getGroups(contactId);
+
+      // then
+      expect(req.isDone()).toBeTruthy();
+      expect(response.collection[0]).toEqual({
+        contactExpireAfter: null,
+        contactsCount: 4,
+        createdBy: 'someUser',
+        dateCreated: expect.any(Date),
+        dateUpdated: expect.any(Date),
+        description: '',
+        id: 'someId',
+        idx: null,
+        name: 'someGroup',
+        permissions: [
+          {
+            groupId: 'someId',
+            read: true,
+            send: true,
+            username: 'someUser',
+            write: true,
+          },
+        ],
+      });
+    });
+
+    it('should get group by id', async () => {
+      // given
+      const contactId = 'someContactId';
+      const groupId = 'someGroupId';
+
+      const req = nock(`${SMSAPI_API_URL}`)
+        .get(`/contacts/${contactId}/groups/${groupId}`)
+        .reply(200, {
+          contact_expire_after: null,
+          contacts_count: 4,
+          created_by: 'someUser',
+          date_created: '2020-09-01T14:49:00+02:00',
+          date_updated: '2020-09-01T14:49:00+02:00',
+          description: '',
+          id: groupId,
+          idx: null,
+          name: 'someGroup',
+          permissions: [
+            {
+              group_id: groupId,
+              read: true,
+              send: true,
+              username: 'someUser',
+              write: true,
+            },
+          ],
+        });
+
+      // when
+      const response = await smsapi.contacts.getGroupById(contactId, groupId);
+
+      // then
+      expect(req.isDone()).toBeTruthy();
+      expect(response).toEqual({
+        contactExpireAfter: null,
+        contactsCount: 4,
+        createdBy: 'someUser',
+        dateCreated: expect.any(Date),
+        dateUpdated: expect.any(Date),
+        description: '',
+        id: groupId,
+        idx: null,
+        name: 'someGroup',
+        permissions: [
+          {
+            groupId,
+            read: true,
+            send: true,
+            username: 'someUser',
+            write: true,
+          },
+        ],
+      });
+    });
+
+    it('should assign contact to group', async () => {
+      // given
+      const contactId = 'someContactId';
+      const groupId = 'someGroupId';
+
+      const req = nock(`${SMSAPI_API_URL}`)
+        .put(`/contacts/${contactId}/groups/${groupId}`)
+        .reply(200, {
+          collection: [
+            {
+              contact_expire_after: null,
+              contacts_count: 4,
+              created_by: 'someUser',
+              date_created: '2020-09-01T14:49:00+02:00',
+              date_updated: '2020-09-01T14:49:00+02:00',
+              description: '',
+              id: 'someId',
+              idx: null,
+              name: 'someGroup',
+              permissions: [
+                {
+                  group_id: 'someId',
+                  read: true,
+                  send: true,
+                  username: 'someUser',
+                  write: true,
+                },
+              ],
+            },
+          ],
+          size: 1,
+        });
+
+      // when
+      const response = await smsapi.contacts.assignContactToGroup(
+        contactId,
+        groupId
+      );
+
+      // then
+      expect(req.isDone()).toBeTruthy();
+      expect(response.collection[0]).toEqual({
+        contactExpireAfter: null,
+        contactsCount: 4,
+        createdBy: 'someUser',
+        dateCreated: expect.any(Date),
+        dateUpdated: expect.any(Date),
+        description: '',
+        id: 'someId',
+        idx: null,
+        name: 'someGroup',
+        permissions: [
+          {
+            groupId: 'someId',
+            read: true,
+            send: true,
+            username: 'someUser',
+            write: true,
+          },
+        ],
+      });
+    });
+
+    it('should unpin contact from group', async () => {
+      // given
+      const contactId = 'someContactId';
+      const groupId = 'someGroupId';
+
+      const req = nock(`${SMSAPI_API_URL}`)
+        .delete(`/contacts/${contactId}/groups/${groupId}`)
+        .reply(204);
+
+      // when
+      const response = await smsapi.contacts.unpinContactFromGroup(
+        contactId,
+        groupId
+      );
+
+      // then
+      expect(req.isDone()).toBeTruthy();
+      expect(response).toBeUndefined();
+    });
+  });
 });
