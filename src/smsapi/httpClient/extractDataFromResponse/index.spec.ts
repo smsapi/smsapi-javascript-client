@@ -207,7 +207,7 @@ describe('extractDataFromResponse', () => {
     expect(data).toBe(undefined);
   });
 
-  it(`shouldn't format Date values `, () => {
+  it(`shouldn't format Date values`, () => {
     // given
     const response = getAxiosResponse({
       array_with_dates: [new Date()],
@@ -228,7 +228,6 @@ describe('extractDataFromResponse', () => {
     // given
     const response = getAxiosResponse({
       another_array: [0, 1, 2, 3],
-      contactsCount: 5,
       permissions: [
         {
           group_id: 'someGroupId1',
@@ -245,7 +244,6 @@ describe('extractDataFromResponse', () => {
     // then
     expect(data).toEqual({
       anotherArray: [0, 1, 2, 3],
-      contactsCount: 5,
       permissions: [
         {
           groupId: 'someGroupId1',
