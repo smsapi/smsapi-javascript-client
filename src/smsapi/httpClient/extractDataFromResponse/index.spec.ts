@@ -210,6 +210,7 @@ describe('extractDataFromResponse', () => {
   it(`shouldn't format Date values `, () => {
     // given
     const response = getAxiosResponse({
+      array_with_dates: [new Date()],
       date_created: new Date(),
     });
 
@@ -218,7 +219,41 @@ describe('extractDataFromResponse', () => {
 
     // then
     expect(data).toEqual({
+      arrayWithDates: [expect.any(Date)],
       dateCreated: expect.any(Date),
+    });
+  });
+
+  it(`should format contact's group permissions`, () => {
+    // given
+    const response = getAxiosResponse({
+      another_array: [0, 1, 2, 3],
+      contactsCount: 5,
+      permissions: [
+        {
+          group_id: 'someGroupId1',
+        },
+        {
+          group_id: 'someGroupId2',
+        },
+      ],
+    });
+
+    // when
+    const data = extractDataFromResponse(response);
+
+    // then
+    expect(data).toEqual({
+      anotherArray: [0, 1, 2, 3],
+      contactsCount: 5,
+      permissions: [
+        {
+          groupId: 'someGroupId1',
+        },
+        {
+          groupId: 'someGroupId2',
+        },
+      ],
     });
   });
 });
