@@ -206,4 +206,21 @@ describe('extractDataFromResponse', () => {
     // then
     expect(data).toBe(undefined);
   });
+
+  it(`shouldn't format ignored keys`, () => {
+    // given
+    const response = getAxiosResponse({
+      date_created: new Date(),
+      date_updated: new Date(),
+    });
+
+    // when
+    const data = extractDataFromResponse(response);
+
+    // then
+    expect(data).toEqual({
+      dateCreated: expect.any(Date),
+      dateUpdated: expect.any(Date),
+    });
+  });
 });
