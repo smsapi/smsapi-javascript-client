@@ -18,7 +18,21 @@ const formatResponse = (object: Record<string, unknown>) => {
   const newResponse = formatKeys(object);
 
   forEach(newResponse, (value, key) => {
-    if (isObject(value) && !isArray(value) && !isDate(value)) {
+    if (isDate(value)) {
+      return;
+    }
+
+    if (isArray(value)) {
+      newResponse[key] = value.map((arrayValue) =>
+        isObject(arrayValue) && !isDate(arrayValue)
+          ? formatKeys(arrayValue as Record<string, unknown>)
+          : arrayValue
+      );
+
+      return;
+    }
+
+    if (isObject(value)) {
       newResponse[key] = formatKeys(value as Record<string, unknown>);
     }
   });
