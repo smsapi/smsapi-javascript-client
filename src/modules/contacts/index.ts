@@ -12,6 +12,7 @@ import { GetContactsQueryParams } from './types/GetContactsQueryParams';
 import { formatDate } from './helpers/formatDate';
 import { prepareParamsForRequest } from './httpClient/prepareParamsForRequest';
 import { Groups } from './modules/groups';
+import { formatResponseDates } from './httpClient/formatResponseDates';
 
 export class Contacts extends BaseModule {
   private contactHttpClient: AxiosInstance;
@@ -28,6 +29,7 @@ export class Contacts extends BaseModule {
     });
 
     this.contactHttpClient.interceptors.request.use(prepareParamsForRequest);
+    this.contactHttpClient.interceptors.response.use(formatResponseDates);
     this.contactHttpClient.interceptors.response.use(extractDataFromResponse);
 
     this.groups = new Groups(this.contactHttpClient);
