@@ -1,14 +1,6 @@
-import { AxiosResponse } from 'axios';
+import { getAxiosResponse } from '../../../testHelpers/getAxiosResponse';
 
 import { extractDataFromResponse } from './index';
-
-const getAxiosResponse = (data: unknown): AxiosResponse => ({
-  config: {},
-  data,
-  headers: {},
-  status: 200,
-  statusText: 'OK',
-});
 
 describe('extractDataFromResponse', () => {
   it('should return data from response', () => {

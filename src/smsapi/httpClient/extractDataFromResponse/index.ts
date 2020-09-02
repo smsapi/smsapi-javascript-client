@@ -5,6 +5,8 @@ import isArray from 'lodash/isArray';
 import isObject from 'lodash/isObject';
 import mapKeys from 'lodash/mapKeys';
 
+const IGNORED_KEYS = ['dateCreated', 'dateUpdated'];
+
 const formatKeys = (
   object: Record<string, unknown>
 ): Record<string, unknown> => {
@@ -17,6 +19,10 @@ const formatResponse = (object: Record<string, unknown>) => {
   const newResponse = formatKeys(object);
 
   forEach(newResponse, (value, key) => {
+    if (IGNORED_KEYS.includes(key)) {
+      return;
+    }
+
     if (isObject(value) && !isArray(value)) {
       newResponse[key] = formatKeys(value as Record<string, unknown>);
     }
