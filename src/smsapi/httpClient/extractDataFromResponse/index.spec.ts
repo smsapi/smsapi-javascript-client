@@ -207,11 +207,10 @@ describe('extractDataFromResponse', () => {
     expect(data).toBe(undefined);
   });
 
-  it(`shouldn't format ignored keys`, () => {
+  it(`shouldn't format Date values `, () => {
     // given
     const response = getAxiosResponse({
       date_created: new Date(),
-      date_updated: new Date(),
     });
 
     // when
@@ -220,7 +219,6 @@ describe('extractDataFromResponse', () => {
     // then
     expect(data).toEqual({
       dateCreated: expect.any(Date),
-      dateUpdated: expect.any(Date),
     });
   });
 });

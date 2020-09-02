@@ -2,10 +2,9 @@ import { AxiosResponse } from 'axios';
 import camelCase from 'lodash/camelCase';
 import forEach from 'lodash/forEach';
 import isArray from 'lodash/isArray';
+import isDate from 'lodash/isDate';
 import isObject from 'lodash/isObject';
 import mapKeys from 'lodash/mapKeys';
-
-const IGNORED_KEYS = ['dateCreated', 'dateUpdated'];
 
 const formatKeys = (
   object: Record<string, unknown>
@@ -19,11 +18,7 @@ const formatResponse = (object: Record<string, unknown>) => {
   const newResponse = formatKeys(object);
 
   forEach(newResponse, (value, key) => {
-    if (IGNORED_KEYS.includes(key)) {
-      return;
-    }
-
-    if (isObject(value) && !isArray(value)) {
+    if (isObject(value) && !isArray(value) && !isDate(value)) {
       newResponse[key] = formatKeys(value as Record<string, unknown>);
     }
   });
