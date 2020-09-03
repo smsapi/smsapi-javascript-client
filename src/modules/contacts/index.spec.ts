@@ -28,6 +28,19 @@ describe('Contacts', () => {
     nock.cleanAll();
   });
 
+  it('should get contact', async () => {
+    // given
+    const contact = await createTestContact();
+
+    // when
+    const response = await smsapi.contacts.getById(contact.id);
+
+    // then
+    expect(response).toEqual(contact);
+
+    await removeTestContact(contact.id);
+  });
+
   describe('get contacts', () => {
     it('should get contacts', async () => {
       // given
@@ -103,6 +116,8 @@ describe('Contacts', () => {
 
     // then
     expect(response.firstName).toEqual(updateContact.firstName);
+
+    await removeTestContact(contact.id);
   });
 
   it('should remove contact', async () => {
