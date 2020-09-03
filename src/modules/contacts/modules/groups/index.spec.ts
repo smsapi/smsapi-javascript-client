@@ -13,18 +13,35 @@ const smsapi = new SMSAPI(SMSAPI_OAUTH_TOKEN || '', SMSAPI_API_URL || '');
 
 const GROUP_NAME_MAX_LENGTH = 64;
 
+const getRandomGroupName = (): string => {
+  return `test-group-${uuidv4()}`.substring(0, GROUP_NAME_MAX_LENGTH);
+};
+
 describe('Contacts Groups', () => {
   afterEach(() => {
     nock.cleanAll();
   });
 
+  it('should get all groups', async () => {
+    // given
+    const groupName = getRandomGroupName();
+    const { id: testGroupId } = await createTestGroup(groupName, smsapi);
+
+    // when
+    const response = await smsapi.contacts.groups.get();
+
+    // then
+    expect(
+      response.collection.some((group) => group.id === testGroupId)
+    ).toBeTruthy();
+
+    await removeTestGroup(testGroupId, smsapi);
+  });
+
   describe('create', () => {
     it('should create group', async () => {
       // given
-      const groupName = `test-group-${uuidv4()}`.substring(
-        0,
-        GROUP_NAME_MAX_LENGTH
-      );
+      const groupName = getRandomGroupName();
 
       // when
       const response = await smsapi.contacts.groups.create(groupName);
@@ -54,7 +71,7 @@ describe('Contacts Groups', () => {
 
     it('should make proper request to create group with details', async () => {
       // given
-      const groupName = 'someName';
+      const groupName = getRandomGroupName();
 
       const groupDetails: CreateGroupDetails = {
         contactExpireAfter: 5,
@@ -85,10 +102,7 @@ describe('Contacts Groups', () => {
   describe('update', () => {
     it('should update group', async () => {
       // given
-      const groupName = `test-group-${uuidv4()}`.substring(
-        0,
-        GROUP_NAME_MAX_LENGTH
-      );
+      const groupName = getRandomGroupName();
       const group = await createTestGroup(groupName, smsapi);
       const description = 'Some description';
 
