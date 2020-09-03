@@ -2,6 +2,12 @@ import { BaseModule } from '../../../baseModule';
 
 import { CreateGroupDetails } from './types/CreateGroupDetails';
 import { Group } from './types/Group';
+import { UpdateGroup } from './types/UpdateGroup';
+
+/**
+ * PUT /contacts/groups/{groupId}
+ * DELETE /contacts/groups/{groupId}
+ */
 
 export class Groups extends BaseModule {
   async getById(groupId: string): Promise<Group> {
@@ -17,6 +23,13 @@ export class Groups extends BaseModule {
     });
   }
 
+  async update(groupId: string, updateGroup: UpdateGroup): Promise<Group> {
+    return await this.httpClient.put<Group, Group>(
+      `/contacts/groups/${groupId}`,
+      updateGroup
+    );
+  }
+
   async remove(groupId: string, deleteContacts = false): Promise<void> {
     await this.httpClient.delete(`/contacts/groups/${groupId}`, {
       params: {
@@ -24,12 +37,4 @@ export class Groups extends BaseModule {
       },
     });
   }
-
-  // private formatResponseDates(group: Group): Group {
-  //   return {
-  //     ...group,
-  //     dateCreated: new Date(group.dateCreated),
-  //     dateUpdated: new Date(group.dateUpdated),
-  //   };
-  // }
 }
