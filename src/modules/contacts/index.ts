@@ -14,6 +14,7 @@ import { prepareParamsForRequest } from './httpClient/prepareParamsForRequest';
 import { Groups } from './modules/groups';
 import { Group } from './modules/groups/types/Group';
 import { formatResponseDates } from './httpClient/formatResponseDates';
+import { UpdateContact } from './types/UpdateContact';
 
 export class Contacts extends BaseModule {
   private contactHttpClient: AxiosInstance;
@@ -50,6 +51,18 @@ export class Contacts extends BaseModule {
       phone_number: phoneNumber,
       ...this.formatContactDetails(details || {}),
     });
+  }
+
+  async update(
+    contactId: string,
+    updateContact: UpdateContact
+  ): Promise<Contact> {
+    return await this.contactHttpClient.put<Contact, Contact>(
+      `/contacts/${contactId}`,
+      {
+        ...this.formatContactDetails(updateContact || {}),
+      }
+    );
   }
 
   async remove(contactId: string): Promise<void> {
