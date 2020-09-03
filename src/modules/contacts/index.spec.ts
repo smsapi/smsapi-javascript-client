@@ -4,6 +4,7 @@ import nock from 'nock';
 import { SMSAPI } from '../../smsapi';
 
 import { Contact } from './types/Contact';
+import { UpdateContact } from './types/UpdateContact';
 
 const { SMSAPI_OAUTH_TOKEN, SMSAPI_API_URL } = process.env;
 
@@ -87,6 +88,21 @@ describe('Contacts', () => {
 
       await removeTestContact(response.id);
     });
+  });
+
+  it('should update contact', async () => {
+    // given
+    const contact = await createTestContact();
+
+    const updateContact: UpdateContact = {
+      firstName: 'Some first name',
+    };
+
+    // when
+    const response = await smsapi.contacts.update(contact.id, updateContact);
+
+    // then
+    expect(response.firstName).toEqual(updateContact.firstName);
   });
 
   it('should remove contact', async () => {
