@@ -46,6 +46,12 @@ export class Contacts extends BaseModule {
     });
   }
 
+  async getById(contactId: string): Promise<Contact> {
+    return await this.contactHttpClient.get<Contact, Contact>(
+      `/contacts/${contactId}`
+    );
+  }
+
   async create(phoneNumber: string, details?: NewContact): Promise<Contact> {
     return await this.contactHttpClient.post<Contact, Contact>('/contacts', {
       phone_number: phoneNumber,
