@@ -4,11 +4,6 @@ import { CreateGroupDetails } from './types/CreateGroupDetails';
 import { Group } from './types/Group';
 import { UpdateGroup } from './types/UpdateGroup';
 
-/**
- * PUT /contacts/groups/{groupId}
- * DELETE /contacts/groups/{groupId}
- */
-
 export class Groups extends BaseModule {
   async getById(groupId: string): Promise<Group> {
     return await this.httpClient.get<Group, Group>(
