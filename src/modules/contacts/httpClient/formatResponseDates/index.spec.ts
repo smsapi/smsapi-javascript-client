@@ -1,11 +1,11 @@
-import { getAxiosResponse } from '../../../../testHelpers/getAxiosResponse';
+import { createAxiosResponse } from '../../../../testHelpers/createAxiosResponse';
 
 import { formatResponseDates } from '.';
 
 describe('formatResponseDates', () => {
   it('should format dates for ApiCollection<Group>', () => {
     // given
-    const response = getAxiosResponse({
+    const response = createAxiosResponse({
       collection: [
         {
           date_created: '2020-09-01T14:49:00+02:00',
@@ -31,7 +31,7 @@ describe('formatResponseDates', () => {
 
   it('should format dates for Group', () => {
     // given
-    const response = getAxiosResponse({
+    const response = createAxiosResponse({
       date_created: '2020-09-01T14:49:00+02:00',
       date_updated: '2020-09-01T14:49:00+02:00',
     });
