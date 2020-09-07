@@ -1,6 +1,6 @@
 import { AxiosResponse } from 'axios';
 
-export const getAxiosResponse = (data: unknown): AxiosResponse => ({
+export const createAxiosResponse = (data: unknown): AxiosResponse => ({
   config: {},
   data,
   headers: {},
