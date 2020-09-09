@@ -45,4 +45,18 @@ describe('formatResponseDates', () => {
       date_updated: expect.any(Date),
     });
   });
+
+  it('should not format dates when date_created or date_updated are not present', () => {
+    // given
+    const response = createAxiosResponse({
+      name: 'someName',
+    });
+
+    // when
+    const formattedResponse = formatResponseDates(response);
+
+    // then
+    expect(formattedResponse.data.date_created).toBeUndefined();
+    expect(formattedResponse.data.date_updated).toBeUndefined();
+  });
 });

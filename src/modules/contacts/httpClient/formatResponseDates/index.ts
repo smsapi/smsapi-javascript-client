@@ -16,7 +16,13 @@ const isApiCollection = (
   );
 };
 
-const formatDates = (group: ApiGroup): Record<string, Date> => {
+const formatDates = (group: ApiGroup): Record<string, Date | string> => {
+  if (!group.date_created && !group.date_updated) {
+    return {
+      ...group,
+    };
+  }
+
   return {
     ...group,
     date_created: new Date(group.date_created),
