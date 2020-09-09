@@ -15,10 +15,12 @@ import { Groups } from './modules/groups';
 import { Group } from './modules/groups/types/Group';
 import { formatResponseDates } from './httpClient/formatResponseDates';
 import { UpdateContact } from './types/UpdateContact';
+import { Fields } from './modules/fields';
 
 export class Contacts extends BaseModule {
   private contactHttpClient: AxiosInstance;
 
+  public fields: Fields;
   public groups: Groups;
 
   constructor(httpClient: AxiosInstance) {
@@ -34,6 +36,7 @@ export class Contacts extends BaseModule {
     this.contactHttpClient.interceptors.response.use(formatResponseDates);
     this.contactHttpClient.interceptors.response.use(extractDataFromResponse);
 
+    this.fields = new Fields(this.contactHttpClient);
     this.groups = new Groups(this.contactHttpClient);
   }
 
