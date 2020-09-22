@@ -1,3 +1,6 @@
+import fs from 'fs';
+
+import FormData from 'form-data';
 import isArray from 'lodash/isArray';
 import mapKeys from 'lodash/mapKeys';
 import snakeCase from 'lodash/snakeCase';
@@ -31,25 +34,6 @@ type Recipient = NumberRecipient | GroupRecipient;
 
 export class BaseMessageModule extends BaseModule {
   protected endpoint: string;
-
-  // constructor(httpClient: AxiosInstance) {
-  //   super(httpClient);
-
-  //   this.httpClient.interceptors.request.use((config) => {
-  //     const params = config.params;
-
-  //     return {
-  //       ...config,
-  //       params: mapValues(params, (param) => {
-  //         if (typeof param !== 'boolean') {
-  //           return param;
-  //         }
-
-  //         return +param;
-  //       }),
-  //     };
-  //   });
-  // }
 
   protected async send(
     content: MessageContent,
@@ -94,23 +78,17 @@ export class BaseMessageModule extends BaseModule {
     }
 
     if (this.isVmsLocalFile(content)) {
-      // const options = {
-      //   knownLength: fs.statSync(content.localPath).size,
-      // };
-      // const file = fs.createReadStream(content.localPath);
-      // const form = new FormData();
-      // form.append('file', file, options);
-      // const ret = form.pipe(
-      //   concat((data: FormData) => {
-      //     this.httpClient.post(this.endpoint, data, {
-      //       headers: {
-      //         ...form.getHeaders(),
-      //         'Content-length': options.knownLength,
-      //       },
-      //       params: body,
-      //     });
-      //   })
-      // );
+      const formData = this.getFormDataForVmsLocalFile(body, content);
+
+      const data = await this.httpClient.post<MessageResponse, MessageResponse>(
+        this.endpoint,
+        formData.getBuffer(),
+        {
+          headers: formData.getHeaders(),
+        }
+      );
+
+      return this.formatSmsResponse(data);
     }
 
     const data = await this.httpClient.post<MessageResponse, MessageResponse>(
@@ -156,6 +134,37 @@ export class BaseMessageModule extends BaseModule {
     content: MessageContent
   ): content is VmsRemoteFileContent {
     return (content as VmsRemoteFileContent).remotePath !== undefined;
+  }
+
+  private getFormDataForVmsLocalFile(
+    body: Record<string, unknown>,
+    content: VmsLocalFileContent
+  ): FormData {
+    const formData = new FormData();
+
+    if (body.to) {
+      formData.append('to', body.to);
+    }
+
+    if (body.group) {
+      formData.append('group', body.group);
+    }
+
+    for (const [key, value] of Object.entries(body)) {
+      if (typeof value === 'boolean') {
+        formData.append(key, value ? 1 : 0);
+        continue;
+      }
+
+      formData.append(key, value as string);
+    }
+
+    formData.append('file', fs.readFileSync(content.localPath), {
+      contentType: 'audio/wav',
+      filename: 'vms.wav',
+    });
+
+    return formData;
   }
 
   private formatSmsDetails(details: SmsDetails): SmsApiDetails {
