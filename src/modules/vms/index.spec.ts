@@ -98,8 +98,7 @@ describe('Vms', () => {
     });
 
     if (VMS_LOCAL_FILE_PATH) {
-      // TODO: task-7308
-      xdescribe('local file', () => {
+      describe('local file', () => {
         it('should send single vms', async () => {
           // given
           const number = '500000000';
