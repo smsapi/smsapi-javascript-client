@@ -345,17 +345,6 @@ describe('Vms', () => {
       });
     });
 
-    // TODO: task-7308
-    xdescribe('local file', () => {
-      it('should send vms to group', () => {
-        return;
-      });
-
-      it('should send vms to many groups', () => {
-        return;
-      });
-    });
-
     describe('remote file', () => {
       it('should send vms to group', async () => {
         // given
