@@ -19,7 +19,7 @@ import { extractDataFromResponse } from './httpClient/extractDataFromResponse';
 /* eslint-enable @typescript-eslint/ban-ts-comment */
 
 export class SMSAPI {
-  private apiUrl: string;
+  private apiUrl = 'https://smsapi.io/api';
   private accessToken: string;
 
   private httpClient: AxiosInstance;
@@ -34,9 +34,8 @@ export class SMSAPI {
   public templates: Templates;
   public vms: Vms;
 
-  constructor(accessToken: string, apiUrl: string) {
+  constructor(accessToken: string) {
     this.accessToken = accessToken;
-    this.apiUrl = apiUrl;
 
     this.httpClient = this.setHttpClient();
 
