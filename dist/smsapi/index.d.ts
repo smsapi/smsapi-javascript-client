@@ -7,6 +7,7 @@ import { Sms } from '../modules/sms';
 import { Subusers } from '../modules/subusers';
 import { Templates } from '../modules/templates';
 import { Vms } from '../modules/vms';
+export * from '../types';
 export declare class SMSAPI {
     private apiUrl;
     private accessToken;
@@ -20,7 +21,7 @@ export declare class SMSAPI {
     subusers: Subusers;
     templates: Templates;
     vms: Vms;
-    constructor(accessToken: string, apiUrl: string);
+    constructor(accessToken: string);
     private getUserAgent;
     private setHttpClient;
 }

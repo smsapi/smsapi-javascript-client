@@ -1,15 +1,16 @@
 import axios from 'axios';
 import adapter from 'axios/lib/adapters/http';
-import { stringify } from 'querystring';
 import mapKeys from 'lodash-es/mapKeys';
-import mapValues from 'lodash-es/mapValues';
-import isArray from 'lodash-es/isArray';
 import snakeCase from 'lodash-es/snakeCase';
-import fs from 'fs';
-import FormData from 'form-data';
 import camelCase from 'lodash-es/camelCase';
 import forEach from 'lodash-es/forEach';
+import isArray from 'lodash-es/isArray';
+import isDate from 'lodash-es/isDate';
 import isObject from 'lodash-es/isObject';
+import { stringify } from 'querystring';
+import mapValues from 'lodash-es/mapValues';
+import fs from 'fs';
+import FormData from 'form-data';
 
 function _extends() {
   _extends = Object.assign || function (target) {
@@ -35,9 +36,282 @@ function _inheritsLoose(subClass, superClass) {
   subClass.__proto__ = superClass;
 }
 
+var formatKeys = function formatKeys(object) {
+  return mapKeys(object, function (_, key) {
+    return camelCase(key);
+  });
+};
+
+var formatResponse = function formatResponse(object) {
+  var newResponse = formatKeys(object);
+  forEach(newResponse, function (value, key) {
+    if (isDate(value)) {
+      return;
+    }
+
+    if (isArray(value)) {
+      newResponse[key] = value.map(function (arrayValue) {
+        return isObject(arrayValue) && !isDate(arrayValue) ? formatKeys(arrayValue) : arrayValue;
+      });
+      return;
+    }
+
+    if (isObject(value)) {
+      newResponse[key] = formatKeys(value);
+    }
+  });
+  return newResponse;
+};
+
+var isApiCollection = function isApiCollection(data) {
+  return !!data.collection && !!data.size;
+};
+
+var isSmsResponse = function isSmsResponse(data) {
+  return !!data.list && !!data.count;
+};
+
+var extractDataFromResponse = function extractDataFromResponse(response) {
+  var data = response.data;
+
+  if (!data) {
+    return data;
+  }
+
+  if (isArray(data)) {
+    return data.map(formatResponse);
+  }
+
+  if (isApiCollection(data)) {
+    return _extends({}, data, {
+      collection: data.collection.map(formatResponse)
+    });
+  }
+
+  if (isSmsResponse(data)) {
+    return _extends({}, data, {
+      list: data.list.map(formatResponse)
+    });
+  }
+
+  return formatResponse(data);
+};
+
 var BaseModule = function BaseModule(httpClient) {
   this.httpClient = httpClient;
 };
+
+var formatDate = function formatDate(date) {
+  return date.toISOString().slice(0, 10);
+};
+
+var formatKeys$1 = function formatKeys(data) {
+  return mapKeys(data, function (_, key) {
+    return snakeCase(key);
+  });
+};
+
+var prepareParamsForRequest = function prepareParamsForRequest(config) {
+  var data = config.data,
+      method = config.method,
+      params = config.params;
+
+  if (['get', 'delete'].includes(method.toLowerCase())) {
+    var formattedParams = mapValues(params, function (value, key) {
+      if (key === 'birthdayDate') {
+        if (isArray(value)) {
+          return value.map(formatDate);
+        }
+
+        return formatDate(value);
+      }
+
+      return value;
+    });
+    formattedParams = formatKeys$1(formattedParams);
+    return _extends({}, config, {
+      params: formattedParams,
+      paramsSerializer: function paramsSerializer(params) {
+        return stringify(params);
+      }
+    });
+  }
+
+  if (data) {
+    return _extends({}, config, {
+      data: stringify(formatKeys$1(data))
+    });
+  }
+
+  return config;
+};
+
+var Groups = /*#__PURE__*/function (_BaseModule) {
+  _inheritsLoose(Groups, _BaseModule);
+
+  function Groups() {
+    return _BaseModule.apply(this, arguments) || this;
+  }
+
+  var _proto = Groups.prototype;
+
+  _proto.get = function get() {
+    try {
+      var _this2 = this;
+
+      return Promise.resolve(_this2.httpClient.get('/contacts/groups'));
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  };
+
+  _proto.getById = function getById(groupId) {
+    try {
+      var _this4 = this;
+
+      return Promise.resolve(_this4.httpClient.get("/contacts/groups/" + groupId));
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  };
+
+  _proto.create = function create(name, details) {
+    try {
+      var _this6 = this;
+
+      return Promise.resolve(_this6.httpClient.post('/contacts/groups', _extends({
+        name: name
+      }, details)));
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  };
+
+  _proto.update = function update(groupId, updateGroup) {
+    try {
+      var _this8 = this;
+
+      return Promise.resolve(_this8.httpClient.put("/contacts/groups/" + groupId, updateGroup));
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  };
+
+  _proto.remove = function remove(groupId, deleteContacts) {
+    if (deleteContacts === void 0) {
+      deleteContacts = false;
+    }
+
+    try {
+      var _this10 = this;
+
+      return Promise.resolve(_this10.httpClient["delete"]("/contacts/groups/" + groupId, {
+        params: {
+          deleteContacts: deleteContacts
+        }
+      })).then(function () {});
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  };
+
+  return Groups;
+}(BaseModule);
+
+var isApiCollection$1 = function isApiCollection(data) {
+  return !!data.size && !!data.collection;
+};
+
+var formatDates = function formatDates(group) {
+  if (!group.date_created && !group.date_updated) {
+    return _extends({}, group);
+  }
+
+  return _extends({}, group, {
+    date_created: new Date(group.date_created),
+    date_updated: new Date(group.date_updated)
+  });
+};
+
+var formatResponseDates = function formatResponseDates(response) {
+  var data = response.data;
+
+  if (isApiCollection$1(data)) {
+    return _extends({}, response, {
+      data: {
+        collection: data.collection.map(function (group) {
+          return formatDates(group);
+        }),
+        size: data.size
+      }
+    });
+  }
+
+  return _extends({}, response, {
+    data: formatDates(data)
+  });
+};
+
+var Fields = /*#__PURE__*/function (_BaseModule) {
+  _inheritsLoose(Fields, _BaseModule);
+
+  function Fields() {
+    return _BaseModule.apply(this, arguments) || this;
+  }
+
+  var _proto = Fields.prototype;
+
+  _proto.get = function get() {
+    try {
+      var _this2 = this;
+
+      return Promise.resolve(_this2.httpClient.get('/contacts/fields'));
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  };
+
+  _proto.create = function create(fieldName, fieldType) {
+    if (fieldType === void 0) {
+      fieldType = 'text';
+    }
+
+    try {
+      var _this4 = this;
+
+      return Promise.resolve(_this4.httpClient.post('/contacts/fields', {
+        name: fieldName,
+        type: fieldType
+      }));
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  };
+
+  _proto.update = function update(fieldId, newName) {
+    try {
+      var _this6 = this;
+
+      return Promise.resolve(_this6.httpClient.put("/contacts/fields/" + fieldId, {
+        name: newName
+      }));
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  };
+
+  _proto.remove = function remove(fieldId) {
+    try {
+      var _this8 = this;
+
+      return Promise.resolve(_this8.httpClient["delete"]("/contacts/fields/" + fieldId)).then(function () {});
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  };
+
+  return Fields;
+}(BaseModule);
 
 var Contacts = /*#__PURE__*/function (_BaseModule) {
   _inheritsLoose(Contacts, _BaseModule);
@@ -46,44 +320,20 @@ var Contacts = /*#__PURE__*/function (_BaseModule) {
     var _this;
 
     _this = _BaseModule.call(this, httpClient) || this;
-
-    _this.httpClient.interceptors.request.use(function (config) {
-      var data = config.data,
-          method = config.method,
-          params = config.params;
-
-      if ((method === null || method === void 0 ? void 0 : method.toLowerCase()) === 'get') {
-        var formattedParams = mapValues(params, function (value, key) {
-          if (key === 'birthdayDate') {
-            if (isArray(value)) {
-              return value.map(_this.formatDate);
-            }
-
-            return _this.formatDate(value);
-          }
-
-          return value;
-        });
-        formattedParams = mapKeys(formattedParams, function (_, key) {
-          return snakeCase(key);
-        });
-        return _extends({}, config, {
-          params: formattedParams,
-          paramsSerializer: function paramsSerializer(params) {
-            return stringify(params);
-          }
-        });
-      }
-
-      if (data) {
-        return _extends({}, config, {
-          data: stringify(data)
-        });
-      }
-
-      return config;
+    _this.contactHttpClient = axios.create({
+      adapter: httpClient.defaults.adapter,
+      baseURL: httpClient.defaults.baseURL,
+      headers: httpClient.defaults.headers
     });
 
+    _this.contactHttpClient.interceptors.request.use(prepareParamsForRequest);
+
+    _this.contactHttpClient.interceptors.response.use(formatResponseDates);
+
+    _this.contactHttpClient.interceptors.response.use(extractDataFromResponse);
+
+    _this.fields = new Fields(_this.contactHttpClient);
+    _this.groups = new Groups(_this.contactHttpClient);
     return _this;
   }
 
@@ -93,7 +343,7 @@ var Contacts = /*#__PURE__*/function (_BaseModule) {
     try {
       var _this3 = this;
 
-      return Promise.resolve(_this3.httpClient.get('/contacts', {
+      return Promise.resolve(_this3.contactHttpClient.get('/contacts', {
         params: params
       }));
     } catch (e) {
@@ -101,13 +351,33 @@ var Contacts = /*#__PURE__*/function (_BaseModule) {
     }
   };
 
-  _proto.create = function create(phoneNumber, details) {
+  _proto.getById = function getById(contactId) {
     try {
       var _this5 = this;
 
-      return Promise.resolve(_this5.httpClient.post('/contacts', _extends({
+      return Promise.resolve(_this5.contactHttpClient.get("/contacts/" + contactId));
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  };
+
+  _proto.create = function create(phoneNumber, details) {
+    try {
+      var _this7 = this;
+
+      return Promise.resolve(_this7.contactHttpClient.post('/contacts', _extends({
         phone_number: phoneNumber
-      }, _this5.formatContactDetails(details || {}))));
+      }, _this7.formatContactDetails(details || {}))));
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  };
+
+  _proto.update = function update(contactId, updateContact) {
+    try {
+      var _this9 = this;
+
+      return Promise.resolve(_this9.contactHttpClient.put("/contacts/" + contactId, _extends({}, _this9.formatContactDetails(updateContact || {}))));
     } catch (e) {
       return Promise.reject(e);
     }
@@ -115,23 +385,59 @@ var Contacts = /*#__PURE__*/function (_BaseModule) {
 
   _proto.remove = function remove(contactId) {
     try {
-      var _this7 = this;
+      var _this11 = this;
 
-      return Promise.resolve(_this7.httpClient["delete"]("/contacts/" + contactId)).then(function () {});
+      return Promise.resolve(_this11.contactHttpClient["delete"]("/contacts/" + contactId)).then(function () {});
     } catch (e) {
       return Promise.reject(e);
     }
   };
 
-  _proto.formatDate = function formatDate(date) {
-    return date.toISOString().slice(0, 10);
+  _proto.getGroups = function getGroups(contactId) {
+    try {
+      var _this13 = this;
+
+      return Promise.resolve(_this13.contactHttpClient.get("/contacts/" + contactId + "/groups"));
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  };
+
+  _proto.getGroupById = function getGroupById(contactId, groupId) {
+    try {
+      var _this15 = this;
+
+      return Promise.resolve(_this15.contactHttpClient.get("/contacts/" + contactId + "/groups/" + groupId));
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  };
+
+  _proto.assignContactToGroup = function assignContactToGroup(contactId, groupId) {
+    try {
+      var _this17 = this;
+
+      return Promise.resolve(_this17.contactHttpClient.put("/contacts/" + contactId + "/groups/" + groupId));
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  };
+
+  _proto.unpinContactFromGroup = function unpinContactFromGroup(contactId, groupId) {
+    try {
+      var _this19 = this;
+
+      return Promise.resolve(_this19.contactHttpClient["delete"]("/contacts/" + contactId + "/groups/" + groupId)).then(function () {});
+    } catch (e) {
+      return Promise.reject(e);
+    }
   };
 
   _proto.formatContactDetails = function formatContactDetails(details) {
     var formattedDetails = details;
 
     if (details.birthdayDate) {
-      formattedDetails.birthdayDate = this.formatDate(details.birthdayDate);
+      formattedDetails.birthdayDate = formatDate(details.birthdayDate);
     }
 
     return mapKeys(formattedDetails, function (_, key) {
@@ -155,12 +461,18 @@ var Hlr = /*#__PURE__*/function (_BaseModule) {
     try {
       var _this2 = this;
 
+      var params = {
+        number: isArray(numbers) ? numbers.join(',') : numbers
+      };
+
+      if (idx) {
+        params.idx = isArray(idx) ? idx.join(',') : idx;
+      }
+
       return Promise.resolve(_this2.httpClient.get('/hlr.do', {
-        params: {
-          format: 'json',
-          idx: idx,
-          number: numbers.join(',')
-        }
+        params: _extends({
+          format: 'json'
+        }, params)
       }));
     } catch (e) {
       return Promise.reject(e);
@@ -173,84 +485,83 @@ var Hlr = /*#__PURE__*/function (_BaseModule) {
 var BaseMessageModule = /*#__PURE__*/function (_BaseModule) {
   _inheritsLoose(BaseMessageModule, _BaseModule);
 
-  function BaseMessageModule(httpClient) {
-    var _this;
-
-    _this = _BaseModule.call(this, httpClient) || this;
-
-    _this.httpClient.interceptors.request.use(function (config) {
-      var params = config.params;
-      return _extends({}, config, {
-        params: mapValues(params, function (param) {
-          if (typeof param !== 'boolean') {
-            return param;
-          }
-
-          return +param;
-        })
-      });
-    });
-
-    return _this;
+  function BaseMessageModule() {
+    return _BaseModule.apply(this, arguments) || this;
   }
 
   var _proto = BaseMessageModule.prototype;
 
-  _proto.send = function send(content, to, group, details) {
+  _proto.send = function send(content, recipient, details) {
     try {
-      var _this3 = this;
+      var _temp3 = function _temp3(_result) {
+        return _exit2 ? _result : Promise.resolve(_this2.httpClient.post(_this2.endpoint, body)).then(function (data) {
+          return _this2.formatSmsResponse(data);
+        });
+      };
 
-      var form = new FormData();
-      var headers = undefined;
+      var _exit2 = false;
+
+      var _this2 = this;
 
       var body = _extends({
         details: true,
         encoding: 'utf-8',
         format: 'json'
-      }, _this3.formatSmsDetails(details || {}));
+      }, _this2.formatSmsDetails(details || {}));
 
-      if (to) {
+      if (_this2.isNumberRecipient(recipient)) {
+        var to = recipient.to;
         body.to = isArray(to) ? to.join(',') : to;
-      } else {
+      }
+
+      if (_this2.isGroupRecipient(recipient)) {
+        var group = recipient.group;
         body.group = isArray(group) ? group.join(',') : group;
       }
 
-      if (_this3.isSms(content)) {
+      if (_this2.isSms(content)) {
         body.message = content.message.trim();
       }
 
-      if (_this3.isMms(content)) {
+      if (_this2.isMms(content)) {
         body.subject = content.subject.trim();
         body.smil = content.smil;
       }
 
-      if (_this3.isVmsText(content)) {
+      if (_this2.isVmsText(content)) {
         body.tts = content.tts.trim();
         body.tts_lector = content.ttsLector || 'ewa';
       }
 
-      if (_this3.isVmsRemotePath(content)) {
+      if (_this2.isVmsRemotePath(content)) {
         body.file = content.remotePath;
       }
 
-      if (_this3.isVmsLocalFile(content)) {
-        var file = fs.createReadStream(content.localPath);
-        form.append('file', file);
-        headers = form.getHeaders();
-      }
+      var _temp4 = function () {
+        if (_this2.isVmsLocalFile(content)) {
+          var formData = _this2.getFormDataForVmsLocalFile(body, content);
 
-      return Promise.resolve(_this3.httpClient.request({
-        data: form,
-        headers: headers,
-        method: 'post',
-        params: body,
-        url: _this3.endpoint
-      })).then(function (data) {
-        return _this3.formatSmsResponse(data);
-      });
+          return Promise.resolve(_this2.httpClient.post(_this2.endpoint, formData.getBuffer(), {
+            headers: formData.getHeaders()
+          })).then(function (data) {
+            _exit2 = true;
+            return _this2.formatSmsResponse(data);
+          });
+        }
+      }();
+
+      return Promise.resolve(_temp4 && _temp4.then ? _temp4.then(_temp3) : _temp3(_temp4));
     } catch (e) {
       return Promise.reject(e);
     }
+  };
+
+  _proto.isNumberRecipient = function isNumberRecipient(recipient) {
+    return recipient.to !== undefined;
+  };
+
+  _proto.isGroupRecipient = function isGroupRecipient(recipient) {
+    return recipient.group !== undefined;
   };
 
   _proto.isSms = function isSms(content) {
@@ -271,6 +582,37 @@ var BaseMessageModule = /*#__PURE__*/function (_BaseModule) {
 
   _proto.isVmsRemotePath = function isVmsRemotePath(content) {
     return content.remotePath !== undefined;
+  };
+
+  _proto.getFormDataForVmsLocalFile = function getFormDataForVmsLocalFile(body, content) {
+    var formData = new FormData();
+
+    if (body.to) {
+      formData.append('to', body.to);
+    }
+
+    if (body.group) {
+      formData.append('group', body.group);
+    }
+
+    for (var _i = 0, _Object$entries = Object.entries(body); _i < _Object$entries.length; _i++) {
+      var _Object$entries$_i = _Object$entries[_i],
+          key = _Object$entries$_i[0],
+          value = _Object$entries$_i[1];
+
+      if (typeof value === 'boolean') {
+        formData.append(key, value ? 1 : 0);
+        continue;
+      }
+
+      formData.append(key, value);
+    }
+
+    formData.append('file', fs.readFileSync(content.localPath), {
+      contentType: 'audio/wav',
+      filename: 'vms.wav'
+    });
+    return formData;
   };
 
   _proto.formatSmsDetails = function formatSmsDetails(details) {
@@ -332,7 +674,9 @@ var Mms = /*#__PURE__*/function (_BaseMessageModule) {
       return Promise.resolve(_this3.send({
         smil: smil,
         subject: subject
-      }, numbers, undefined, details));
+      }, {
+        to: numbers
+      }, details));
     } catch (e) {
       return Promise.reject(e);
     }
@@ -345,7 +689,9 @@ var Mms = /*#__PURE__*/function (_BaseMessageModule) {
       return Promise.resolve(_this5.send({
         smil: smil,
         subject: subject
-      }, undefined, groups, details));
+      }, {
+        group: groups
+      }, details));
     } catch (e) {
       return Promise.reject(e);
     }
@@ -473,7 +819,9 @@ var Sms = /*#__PURE__*/function (_BaseMessageModule) {
 
       return Promise.resolve(_this3.send({
         message: message
-      }, numbers, undefined, details));
+      }, {
+        to: numbers
+      }, details));
     } catch (e) {
       return Promise.reject(e);
     }
@@ -497,7 +845,9 @@ var Sms = /*#__PURE__*/function (_BaseMessageModule) {
 
       return Promise.resolve(_this7.send({
         message: message
-      }, undefined, groups, details));
+      }, {
+        group: groups
+      }, details));
     } catch (e) {
       return Promise.reject(e);
     }
@@ -699,7 +1049,9 @@ var Vms = /*#__PURE__*/function (_BaseMessageModule) {
       return Promise.resolve(_this3.send({
         tts: tts,
         ttsLector: ttsLector
-      }, numbers, undefined, details));
+      }, {
+        to: numbers
+      }, details));
     } catch (e) {
       return Promise.reject(e);
     }
@@ -711,7 +1063,9 @@ var Vms = /*#__PURE__*/function (_BaseMessageModule) {
 
       return Promise.resolve(_this5.send({
         localPath: pathToLocaleFile
-      }, numbers, undefined, details));
+      }, {
+        to: numbers
+      }, details));
     } catch (e) {
       return Promise.reject(e);
     }
@@ -723,7 +1077,9 @@ var Vms = /*#__PURE__*/function (_BaseMessageModule) {
 
       return Promise.resolve(_this7.send({
         remotePath: pathToRemoteFile
-      }, numbers, undefined, details));
+      }, {
+        to: numbers
+      }, details));
     } catch (e) {
       return Promise.reject(e);
     }
@@ -736,7 +1092,9 @@ var Vms = /*#__PURE__*/function (_BaseMessageModule) {
       return Promise.resolve(_this9.send({
         tts: tts,
         ttsLector: ttsLector
-      }, undefined, groups, details));
+      }, {
+        group: groups
+      }, details));
     } catch (e) {
       return Promise.reject(e);
     }
@@ -748,7 +1106,9 @@ var Vms = /*#__PURE__*/function (_BaseMessageModule) {
 
       return Promise.resolve(_this11.send({
         localPath: pathToLocaleFile
-      }, undefined, groups, details));
+      }, {
+        group: groups
+      }, details));
     } catch (e) {
       return Promise.reject(e);
     }
@@ -760,7 +1120,9 @@ var Vms = /*#__PURE__*/function (_BaseMessageModule) {
 
       return Promise.resolve(_this13.send({
         remotePath: pathToRemoteFile
-      }, undefined, groups, details));
+      }, {
+        group: groups
+      }, details));
     } catch (e) {
       return Promise.reject(e);
     }
@@ -771,63 +1133,11 @@ var Vms = /*#__PURE__*/function (_BaseMessageModule) {
 
 var version = "2.0.0";
 
-var formatKeys = function formatKeys(object) {
-  return mapKeys(object, function (_, key) {
-    return camelCase(key);
-  });
-};
-
-var formatResponse = function formatResponse(object) {
-  var newResponse = formatKeys(object);
-  forEach(newResponse, function (value, key) {
-    if (isObject(value)) {
-      newResponse[key] = formatKeys(value);
-    }
-  });
-  return newResponse;
-};
-
-var isApiCollection = function isApiCollection(data) {
-  return !!data.collection && !!data.size;
-};
-
-var isSmsResponse = function isSmsResponse(data) {
-  return !!data.list && !!data.count;
-};
-
-var extractDataFromResponse = function extractDataFromResponse(response) {
-  var data = response.data;
-
-  if (!data) {
-    return data;
-  }
-
-  if (isArray(data)) {
-    return data.map(formatResponse);
-  }
-
-  if (isApiCollection(data)) {
-    return _extends({}, data, {
-      collection: data.collection.map(formatResponse)
-    });
-  }
-
-  if (isSmsResponse(data)) {
-    return _extends({}, data, {
-      list: data.list.map(formatResponse)
-    });
-  }
-
-  return formatResponse(data);
-};
-
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-/* eslint-enable @typescript-eslint/ban-ts-comment */
-
 var SMSAPI = /*#__PURE__*/function () {
-  function SMSAPI(accessToken, apiUrl) {
+  function SMSAPI(accessToken) {
+    this.apiUrl = 'https://smsapi.io/api';
     this.accessToken = accessToken;
-    this.apiUrl = apiUrl;
     this.httpClient = this.setHttpClient();
     this.contacts = new Contacts(this.httpClient);
     this.hlr = new Hlr(this.httpClient);
@@ -863,33 +1173,5 @@ var SMSAPI = /*#__PURE__*/function () {
   return SMSAPI;
 }();
 
-var SMSAPIcom = /*#__PURE__*/function (_SMSAPI) {
-  _inheritsLoose(SMSAPIcom, _SMSAPI);
-
-  function SMSAPIcom(accessToken) {
-    var API_URL = 'https://api.smsapi.com';
-    return _SMSAPI.call(this, accessToken, API_URL) || this;
-  }
-
-  return SMSAPIcom;
-}(SMSAPI);
-
-var SMSAPIpl = /*#__PURE__*/function (_SMSAPI) {
-  _inheritsLoose(SMSAPIpl, _SMSAPI);
-
-  function SMSAPIpl(accessToken) {
-    var API_URL = 'https://api.smsapi.pl';
-    return _SMSAPI.call(this, accessToken, API_URL) || this;
-  }
-
-  return SMSAPIpl;
-}(SMSAPI);
-
-
-
-var index = {
-  __proto__: null
-};
-
-export { index as SMSAPI, SMSAPIcom, SMSAPIpl };
+export { SMSAPI };
 //# sourceMappingURL=smsapi-javascript-client.esm.js.map
