@@ -2,9 +2,7 @@ import nock from 'nock';
 
 import { SMSAPI } from '../../smsapi';
 
-const { SMSAPI_OAUTH_TOKEN, SMSAPI_API_URL } = process.env;
-
-const smsapi = new SMSAPI(SMSAPI_OAUTH_TOKEN || '', SMSAPI_API_URL || '');
+const smsapi = new SMSAPI('someToken');
 
 const smil = `<smil>
   <head>
@@ -21,28 +19,56 @@ const smil = `<smil>
 </smil>`;
 
 describe('Mms', () => {
+  afterEach(() => {
+    nock.cleanAll();
+  });
+
   describe('Single mms', () => {
     it('should send single mms', async () => {
       // given
       const number = '500000000';
       const subject = 'Some subject';
 
+      const req = nock('https://smsapi.io/api')
+        .post('/mms.do', {
+          details: true,
+          encoding: 'utf-8',
+          format: 'json',
+          smil,
+          subject,
+          to: number,
+        })
+        .reply(200, {
+          count: 1,
+          list: [
+            {
+              date_sent: 1598964973,
+              error: null,
+              id: 'someId',
+              idx: null,
+              number: number,
+              points: 0.16,
+              status: 'QUEUE',
+              submitted_number: number,
+            },
+          ],
+        });
+
       // when
-      const response = await smsapi.mms.sendMms(number, subject, smil, {
-        test: true,
-      });
+      const response = await smsapi.mms.sendMms(number, subject, smil);
 
       // then
+      expect(req.isDone()).toBeTruthy();
       expect(response).toEqual({
         count: 1,
         list: [
           {
             dateSent: expect.any(Date),
             error: null,
-            id: expect.any(String),
+            id: 'someId',
             idx: null,
-            number: expect.stringContaining(number),
-            points: expect.any(Number),
+            number: number,
+            points: 0.16,
             status: 'QUEUE',
             submittedNumber: number,
           },
@@ -55,21 +81,43 @@ describe('Mms', () => {
       const numbers = ['500000000', '500000001'];
       const subject = 'Some subject';
 
+      const req = nock('https://smsapi.io/api')
+        .post('/mms.do', {
+          details: true,
+          encoding: 'utf-8',
+          format: 'json',
+          smil,
+          subject,
+          to: numbers.join(','),
+        })
+        .reply(200, {
+          count: 2,
+          list: numbers.map((number) => ({
+            date_sent: 1598964973,
+            error: null,
+            id: 'someId',
+            idx: null,
+            number: number,
+            points: 0.16,
+            status: 'QUEUE',
+            submitted_number: number,
+          })),
+        });
+
       // when
-      const response = await smsapi.mms.sendMms(numbers, subject, smil, {
-        test: true,
-      });
+      const response = await smsapi.mms.sendMms(numbers, subject, smil);
 
       // then
+      expect(req.isDone()).toBeTruthy();
       expect(response).toMatchObject({
         count: numbers.length,
         list: numbers.map((number) => ({
           dateSent: expect.any(Date),
           error: null,
-          id: expect.any(String),
+          id: 'someId',
           idx: null,
-          number: expect.stringContaining(number),
-          points: expect.any(Number),
+          number: number,
+          points: 0.16,
           status: 'QUEUE',
           submittedNumber: number,
         })),
@@ -78,16 +126,12 @@ describe('Mms', () => {
   });
 
   describe('Group mms', () => {
-    afterEach(() => {
-      nock.cleanAll();
-    });
-
     it('should send mms to group', async () => {
       // given
       const groupName = 'someGroupName';
       const subject = 'Some subject';
 
-      const req = nock(`${SMSAPI_API_URL}`)
+      const req = nock('https://smsapi.io/api')
         .post('/mms.do', {
           details: true,
           encoding: 'utf-8',
@@ -143,7 +187,7 @@ describe('Mms', () => {
       const groupNames = ['someGroupName1', 'someGroupName2'];
       const subject = 'Some subject';
 
-      const req = nock(`${SMSAPI_API_URL}`)
+      const req = nock('https://smsapi.io/api')
         .post('/mms.do', {
           details: true,
           encoding: 'utf-8',
