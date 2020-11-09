@@ -5,9 +5,7 @@ import { SMSAPI } from '../../../../smsapi';
 import { GetContactsQueryParams } from '../../types/GetContactsQueryParams';
 import { NewContact } from '../../types/NewContact';
 
-const { SMSAPI_OAUTH_TOKEN, SMSAPI_API_URL } = process.env;
-
-const smsapi = new SMSAPI(SMSAPI_OAUTH_TOKEN || '', SMSAPI_API_URL || '');
+const smsapi = new SMSAPI('someToken');
 
 describe('prepareParamsForRequest', () => {
   afterEach(() => {
@@ -44,7 +42,7 @@ describe('prepareParamsForRequest', () => {
       q: contactParams.q,
     };
 
-    const getContactRequest = nock(`${SMSAPI_API_URL}`)
+    const getContactRequest = nock('https://smsapi.io/api')
       .get('/contacts')
       .query(body)
       .reply(200);
@@ -86,7 +84,7 @@ describe('prepareParamsForRequest', () => {
       q: contactParams.q,
     };
 
-    const getContactRequest = nock(`${SMSAPI_API_URL}`)
+    const getContactRequest = nock('https://smsapi.io/api')
       .get('/contacts')
       .query(body)
       .reply(200);
@@ -125,7 +123,7 @@ describe('prepareParamsForRequest', () => {
       source: contactDetails.source,
     };
 
-    const createContactRequest = nock(`${SMSAPI_API_URL}`)
+    const createContactRequest = nock('https://smsapi.io/api')
       .post('/contacts', (requestBody): boolean => isEqual(body, requestBody))
       .reply(201);
 
