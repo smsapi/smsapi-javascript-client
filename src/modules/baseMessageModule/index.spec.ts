@@ -2,9 +2,7 @@ import nock from 'nock';
 
 import { SMSAPI } from '../../smsapi';
 
-const { SMSAPI_OAUTH_TOKEN, SMSAPI_API_URL } = process.env;
-
-const smsapi = new SMSAPI(SMSAPI_OAUTH_TOKEN || '', SMSAPI_API_URL || '');
+const smsapi = new SMSAPI('someToken');
 
 describe('Base message module', () => {
   afterEach(() => {
@@ -16,7 +14,7 @@ describe('Base message module', () => {
     const number = '500000000';
     const message = 'someMessage';
 
-    const req = nock(`${SMSAPI_API_URL}`)
+    const req = nock('https://smsapi.io/api')
       .post('/sms.do', {
         details: true,
         encoding: 'utf-8',
@@ -42,7 +40,7 @@ describe('Base message module', () => {
 
     const points = '0.1';
 
-    const req = nock(`${SMSAPI_API_URL}`)
+    const req = nock('https://smsapi.io/api')
       .post('/sms.do', {
         details: true,
         encoding: 'utf-8',
@@ -75,7 +73,7 @@ describe('Base message module', () => {
 
     const date = new Date();
 
-    const req = nock(`${SMSAPI_API_URL}`)
+    const req = nock('https://smsapi.io/api')
       .post('/sms.do', {
         date: date.toISOString(),
         date_validate: true,
