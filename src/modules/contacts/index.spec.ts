@@ -1,27 +1,8 @@
-import random from 'lodash/random';
 import nock from 'nock';
 
 import { SMSAPI } from '../../smsapi';
 
-import { Contact } from './types/Contact';
-import { UpdateContact } from './types/UpdateContact';
-
-const { SMSAPI_OAUTH_TOKEN, SMSAPI_API_URL } = process.env;
-
-const smsapi = new SMSAPI(SMSAPI_OAUTH_TOKEN || '', SMSAPI_API_URL || '');
-
-const getRandomPhoneNumber = (): string => {
-  return `48500000${random(999).toString().padStart(3, '0')}`;
-};
-
-const createTestContact = async (): Promise<Contact> => {
-  const someNumber = getRandomPhoneNumber();
-  return await smsapi.contacts.create(someNumber);
-};
-
-const removeTestContact = async (testContactId: string): Promise<void> => {
-  await smsapi.contacts.remove(testContactId);
-};
+const smsapi = new SMSAPI('someToken');
 
 describe('Contacts', () => {
   afterEach(() => {
@@ -30,104 +11,255 @@ describe('Contacts', () => {
 
   it('should get contact', async () => {
     // given
-    const contact = await createTestContact();
+    const contact = {
+      birthday_date: '1992-12-03',
+      city: 'someCity',
+      description: 'someDescription',
+      email: 'someEmail',
+      first_name: 'someFirstName',
+      gender: 'female',
+      id: 'someId',
+      last_name: 'someLastName',
+      phone_number: 'somePhoneNumber',
+      source: 'someSource',
+    };
+
+    const req = nock('https://smsapi.io/api')
+      .get(`/contacts/${contact.id}`)
+      .reply(200, contact);
 
     // when
     const response = await smsapi.contacts.getById(contact.id);
 
     // then
-    expect(response).toEqual(contact);
-
-    await removeTestContact(contact.id);
+    expect(req.isDone()).toBeTruthy();
+    expect(response).toEqual({
+      birthdayDate: '1992-12-03',
+      city: 'someCity',
+      description: 'someDescription',
+      email: 'someEmail',
+      firstName: 'someFirstName',
+      gender: 'female',
+      id: 'someId',
+      lastName: 'someLastName',
+      phoneNumber: 'somePhoneNumber',
+      source: 'someSource',
+    });
   });
 
   describe('get contacts', () => {
     it('should get contacts', async () => {
       // given
-      const createdContact = await createTestContact();
+      const contact = {
+        birthday_date: '1992-12-03',
+        city: 'someCity',
+        description: 'someDescription',
+        email: 'someEmail',
+        first_name: 'someFirstName',
+        gender: 'female',
+        id: 'someId',
+        last_name: 'someLastName',
+        phone_number: 'somePhoneNumber',
+        source: 'someSource',
+      };
+
+      const req = nock('https://smsapi.io/api')
+        .get('/contacts')
+        .reply(200, {
+          collection: [contact],
+          size: 1,
+        });
 
       // when
       const response = await smsapi.contacts.get();
 
       // then
-      expect(response.size).toBeGreaterThan(0);
-      expect(response.collection).toContainEqual(createdContact);
-
-      await removeTestContact(createdContact.id);
+      expect(req.isDone()).toBeTruthy();
+      expect(response.size).toEqual(1);
+      expect(response.collection).toContainEqual({
+        birthdayDate: '1992-12-03',
+        city: 'someCity',
+        description: 'someDescription',
+        email: 'someEmail',
+        firstName: 'someFirstName',
+        gender: 'female',
+        id: 'someId',
+        lastName: 'someLastName',
+        phoneNumber: 'somePhoneNumber',
+        source: 'someSource',
+      });
     });
 
     it('should get contact by phone number', async () => {
       // given
-      const createdContact = await createTestContact();
+      const contact = {
+        birthday_date: '1992-12-03',
+        city: 'someCity',
+        description: 'someDescription',
+        email: 'someEmail',
+        first_name: 'someFirstName',
+        gender: 'female',
+        id: 'someId',
+        last_name: 'someLastName',
+        phone_number: 'somePhoneNumber',
+        source: 'someSource',
+      };
+
+      const req = nock('https://smsapi.io/api')
+        .get('/contacts')
+        .query({
+          phone_number: contact.phone_number,
+        })
+        .reply(200, {
+          collection: [contact],
+          size: 1,
+        });
 
       // when
       const response = await smsapi.contacts.get({
-        phoneNumber: createdContact.phoneNumber,
+        phoneNumber: contact.phone_number,
       });
 
       // then
+      expect(req.isDone()).toBeTruthy();
       expect(response.size).toEqual(1);
-      expect(response.collection[0]).toEqual(createdContact);
-
-      await removeTestContact(createdContact.id);
+      expect(response.collection[0]).toEqual({
+        birthdayDate: '1992-12-03',
+        city: 'someCity',
+        description: 'someDescription',
+        email: 'someEmail',
+        firstName: 'someFirstName',
+        gender: 'female',
+        id: 'someId',
+        lastName: 'someLastName',
+        phoneNumber: 'somePhoneNumber',
+        source: 'someSource',
+      });
     });
   });
 
   describe('create contact', () => {
     it('should create contact', async () => {
       // given
-      const someNumber = getRandomPhoneNumber();
+      const someNumber = '48500000000';
+      const contact = {
+        birthday_date: '1992-12-03',
+        city: 'someCity',
+        description: 'someDescription',
+        email: 'someEmail',
+        first_name: 'someFirstName',
+        gender: 'female',
+        id: 'someId',
+        last_name: 'someLastName',
+        phone_number: someNumber,
+        source: 'someSource',
+      };
+
+      const req = nock('https://smsapi.io/api')
+        .post('/contacts', {
+          phone_number: someNumber,
+        })
+        .reply(200, contact);
 
       // when
       const response = await smsapi.contacts.create(someNumber);
 
       // then
+      expect(req.isDone()).toBeTruthy();
       expect(response.phoneNumber).toEqual(someNumber);
-
-      await removeTestContact(response.id);
     });
 
     it('should create contact with details', async () => {
       // given
-      const someNumber = getRandomPhoneNumber();
+      const someNumber = '48500000000';
+      const someEmail = 'someEmail@email.com';
+      const contact = {
+        birthday_date: '1992-12-03',
+        city: 'someCity',
+        description: 'someDescription',
+        email: 'someEmail',
+        first_name: 'someFirstName',
+        gender: 'female',
+        id: 'someId',
+        last_name: 'someLastName',
+        phone_number: someNumber,
+        source: 'someSource',
+      };
+
+      const req = nock('https://smsapi.io/api')
+        .post('/contacts', {
+          email: someEmail,
+          phone_number: someNumber,
+        })
+        .reply(200, contact);
 
       // when
       const response = await smsapi.contacts.create(someNumber, {
-        email: 'someEmail@email.com',
+        email: someEmail,
       });
 
       // then
+      expect(req.isDone()).toBeTruthy();
       expect(response.phoneNumber).toEqual(someNumber);
-
-      await removeTestContact(response.id);
     });
   });
 
   it('should update contact', async () => {
     // given
-    const contact = await createTestContact();
-
-    const updateContact: UpdateContact = {
-      firstName: 'Some first name',
+    const someFirstName = 'Some first name';
+    const contact = {
+      birthday_date: '1992-12-03',
+      city: 'someCity',
+      description: 'someDescription',
+      email: 'someEmail',
+      first_name: someFirstName,
+      gender: 'female',
+      id: 'someId',
+      last_name: 'someLastName',
+      phoneNumber: 'somePhoneNumber',
+      source: 'someSource',
     };
 
+    const req = nock('https://smsapi.io/api')
+      .put(`/contacts/${contact.id}`, {
+        first_name: someFirstName,
+      })
+      .reply(200, contact);
+
     // when
-    const response = await smsapi.contacts.update(contact.id, updateContact);
+    const response = await smsapi.contacts.update(contact.id, {
+      firstName: someFirstName,
+    });
 
     // then
-    expect(response.firstName).toEqual(updateContact.firstName);
-
-    await removeTestContact(contact.id);
+    expect(req.isDone()).toBeTruthy();
+    expect(response.firstName).toEqual(someFirstName);
   });
 
   it('should remove contact', async () => {
     // given
-    const createdContact = await createTestContact();
+    const contact = {
+      birthday_date: '1992-12-03',
+      city: 'someCity',
+      description: 'someDescription',
+      email: 'someEmail',
+      first_name: 'someFirstName',
+      gender: 'female',
+      id: 'someId',
+      last_name: 'someLastName',
+      phone_number: 'somePhoneNumber',
+      source: 'someSource',
+    };
+
+    const req = nock('https://smsapi.io/api')
+      .delete(`/contacts/${contact.id}`)
+      .reply(200);
 
     // when
-    const response = await smsapi.contacts.remove(createdContact.id);
+    const response = await smsapi.contacts.remove(contact.id);
 
     // then
+    expect(req.isDone()).toBeTruthy();
     expect(response).toBeUndefined();
   });
 
@@ -136,7 +268,7 @@ describe('Contacts', () => {
       // given
       const contactId = 'someContactId';
 
-      const req = nock(`${SMSAPI_API_URL}`)
+      const req = nock('https://smsapi.io/api')
         .get(`/contacts/${contactId}/groups`)
         .reply(200, {
           collection: [
@@ -196,7 +328,7 @@ describe('Contacts', () => {
       const contactId = 'someContactId';
       const groupId = 'someGroupId';
 
-      const req = nock(`${SMSAPI_API_URL}`)
+      const req = nock('https://smsapi.io/api')
         .get(`/contacts/${contactId}/groups/${groupId}`)
         .reply(200, {
           contact_expire_after: null,
@@ -251,7 +383,7 @@ describe('Contacts', () => {
       const contactId = 'someContactId';
       const groupId = 'someGroupId';
 
-      const req = nock(`${SMSAPI_API_URL}`)
+      const req = nock('https://smsapi.io/api')
         .put(`/contacts/${contactId}/groups/${groupId}`)
         .reply(200, {
           collection: [
@@ -314,7 +446,7 @@ describe('Contacts', () => {
       const contactId = 'someContactId';
       const groupId = 'someGroupId';
 
-      const req = nock(`${SMSAPI_API_URL}`)
+      const req = nock('https://smsapi.io/api')
         .delete(`/contacts/${contactId}/groups/${groupId}`)
         .reply(204);
 
