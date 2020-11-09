@@ -1,21 +1,8 @@
 import nock from 'nock';
-import { v4 as uuidv4 } from 'uuid';
 
 import { SMSAPI } from '../../../../smsapi';
 
-import { removeTestGroup, createTestGroup } from './testHelpers';
-import { CreateGroupDetails } from './types/CreateGroupDetails';
-import { UpdateGroup } from './types/UpdateGroup';
-
-const { SMSAPI_OAUTH_TOKEN, SMSAPI_API_URL } = process.env;
-
-const smsapi = new SMSAPI(SMSAPI_OAUTH_TOKEN || '', SMSAPI_API_URL || '');
-
-const GROUP_NAME_MAX_LENGTH = 64;
-
-const getRandomGroupName = (): string => {
-  return `test-group-${uuidv4()}`.substring(0, GROUP_NAME_MAX_LENGTH);
-};
+const smsapi = new SMSAPI('someToken');
 
 describe('Contacts Groups', () => {
   afterEach(() => {
@@ -24,87 +11,149 @@ describe('Contacts Groups', () => {
 
   it('should get all groups', async () => {
     // given
-    const groupName = getRandomGroupName();
-    const { id: testGroupId } = await createTestGroup(groupName, smsapi);
+    const group = {
+      contacts_count: 1,
+      created_by: 'someCreatedBy',
+      date_created: '1992-12-03',
+      date_updated: '1992-12-03',
+      description: 'someDescription',
+      id: 'someId',
+      idx: 'someIdx',
+      name: 'someName',
+      permissions: [],
+    };
+
+    const req = nock('https://smsapi.io/api')
+      .get('/contacts/groups')
+      .reply(200, {
+        collection: [group],
+        size: 1,
+      });
 
     // when
     const response = await smsapi.contacts.groups.get();
 
     // then
-    expect(
-      response.collection.some((group) => group.id === testGroupId)
-    ).toBeTruthy();
-
-    await removeTestGroup(testGroupId, smsapi);
+    expect(req.isDone()).toBeTruthy();
+    expect(response.collection).toEqual([
+      {
+        contactsCount: 1,
+        createdBy: 'someCreatedBy',
+        dateCreated: new Date('1992-12-03'),
+        dateUpdated: new Date('1992-12-03'),
+        description: 'someDescription',
+        id: 'someId',
+        idx: 'someIdx',
+        name: 'someName',
+        permissions: [],
+      },
+    ]);
   });
 
   describe('create', () => {
     it('should create group', async () => {
       // given
-      const groupName = getRandomGroupName();
+      const group = {
+        contacts_count: 1,
+        created_by: 'someCreatedBy',
+        date_created: '1992-12-03',
+        date_updated: '1992-12-03',
+        description: 'someDescription',
+        id: 'someId',
+        idx: 'someIdx',
+        name: 'someName',
+        permissions: [],
+      };
+
+      const req = nock('https://smsapi.io/api')
+        .post('/contacts/groups')
+        .reply(201, group);
 
       // when
-      const response = await smsapi.contacts.groups.create(groupName);
+      const response = await smsapi.contacts.groups.create(group.name);
 
       // then
-      expect(response).toMatchObject({
-        contactsCount: 0,
-        createdBy: expect.any(String),
-        dateCreated: expect.any(Date),
-        dateUpdated: expect.any(Date),
-        description: '',
-        id: expect.any(String),
-        idx: null,
-        name: groupName,
-        permissions: [
-          {
-            read: true,
-            send: true,
-            username: expect.any(String),
-            write: true,
-          },
-        ],
+      expect(req.isDone()).toBeTruthy();
+      expect(response).toEqual({
+        contactsCount: 1,
+        createdBy: 'someCreatedBy',
+        dateCreated: new Date('1992-12-03'),
+        dateUpdated: new Date('1992-12-03'),
+        description: 'someDescription',
+        id: 'someId',
+        idx: 'someIdx',
+        name: 'someName',
+        permissions: [],
       });
-
-      await removeTestGroup(response.id, smsapi);
     });
 
     it('should make proper request to create group with details', async () => {
       // given
-      const groupName = getRandomGroupName();
-
-      const groupDetails: CreateGroupDetails = {
-        contactExpireAfter: 5,
+      const group = {
+        contacts_count: 1,
+        created_by: 'someCreatedBy',
+        date_created: '1992-12-03',
+        date_updated: '1992-12-03',
         description: 'someDescription',
+        id: 'someId',
         idx: 'someIdx',
+        name: 'someName',
+        permissions: [],
       };
 
-      const req = nock(`${SMSAPI_API_URL}`)
+      const req = nock('https://smsapi.io/api')
         .post('/contacts/groups', {
-          contact_expire_after: groupDetails.contactExpireAfter,
-          description: groupDetails.description,
-          idx: groupDetails.idx,
-          name: groupName,
+          contact_expire_after: 5,
+          description: group.description,
+          idx: group.idx,
+          name: group.name,
         })
-        .reply(201, {
-          dateCreated: new Date().toISOString(),
-          dateUpdated: new Date().toISOString(),
-        });
+        .reply(201, group);
 
       // when
-      await smsapi.contacts.groups.create(groupName, groupDetails);
+      const response = await smsapi.contacts.groups.create(group.name, {
+        contactExpireAfter: 5,
+        description: group.description,
+        idx: group.idx,
+      });
 
       // then
       expect(req.isDone()).toBeTruthy();
+      expect(response).toEqual({
+        contactsCount: 1,
+        createdBy: 'someCreatedBy',
+        dateCreated: new Date('1992-12-03'),
+        dateUpdated: new Date('1992-12-03'),
+        description: 'someDescription',
+        id: 'someId',
+        idx: 'someIdx',
+        name: 'someName',
+        permissions: [],
+      });
     });
   });
 
   describe('update', () => {
     it('should update group', async () => {
       // given
-      const groupName = getRandomGroupName();
-      const group = await createTestGroup(groupName, smsapi);
       const description = 'Some description';
+      const group = {
+        contacts_count: 1,
+        created_by: 'someCreatedBy',
+        date_created: '1992-12-03',
+        date_updated: '1992-12-03',
+        description,
+        id: 'someId',
+        idx: 'someIdx',
+        name: 'someName',
+        permissions: [],
+      };
+
+      const req = nock('https://smsapi.io/api')
+        .put(`/contacts/groups/${group.id}`, {
+          description,
+        })
+        .reply(201, group);
 
       // when
       const response = await smsapi.contacts.groups.update(group.id, {
@@ -112,90 +161,104 @@ describe('Contacts Groups', () => {
       });
 
       // then
-      expect(response).toMatchObject({
-        contactsCount: 0,
-        createdBy: expect.any(String),
-        dateCreated: expect.any(Date),
-        dateUpdated: expect.any(Date),
+      expect(req.isDone()).toBeTruthy();
+      expect(response).toEqual({
+        contactsCount: 1,
+        createdBy: 'someCreatedBy',
+        dateCreated: new Date('1992-12-03'),
+        dateUpdated: new Date('1992-12-03'),
         description,
-        id: expect.any(String),
-        idx: null,
-        name: groupName,
-        permissions: [
-          {
-            read: true,
-            send: true,
-            username: expect.any(String),
-            write: true,
-          },
-        ],
+        id: 'someId',
+        idx: 'someIdx',
+        name: 'someName',
+        permissions: [],
       });
-
-      await removeTestGroup(group.id, smsapi);
     });
 
     it('should make proper request to update group with all details', async () => {
       // given
-      const groupId = 'someId';
-      const groupDetails: UpdateGroup = {
-        contactExpireAfter: 5,
+      const group = {
+        contacts_count: 1,
+        created_by: 'someCreatedBy',
+        date_created: '1992-12-03',
+        date_updated: '1992-12-03',
         description: 'someDescription',
+        id: 'someId',
         idx: 'someIdx',
-        name: 'Some new name',
+        name: 'someName',
+        permissions: [],
       };
 
-      const req = nock(`${SMSAPI_API_URL}`)
-        .put(`/contacts/groups/${groupId}`, {
-          contact_expire_after: groupDetails.contactExpireAfter,
-          description: groupDetails.description,
-          idx: groupDetails.idx,
-          name: groupDetails.name,
+      const req = nock('https://smsapi.io/api')
+        .put(`/contacts/groups/${group.id}`, {
+          contact_expire_after: 5,
+          description: group.description,
+          idx: group.idx,
+          name: group.name,
         })
-        .reply(201, {
-          dateCreated: new Date().toISOString(),
-          dateUpdated: new Date().toISOString(),
-        });
+        .reply(201, group);
 
       // when
-      await smsapi.contacts.groups.update(groupId, groupDetails);
+      const response = await smsapi.contacts.groups.update(group.id, {
+        contactExpireAfter: 5,
+        description: group.description,
+        idx: group.idx,
+        name: group.name,
+      });
 
       // then
       expect(req.isDone()).toBeTruthy();
+      expect(response).toEqual({
+        contactsCount: 1,
+        createdBy: 'someCreatedBy',
+        dateCreated: new Date('1992-12-03'),
+        dateUpdated: new Date('1992-12-03'),
+        description: 'someDescription',
+        id: 'someId',
+        idx: 'someIdx',
+        name: 'someName',
+        permissions: [],
+      });
     });
   });
 
   describe('remove', () => {
     it('should remove group', async () => {
       // given
-      const group = await createTestGroup('someGroupName', smsapi);
+      const groupId = 'someGroupId';
+
+      const req = nock('https://smsapi.io/api')
+        .delete(`/contacts/groups/${groupId}`)
+        .query({
+          delete_contacts: false,
+        })
+        .reply(204);
 
       // when
-      await smsapi.contacts.groups.remove(group.id);
+      const response = await smsapi.contacts.groups.remove(groupId);
 
       // then
-      try {
-        await smsapi.contacts.groups.getById(group.id);
-      } catch ({ response }) {
-        expect(response.status).toEqual(404);
-      }
+      expect(req.isDone()).toBeTruthy();
+      expect(response).toBeUndefined();
     });
 
     it('should make proper request to remove group with contacts', async () => {
       // given
       const groupId = 'someGroupId';
 
-      const req = nock(`${SMSAPI_API_URL}`)
+      const req = nock('https://smsapi.io/api')
         .delete(`/contacts/groups/${groupId}`)
         .query({
           delete_contacts: true,
         })
-        .reply(201);
+        .reply(204);
 
       // when
-      await smsapi.contacts.groups.remove(groupId, true);
+      const response = await smsapi.contacts.groups.remove(groupId, true);
 
       // then
       expect(req.isDone()).toBeTruthy();
+      expect(response).toBeUndefined();
     });
   });
 });
