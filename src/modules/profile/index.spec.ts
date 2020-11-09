@@ -1,25 +1,41 @@
+import nock from 'nock';
+
 import { SMSAPI } from '../../smsapi';
 
-const { SMSAPI_OAUTH_TOKEN, SMSAPI_API_URL } = process.env;
-
 describe('Profile', () => {
+  afterEach(() => {
+    nock.cleanAll();
+  });
+
   it('should get profile', async () => {
     // given
-    const smsapi = new SMSAPI(SMSAPI_OAUTH_TOKEN || '', SMSAPI_API_URL || '');
+    const smsapi = new SMSAPI('someToken');
+
+    const req = nock('https://smsapi.io/api').get('/profile').reply(200, {
+      email: 'someEmail',
+      id: 'someId',
+      name: 'someName',
+      payment_type: 'trial',
+      phone_number: 'somePhoneNumber',
+      points: 1,
+      user_type: 'native',
+      username: 'someUsername',
+    });
 
     // when
     const profile = await smsapi.profile.get();
 
     // then
+    expect(req.isDone()).toBeTruthy();
     expect(profile).toEqual({
-      email: expect.any(String),
-      id: expect.any(String),
-      name: expect.any(String),
-      paymentType: expect.any(String),
-      phoneNumber: expect.any(String),
-      points: expect.any(Number),
-      userType: expect.any(String),
-      username: expect.any(String),
+      email: 'someEmail',
+      id: 'someId',
+      name: 'someName',
+      paymentType: 'trial',
+      phoneNumber: 'somePhoneNumber',
+      points: 1,
+      userType: 'native',
+      username: 'someUsername',
     });
   });
 });
