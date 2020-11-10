@@ -5,9 +5,7 @@ import { SMSAPI } from '../../smsapi';
 
 import { NewSubuser } from './types/NewSubuser';
 
-const { SMSAPI_OAUTH_TOKEN, SMSAPI_API_URL } = process.env;
-
-const smsapi = new SMSAPI(SMSAPI_OAUTH_TOKEN || '', SMSAPI_API_URL || '');
+const smsapi = new SMSAPI('someToken');
 
 describe('Subusers', () => {
   afterEach(() => {
@@ -16,61 +14,109 @@ describe('Subusers', () => {
 
   it('should get all subusers', async () => {
     // given
-    const subuser: NewSubuser = {
-      credentials: {
-        password: 'SomeSuperStrongPassword123',
-        username: `user-${uuidv4()}`,
+    const subuser = {
+      active: true,
+      description: 'someDescription',
+      id: 'someId',
+      points: {
+        from_account: 100,
+        per_month: 100,
       },
+      username: 'someUsername',
     };
 
-    const createdSubuser = await smsapi.subusers.create(subuser);
+    const req = nock('https://smsapi.io/api')
+      .get('/subusers')
+      .reply(200, {
+        collection: [subuser],
+        size: 1,
+      });
 
     // when
     const response = await smsapi.subusers.get();
 
     // then
-    expect(response.collection).toContainEqual(createdSubuser);
-    expect(response.size).toBeGreaterThan(0);
-
-    await smsapi.subusers.remove(createdSubuser.id);
+    expect(req.isDone()).toBeTruthy();
+    expect(response).toEqual({
+      collection: [
+        {
+          active: true,
+          description: 'someDescription',
+          id: 'someId',
+          points: {
+            fromAccount: 100,
+            perMonth: 100,
+          },
+          username: 'someUsername',
+        },
+      ],
+      size: 1,
+    });
   });
 
   it('should get subuser by id', async () => {
     // given
-    const subuser: NewSubuser = {
-      credentials: {
-        password: 'SomeSuperStrongPassword123',
-        username: `user-${uuidv4()}`,
+    const subuserId = 'someSubuserId';
+    const subuser = {
+      active: true,
+      description: 'someDescription',
+      id: subuserId,
+      points: {
+        from_account: 100,
+        per_month: 100,
       },
+      username: 'someUsername',
     };
 
-    const createdSubuser = await smsapi.subusers.create(subuser);
+    const req = nock('https://smsapi.io/api')
+      .get(`/subusers/${subuserId}`)
+      .reply(200, subuser);
 
     // when
-    const response = await smsapi.subusers.getById(createdSubuser.id);
+    const response = await smsapi.subusers.getById(subuserId);
 
     // then
-    expect(response).toEqual(createdSubuser);
-
-    await smsapi.subusers.remove(createdSubuser.id);
+    expect(req.isDone()).toBeTruthy();
+    expect(response).toEqual({
+      active: true,
+      description: 'someDescription',
+      id: subuserId,
+      points: {
+        fromAccount: 100,
+        perMonth: 100,
+      },
+      username: 'someUsername',
+    });
   });
 
   it('should create subuser', async () => {
     // given
     const subuser: NewSubuser = {
       credentials: {
-        password: 'SomeSuperStrongPassword123',
-        username: `user-${uuidv4()}`,
+        password: 'somePassword',
+        username: 'someUsername',
       },
     };
+
+    const req = nock('https://smsapi.io/api')
+      .post('/subusers')
+      .reply(200, {
+        active: true,
+        description: 'someDescription',
+        id: 'someId',
+        points: {
+          from_account: 100,
+          per_month: 100,
+        },
+        username: subuser.credentials.username,
+      });
 
     // when
     const response = await smsapi.subusers.create(subuser);
 
     // then
+    expect(req.isDone()).toBeTruthy();
     expect(response.username).toEqual(subuser.credentials.username);
-
-    await smsapi.subusers.remove(response.id);
   });
 
   it('should create subuser with all details', async () => {
@@ -89,7 +135,7 @@ describe('Subusers', () => {
       },
     };
 
-    const createSubuserNock = nock(`${SMSAPI_API_URL}`)
+    const req = nock('https://smsapi.io/api')
       .post('/subusers', {
         ...subuser,
         credentials: {
@@ -108,34 +154,47 @@ describe('Subusers', () => {
     await smsapi.subusers.create(subuser);
 
     // then
-    expect(createSubuserNock.pendingMocks()).toEqual([]);
+    expect(req.isDone()).toBeTruthy();
   });
 
   it('should update subuser', async () => {
     // given
-    const subuser: NewSubuser = {
-      credentials: {
-        password: 'SomeSuperStrongPassword123',
-        username: `user-${uuidv4()}`,
-      },
-    };
-
-    const createdSubuser = await smsapi.subusers.create(subuser);
-
     const description = 'Some new description';
 
+    const subuser = {
+      active: true,
+      description,
+      id: 'someId',
+      points: {
+        from_account: 100,
+        per_month: 100,
+      },
+      username: 'someUsername',
+    };
+
+    const req = nock('https://smsapi.io/api')
+      .put(`/subusers/${subuser.id}`, {
+        description,
+      })
+      .reply(200, subuser);
+
     // when
-    const response = await smsapi.subusers.update(createdSubuser.id, {
+    const response = await smsapi.subusers.update(subuser.id, {
       description,
     });
 
     // then
+    expect(req.isDone()).toBeTruthy();
     expect(response).toEqual({
-      ...createdSubuser,
+      active: true,
       description,
+      id: 'someId',
+      points: {
+        fromAccount: 100,
+        perMonth: 100,
+      },
+      username: 'someUsername',
     });
-
-    await smsapi.subusers.remove(createdSubuser.id);
   });
 
   it('should update subuser with all details', async () => {
@@ -155,7 +214,7 @@ describe('Subusers', () => {
       },
     };
 
-    const createSubuserNock = nock(`${SMSAPI_API_URL}`)
+    const req = nock('https://smsapi.io/api')
       .put(`/subusers/${subuserId}`, {
         ...subuser,
         credentials: {
@@ -173,24 +232,22 @@ describe('Subusers', () => {
     await smsapi.subusers.update(subuserId, subuser);
 
     // then
-    expect(createSubuserNock.pendingMocks()).toEqual([]);
+    expect(req.isDone()).toBeTruthy();
   });
 
   it('should remove subuser', async () => {
     // given
-    const subuser: NewSubuser = {
-      credentials: {
-        password: 'SomeSuperStrongPassword123',
-        username: `user-${uuidv4()}`,
-      },
-    };
+    const subuserId = 'someSubuserId';
 
-    const createdSubuser = await smsapi.subusers.create(subuser);
+    const req = nock('https://smsapi.io/api')
+      .delete(`/subusers/${subuserId}`)
+      .reply(204);
 
     // when
-    const response = await smsapi.subusers.remove(createdSubuser.id);
+    const response = await smsapi.subusers.remove(subuserId);
 
     // then
+    expect(req.isDone()).toBeTruthy();
     expect(response).toBeUndefined();
   });
 });
