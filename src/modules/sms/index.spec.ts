@@ -4,9 +4,7 @@ import { SMSAPI } from '../../smsapi';
 
 import { SmsDetails } from './types/SmsDetails';
 
-const { SMSAPI_OAUTH_TOKEN, SMSAPI_API_URL } = process.env;
-
-const smsapi = new SMSAPI(SMSAPI_OAUTH_TOKEN || '', SMSAPI_API_URL || '');
+const smsapi = new SMSAPI('someToken');
 
 describe('Sms', () => {
   afterEach(() => {
@@ -19,23 +17,47 @@ describe('Sms', () => {
       const number = '500000000';
       const message = 'someMessage';
 
+      const req = nock('https://smsapi.io/api')
+        .post('/sms.do', {
+          details: true,
+          encoding: 'utf-8',
+          format: 'json',
+          message,
+          to: number,
+        })
+        .reply(200, {
+          count: 1,
+          list: [
+            {
+              date_sent: 1598964973,
+              error: null,
+              id: 'someId',
+              idx: null,
+              number: number,
+              parts: 1,
+              points: 0.16,
+              status: 'QUEUE',
+              submitted_number: number,
+            },
+          ],
+        });
+
       // when
-      const response = await smsapi.sms.sendSms(number, message, {
-        test: true,
-      });
+      const response = await smsapi.sms.sendSms(number, message);
 
       // then
+      expect(req.isDone()).toBeTruthy();
       expect(response).toMatchObject({
         count: 1,
         list: [
           {
             dateSent: expect.any(Date),
             error: null,
-            id: expect.any(String),
+            id: 'someId',
             idx: null,
-            number: expect.stringContaining(number),
+            number: number,
             parts: 1,
-            points: expect.any(Number),
+            points: 0.16,
             status: 'QUEUE',
             submittedNumber: number,
           },
@@ -48,22 +70,44 @@ describe('Sms', () => {
       const numbers = ['500000000', '500000001'];
       const message = 'someMessage';
 
+      const req = nock('https://smsapi.io/api')
+        .post('/sms.do', {
+          details: true,
+          encoding: 'utf-8',
+          format: 'json',
+          message,
+          to: numbers.join(','),
+        })
+        .reply(200, {
+          count: 2,
+          list: numbers.map((number) => ({
+            date_sent: 1598964973,
+            error: null,
+            id: 'someId',
+            idx: null,
+            number: number,
+            parts: 1,
+            points: 0.16,
+            status: 'QUEUE',
+            submitted_number: number,
+          })),
+        });
+
       // when
-      const response = await smsapi.sms.sendSms(numbers, message, {
-        test: true,
-      });
+      const response = await smsapi.sms.sendSms(numbers, message);
 
       // then
+      expect(req.isDone()).toBeTruthy();
       expect(response).toMatchObject({
         count: numbers.length,
         list: numbers.map((number) => ({
           dateSent: expect.any(Date),
           error: null,
-          id: expect.any(String),
+          id: 'someId',
           idx: null,
-          number: expect.stringContaining(number),
+          number: number,
           parts: 1,
-          points: expect.any(Number),
+          points: 0.16,
           status: 'QUEUE',
           submittedNumber: number,
         })),
@@ -75,23 +119,48 @@ describe('Sms', () => {
       const number = '500000000';
       const message = 'someMessage';
 
+      const req = nock('https://smsapi.io/api')
+        .post('/sms.do', {
+          details: true,
+          encoding: 'utf-8',
+          flash: true,
+          format: 'json',
+          message,
+          to: number,
+        })
+        .reply(200, {
+          count: 1,
+          list: [
+            {
+              date_sent: 1598964973,
+              error: null,
+              id: 'someId',
+              idx: null,
+              number: number,
+              parts: 1,
+              points: 0.16,
+              status: 'QUEUE',
+              submitted_number: number,
+            },
+          ],
+        });
+
       // when
-      const response = await smsapi.sms.sendFlashSms(number, message, {
-        test: true,
-      });
+      const response = await smsapi.sms.sendFlashSms(number, message);
 
       // then
+      expect(req.isDone()).toBeTruthy();
       expect(response).toMatchObject({
         count: 1,
         list: [
           {
             dateSent: expect.any(Date),
             error: null,
-            id: expect.any(String),
+            id: 'someId',
             idx: null,
-            number: expect.stringContaining(number),
+            number: number,
             parts: 1,
-            points: expect.any(Number),
+            points: 0.16,
             status: 'QUEUE',
             submittedNumber: number,
           },
@@ -106,7 +175,7 @@ describe('Sms', () => {
       const groupName = 'someGroupName';
       const message = 'someMessage';
 
-      const req = nock(`${SMSAPI_API_URL}`)
+      const req = nock('https://smsapi.io/api')
         .post('/sms.do', {
           details: true,
           encoding: 'utf-8',
@@ -165,7 +234,7 @@ describe('Sms', () => {
       const groupsNames = ['someGroupName1', 'someGroupName2'];
       const message = 'someMessage';
 
-      const req = nock(`${SMSAPI_API_URL}`)
+      const req = nock('https://smsapi.io/api')
         .post('/sms.do', {
           details: true,
           encoding: 'utf-8',
@@ -224,7 +293,7 @@ describe('Sms', () => {
       const groupName = 'someGroupName';
       const message = 'someMessage';
 
-      const req = nock(`${SMSAPI_API_URL}`)
+      const req = nock('https://smsapi.io/api')
         .post('/sms.do', {
           details: true,
           encoding: 'utf-8',
@@ -283,48 +352,68 @@ describe('Sms', () => {
   describe('Remove scheduled sms', () => {
     it('should remove single sms', async () => {
       // given
-      const date = new Date();
+      const scheduledSmsId = 'someScheduledSmsId';
 
-      date.setHours(date.getHours() + 1);
-
-      const scheduledSms = await smsapi.sms.sendSms(
-        '500000000',
-        'someMessage',
-        {
-          date,
-        }
-      );
-
-      const scheduledSmsId = scheduledSms.list[0].id;
+      const req = nock('https://smsapi.io/api')
+        .post('/sms.do', {
+          format: 'json',
+          sch_del: scheduledSmsId,
+        })
+        .reply(200, {
+          count: 1,
+          list: [
+            {
+              date_sent: 1598964973,
+              error: null,
+              id: scheduledSmsId,
+              idx: null,
+              number: 'someNumber',
+              parts: 1,
+              points: 0.16,
+              status: 'QUEUE',
+              submitted_number: 'someNumber',
+            },
+          ],
+        });
 
       // when
       const response = await smsapi.sms.removeScheduledSms(scheduledSmsId);
 
       // then
+      expect(req.isDone()).toBeTruthy();
       expect(response.list[0].id).toEqual(scheduledSmsId);
     });
 
     it('should remove single sms scheduled for many numbers', async () => {
       // given
-      const date = new Date();
+      const scheduledSmsIds = ['someScheduledSmsId1', 'someScheduledSmsId2'];
 
-      date.setHours(date.getHours() + 1);
-
-      const scheduledSms = await smsapi.sms.sendSms(
-        '500000000,500000001',
-        'someMessage',
-        {
-          date,
-        }
-      );
-
-      const scheduledSmsIds = scheduledSms.list.map((sms) => sms.id);
+      const req = nock('https://smsapi.io/api')
+        .post('/sms.do', {
+          format: 'json',
+          sch_del: scheduledSmsIds.join(','),
+        })
+        .reply(200, {
+          count: 2,
+          list: scheduledSmsIds.map((scheduledSmsId) => ({
+            date_sent: 1598964973,
+            error: null,
+            id: scheduledSmsId,
+            idx: null,
+            number: 'someNumber',
+            parts: 1,
+            points: 0.16,
+            status: 'QUEUE',
+            submitted_number: 'someNumber',
+          })),
+        });
 
       // when
       const response = await smsapi.sms.removeScheduledSms(scheduledSmsIds);
-      const removedIds = response.list.map((sms) => sms.id);
 
       // then
+      expect(req.isDone()).toBeTruthy();
+      const removedIds = response.list.map((sms) => sms.id);
       expect(removedIds).toEqual(expect.arrayContaining(scheduledSmsIds));
     });
   });
@@ -364,7 +453,7 @@ describe('Sms', () => {
       udh: 'someUdh',
     };
 
-    const req = nock(`${SMSAPI_API_URL}`)
+    const req = nock('https://smsapi.io/api')
       .post('/sms.do', {
         allow_duplicates: details.allowDuplicates,
         check_idx: details.checkIdx,
@@ -398,12 +487,28 @@ describe('Sms', () => {
         to: number,
         udh: details.udh,
       })
-      .reply(200);
+      .reply(200, {
+        count: 1,
+        length: message.length,
+        list: [
+          {
+            date_sent: new Date(),
+            error: null,
+            id: 'someId',
+            idx: null,
+            number,
+            parts: 1,
+            points: 0.16,
+            status: 'QUEUE',
+            submitted_number: number,
+          },
+        ],
+        message,
+        parts: 1,
+      });
 
     // when
-    try {
-      await smsapi.sms.sendSms(number, message, details);
-    } catch {} // eslint-disable-line
+    await smsapi.sms.sendSms(number, message, details);
 
     // then
     expect(req.isDone()).toBeTruthy();
