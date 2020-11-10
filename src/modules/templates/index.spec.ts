@@ -1,110 +1,151 @@
-import { v4 as uuidv4 } from 'uuid';
+import nock from 'nock';
 
 import { SMSAPI } from '../../smsapi';
 
-import { NewTemplate } from './types/NewTemplate';
-import { Template } from './types/Template';
-
-const { SMSAPI_OAUTH_TOKEN, SMSAPI_API_URL } = process.env;
-
-const smsapi = new SMSAPI(SMSAPI_OAUTH_TOKEN || '', SMSAPI_API_URL || '');
-
-let createdTemplate: Template;
+const smsapi = new SMSAPI('someToken');
 
 describe('Templates', () => {
-  beforeAll(async () => {
-    // given
-    createdTemplate = await smsapi.templates.create({
-      name: `template-name-${uuidv4()}`.slice(0, 32),
-      template: 'someTemplate',
-    });
-  });
-
-  afterAll(async () => {
-    await smsapi.templates.remove(createdTemplate.id);
+  beforeAll(() => {
+    nock.cleanAll();
   });
 
   it('should get all templates', async () => {
+    // given
+    const template = {
+      id: 'someId',
+      name: 'someName',
+      template: 'someTemplate',
+    };
+
+    const req = nock('https://smsapi.io/api')
+      .get('/sms/templates')
+      .reply(200, {
+        collection: [template],
+        size: 1,
+      });
+
     // when
     const response = await smsapi.templates.get();
 
     // then
-    expect(response.collection).toContainEqual(createdTemplate);
-    expect(response.size).toBeGreaterThan(0);
+    expect(req.isDone()).toBeTruthy();
+    expect(response).toEqual({
+      collection: [template],
+      size: 1,
+    });
   });
 
   it('should get template by id', async () => {
+    // given
+    const template = {
+      id: 'someId',
+      name: 'someName',
+      template: 'someTemplate',
+    };
+
+    const req = nock('https://smsapi.io/api')
+      .get(`/sms/templates/${template.id}`)
+      .reply(200, template);
+
     // when
-    const response = await smsapi.templates.getById(createdTemplate.id);
+    const response = await smsapi.templates.getById(template.id);
 
     // then
-    expect(response).toEqual(createdTemplate);
+    expect(req.isDone()).toBeTruthy();
+    expect(response).toEqual(template);
   });
 
   it('should create template', async () => {
     // given
-    const someNewTemplate: NewTemplate = {
-      name: `template-name-${uuidv4()}`.slice(0, 32),
+    const newTemplate = {
+      name: 'someTemplateName',
       template: 'someNewTemplate',
     };
 
+    const req = nock('https://smsapi.io/api')
+      .post('/sms/templates', newTemplate)
+      .reply(200, {
+        id: 'someTemplateId',
+        ...newTemplate,
+      });
+
     // when
-    const response = await smsapi.templates.create(someNewTemplate);
+    const response = await smsapi.templates.create(newTemplate);
 
     // then
+    expect(req.isDone()).toBeTruthy();
     expect(response).toEqual({
-      id: expect.any(String),
-      ...someNewTemplate,
+      id: 'someTemplateId',
+      name: 'someTemplateName',
+      template: 'someNewTemplate',
     });
-
-    await smsapi.templates.remove(response.id);
   });
 
   it('should create template with normalize', async () => {
     // given
-    const someNewTemplate: NewTemplate = {
-      name: `template-name-${uuidv4()}`.slice(0, 32),
+    const newTemplate = {
+      name: 'someTemplateName',
       normalize: true,
-      template: 'ęółśążźćń',
+      template: 'someNewTemplate',
     };
 
+    const req = nock('https://smsapi.io/api')
+      .post('/sms/templates', newTemplate)
+      .reply(200, {
+        id: 'someTemplateId',
+        name: newTemplate.name,
+        template: newTemplate.template,
+      });
+
     // when
-    const response = await smsapi.templates.create(someNewTemplate);
+    const response = await smsapi.templates.create(newTemplate);
 
     // then
+    expect(req.isDone()).toBeTruthy();
     expect(response).toEqual({
-      id: expect.any(String),
-      name: someNewTemplate.name,
-      template: 'eolsazzcn',
+      id: 'someTemplateId',
+      name: newTemplate.name,
+      template: newTemplate.template,
     });
-
-    await smsapi.templates.remove(response.id);
   });
 
   it('should update template', async () => {
     // given
-    const someNewTemplate: Partial<NewTemplate> = {
-      template: 'someUpdateTemplate',
+    const template = {
+      id: 'someTemplateId',
+      name: 'someTemplateName',
+      template: 'someNewTemplate',
     };
 
+    const req = nock('https://smsapi.io/api')
+      .put(`/sms/templates/${template.id}`, {
+        name: template.name,
+      })
+      .reply(200, template);
+
     // when
-    const response = await smsapi.templates.update(
-      createdTemplate.id,
-      someNewTemplate
-    );
+    const response = await smsapi.templates.update(template.id, {
+      name: template.name,
+    });
 
     // then
-    expect(response).toEqual({
-      ...createdTemplate,
-      ...someNewTemplate,
-    });
+    expect(req.isDone()).toBeTruthy();
+    expect(response).toEqual(template);
   });
 
   it('should remove template', async () => {
+    // given
+    const templateId = 'someTemplateId';
+
+    const req = nock('https://smsapi.io/api')
+      .delete(`/sms/templates/${templateId}`)
+      .reply(204);
+
     // when
-    const response = await smsapi.templates.remove(createdTemplate.id);
+    const response = await smsapi.templates.remove(templateId);
 
     // then
+    expect(req.isDone()).toBeTruthy();
     expect(response).toBeUndefined();
   });
 });
