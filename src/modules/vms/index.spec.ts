@@ -1,17 +1,17 @@
 import nock from 'nock';
 
 import { SMSAPI } from '../../smsapi';
+import { hexToString } from '../../testHelpers/hexToString';
 
-const {
-  SMSAPI_API_URL,
-  SMSAPI_OAUTH_TOKEN,
-  VMS_LOCAL_FILE_PATH,
-  VMS_REMOTE_FILE_PATH,
-} = process.env;
+const { VMS_LOCAL_FILE_PATH } = process.env;
 
-const smsapi = new SMSAPI(SMSAPI_OAUTH_TOKEN || '', SMSAPI_API_URL || '');
+const smsapi = new SMSAPI('someToken');
 
 describe('Vms', () => {
+  afterEach(() => {
+    nock.cleanAll();
+  });
+
   describe('Single vms', () => {
     describe('tts', () => {
       it('should send single vms', async () => {
@@ -19,22 +19,46 @@ describe('Vms', () => {
         const number = '500000000';
         const tts = 'Some tts';
 
+        const req = nock('https://smsapi.io/api')
+          .post('/vms.do', {
+            details: true,
+            encoding: 'utf-8',
+            format: 'json',
+            to: number,
+            tts,
+            tts_lector: 'ewa',
+          })
+          .reply(200, {
+            count: 1,
+            list: [
+              {
+                date_sent: 1598964973,
+                error: null,
+                id: 'someId',
+                idx: null,
+                number: number,
+                points: 0.16,
+                status: 'QUEUE',
+                submitted_number: number,
+              },
+            ],
+          });
+
         // when
-        const response = await smsapi.vms.sendVms(number, tts, undefined, {
-          test: true,
-        });
+        const response = await smsapi.vms.sendVms(number, tts);
 
         // then
-        expect(response).toMatchObject({
+        expect(req.isDone()).toBeTruthy();
+        expect(response).toEqual({
           count: 1,
           list: [
             {
               dateSent: expect.any(Date),
               error: null,
-              id: expect.any(String),
+              id: 'someId',
               idx: null,
-              number: expect.stringContaining(number),
-              points: expect.any(Number),
+              number: number,
+              points: 0.16,
               status: 'QUEUE',
               submittedNumber: number,
             },
@@ -47,22 +71,46 @@ describe('Vms', () => {
         const number = '500000000';
         const tts = 'Some tts';
 
+        const req = nock('https://smsapi.io/api')
+          .post('/vms.do', {
+            details: true,
+            encoding: 'utf-8',
+            format: 'json',
+            to: number,
+            tts,
+            tts_lector: 'maja',
+          })
+          .reply(200, {
+            count: 1,
+            list: [
+              {
+                date_sent: 1598964973,
+                error: null,
+                id: 'someId',
+                idx: null,
+                number: number,
+                points: 0.16,
+                status: 'QUEUE',
+                submitted_number: number,
+              },
+            ],
+          });
+
         // when
-        const response = await smsapi.vms.sendVms(number, tts, 'maja', {
-          test: true,
-        });
+        const response = await smsapi.vms.sendVms(number, tts, 'maja');
 
         // then
-        expect(response).toMatchObject({
+        expect(req.isDone()).toBeTruthy();
+        expect(response).toEqual({
           count: 1,
           list: [
             {
               dateSent: expect.any(Date),
               error: null,
-              id: expect.any(String),
+              id: 'someId',
               idx: null,
-              number: expect.stringContaining(number),
-              points: expect.any(Number),
+              number: number,
+              points: 0.16,
               status: 'QUEUE',
               submittedNumber: number,
             },
@@ -75,21 +123,43 @@ describe('Vms', () => {
         const numbers = ['500000000', '500000001'];
         const tts = 'Some tts';
 
+        const req = nock('https://smsapi.io/api')
+          .post('/vms.do', {
+            details: true,
+            encoding: 'utf-8',
+            format: 'json',
+            to: numbers.join(','),
+            tts,
+            tts_lector: 'ewa',
+          })
+          .reply(200, {
+            count: numbers.length,
+            list: numbers.map((number) => ({
+              date_sent: 1598964973,
+              error: null,
+              id: 'someId',
+              idx: null,
+              number: number,
+              points: 0.16,
+              status: 'QUEUE',
+              submitted_number: number,
+            })),
+          });
+
         // when
-        const response = await smsapi.vms.sendVms(numbers, tts, undefined, {
-          test: true,
-        });
+        const response = await smsapi.vms.sendVms(numbers, tts);
 
         // then
-        expect(response).toMatchObject({
+        expect(req.isDone()).toBeTruthy();
+        expect(response).toEqual({
           count: numbers.length,
           list: numbers.map((number) => ({
             dateSent: expect.any(Date),
             error: null,
-            id: expect.any(String),
+            id: 'someId',
             idx: null,
-            number: expect.stringContaining(number),
-            points: expect.any(Number),
+            number: number,
+            points: 0.16,
             status: 'QUEUE',
             submittedNumber: number,
           })),
@@ -103,26 +173,50 @@ describe('Vms', () => {
           // given
           const number = '500000000';
 
+          const req = nock('https://smsapi.io/api')
+            .post('/vms.do', (body) => {
+              const data = hexToString(body);
+
+              return (
+                data.includes('Content-Disposition: form-data;') &&
+                data.includes('Content-Type: audio/wav') &&
+                data.includes('filename="vms.wav"')
+              );
+            })
+            .reply(200, {
+              count: 1,
+              list: [
+                {
+                  date_sent: 1598964973,
+                  error: null,
+                  id: 'someId',
+                  idx: null,
+                  number: number,
+                  points: 0.16,
+                  status: 'QUEUE',
+                  submitted_number: number,
+                },
+              ],
+            });
+
           // when
           const response = await smsapi.vms.sendVmsWithLocalFile(
             number,
-            VMS_LOCAL_FILE_PATH,
-            {
-              test: true,
-            }
+            VMS_LOCAL_FILE_PATH
           );
 
           // then
-          expect(response).toMatchObject({
+          expect(req.isDone()).toBeTruthy();
+          expect(response).toEqual({
             count: 1,
             list: [
               {
                 dateSent: expect.any(Date),
                 error: null,
-                id: expect.any(String),
+                id: 'someId',
                 idx: null,
-                number: expect.stringContaining(number),
-                points: expect.any(Number),
+                number: number,
+                points: 0.16,
                 status: 'QUEUE',
                 submittedNumber: number,
               },
@@ -134,25 +228,47 @@ describe('Vms', () => {
           // given
           const numbers = ['500000000', '500000001'];
 
+          const req = nock('https://smsapi.io/api')
+            .post('/vms.do', (body) => {
+              const data = hexToString(body);
+
+              return (
+                data.includes('Content-Disposition: form-data;') &&
+                data.includes('Content-Type: audio/wav') &&
+                data.includes('filename="vms.wav"')
+              );
+            })
+            .reply(200, {
+              count: numbers.length,
+              list: numbers.map((number) => ({
+                date_sent: 1598964973,
+                error: null,
+                id: 'someId',
+                idx: null,
+                number: number,
+                points: 0.16,
+                status: 'QUEUE',
+                submitted_number: number,
+              })),
+            });
+
           // when
           const response = await smsapi.vms.sendVmsWithLocalFile(
             numbers,
-            VMS_LOCAL_FILE_PATH,
-            {
-              test: true,
-            }
+            VMS_LOCAL_FILE_PATH
           );
 
           // then
-          expect(response).toMatchObject({
+          expect(req.isDone()).toBeTruthy();
+          expect(response).toEqual({
             count: numbers.length,
             list: numbers.map((number) => ({
               dateSent: expect.any(Date),
               error: null,
-              id: expect.any(String),
+              id: 'someId',
               idx: null,
-              number: expect.stringContaining(number),
-              points: expect.any(Number),
+              number: number,
+              points: 0.16,
               status: 'QUEUE',
               submittedNumber: number,
             })),
@@ -165,87 +281,115 @@ describe('Vms', () => {
       );
     }
 
-    if (VMS_REMOTE_FILE_PATH) {
-      describe('remote file', () => {
-        it('should send single vms', async () => {
-          // given
-          const number = '500000000';
+    describe('remote file', () => {
+      it('should send single vms', async () => {
+        // given
+        const number = '500000000';
+        const url = 'someUrl';
 
-          // when
-          const response = await smsapi.vms.sendVmsWithRemoteFile(
-            number,
-            VMS_REMOTE_FILE_PATH,
-            {
-              test: true,
-            }
-          );
-
-          // then
-          expect(response).toMatchObject({
+        const req = nock('https://smsapi.io/api')
+          .post('/vms.do', {
+            details: true,
+            encoding: 'utf-8',
+            file: url,
+            format: 'json',
+            to: number,
+          })
+          .reply(200, {
             count: 1,
             list: [
               {
-                dateSent: expect.any(Date),
+                date_sent: 1598964973,
                 error: null,
-                id: expect.any(String),
+                id: 'someId',
                 idx: null,
-                number: expect.stringContaining(number),
-                points: expect.any(Number),
+                number: number,
+                points: 0.16,
                 status: 'QUEUE',
-                submittedNumber: number,
+                submitted_number: number,
               },
             ],
           });
-        });
 
-        it('should send single vms to many numbers', async () => {
-          // given
-          const numbers = ['500000000', '500000001'];
+        // when
+        const response = await smsapi.vms.sendVmsWithRemoteFile(number, url);
 
-          // when
-          const response = await smsapi.vms.sendVmsWithRemoteFile(
-            numbers,
-            VMS_REMOTE_FILE_PATH,
+        // then
+        expect(req.isDone()).toBeTruthy();
+        expect(response).toEqual({
+          count: 1,
+          list: [
             {
-              test: true,
-            }
-          );
-
-          // then
-          expect(response).toMatchObject({
-            count: numbers.length,
-            list: numbers.map((number) => ({
               dateSent: expect.any(Date),
               error: null,
-              id: expect.any(String),
+              id: 'someId',
               idx: null,
-              number: expect.stringContaining(number),
-              points: expect.any(Number),
+              number: number,
+              points: 0.16,
               status: 'QUEUE',
               submittedNumber: number,
-            })),
-          });
+            },
+          ],
         });
       });
-    } else {
-      console.warn(
-        'Please add VMS_REMOTE_FILE_PATH env to test vms with remote path'
-      );
-    }
+
+      it('should send single vms to many numbers', async () => {
+        // given
+        const numbers = ['500000000', '500000001'];
+        const url = 'someUrl';
+
+        const req = nock('https://smsapi.io/api')
+          .post('/vms.do', {
+            details: true,
+            encoding: 'utf-8',
+            file: url,
+            format: 'json',
+            to: numbers.join(','),
+          })
+          .reply(200, {
+            count: numbers.length,
+            list: numbers.map((number) => ({
+              date_sent: 1598964973,
+              error: null,
+              id: 'someId',
+              idx: null,
+              number: number,
+              points: 0.16,
+              status: 'QUEUE',
+              submitted_number: number,
+            })),
+          });
+
+        // when
+        const response = await smsapi.vms.sendVmsWithRemoteFile(numbers, url);
+
+        // then
+        expect(req.isDone()).toBeTruthy();
+        expect(response).toEqual({
+          count: numbers.length,
+          list: numbers.map((number) => ({
+            dateSent: expect.any(Date),
+            error: null,
+            id: 'someId',
+            idx: null,
+            number: number,
+            points: 0.16,
+            status: 'QUEUE',
+            submittedNumber: number,
+          })),
+        });
+      });
+    });
   });
 
   describe('Group vms', () => {
-    afterEach(() => {
-      nock.cleanAll();
-    });
-
     describe('tts', () => {
       it('should send vms to group', async () => {
         // given
         const groupName = 'someGroupName';
         const tts = 'Some tts';
 
-        const req = nock(`${SMSAPI_API_URL}`)
+        const req = nock('https://smsapi.io/api')
           .post('/vms.do', {
             details: true,
             encoding: 'utf-8',
@@ -297,7 +441,7 @@ describe('Vms', () => {
         const groupNames = ['someGroupName1', 'someGroupName2'];
         const tts = 'Some tts';
 
-        const req = nock(`${SMSAPI_API_URL}`)
+        const req = nock('https://smsapi.io/api')
           .post('/vms.do', {
             details: true,
             encoding: 'utf-8',
@@ -345,13 +489,131 @@ describe('Vms', () => {
       });
     });
 
+    if (VMS_LOCAL_FILE_PATH) {
+      describe('local file', () => {
+        it('should send vms to group', async () => {
+          // given
+          const groupName = 'someGroupName';
+
+          const req = nock('https://smsapi.io/api')
+            .post('/vms.do', (body) => {
+              const data = hexToString(body);
+
+              return (
+                data.includes('Content-Disposition: form-data;') &&
+                data.includes('Content-Type: audio/wav') &&
+                data.includes('filename="vms.wav"')
+              );
+            })
+            .reply(200, {
+              count: 1,
+              list: [
+                {
+                  date_sent: 1598964973,
+                  error: null,
+                  id: 'someId',
+                  idx: null,
+                  number: 'someNumber',
+                  points: 0.16,
+                  status: 'QUEUE',
+                  submitted_number: 'someNumber',
+                },
+              ],
+            });
+
+          // when
+          const response = await smsapi.vms.sendVmsWithLocalFileToGroup(
+            groupName,
+            VMS_LOCAL_FILE_PATH
+          );
+
+          // then
+          expect(req.isDone()).toBeTruthy();
+          expect(response).toEqual({
+            count: 1,
+            list: [
+              {
+                dateSent: expect.any(Date),
+                error: null,
+                id: 'someId',
+                idx: null,
+                number: 'someNumber',
+                points: 0.16,
+                status: 'QUEUE',
+                submittedNumber: 'someNumber',
+              },
+            ],
+          });
+        });
+
+        it('should send vms to many groups', async () => {
+          // given
+          const groupNames = ['someGroupName1', 'someGroupName2'];
+
+          const req = nock('https://smsapi.io/api')
+            .post('/vms.do', (body) => {
+              const data = hexToString(body);
+
+              return (
+                data.includes('Content-Disposition: form-data;') &&
+                data.includes('Content-Type: audio/wav') &&
+                data.includes('filename="vms.wav"')
+              );
+            })
+            .reply(200, {
+              count: 1,
+              list: [
+                {
+                  date_sent: 1598964973,
+                  error: null,
+                  id: 'someId',
+                  idx: null,
+                  number: 'someNumber',
+                  points: 0.16,
+                  status: 'QUEUE',
+                  submitted_number: 'someNumber',
+                },
+              ],
+            });
+
+          // when
+          const response = await smsapi.vms.sendVmsWithLocalFileToGroup(
+            groupNames,
+            VMS_LOCAL_FILE_PATH
+          );
+
+          // then
+          expect(req.isDone()).toBeTruthy();
+          expect(response).toEqual({
+            count: 1,
+            list: [
+              {
+                dateSent: expect.any(Date),
+                error: null,
+                id: 'someId',
+                idx: null,
+                number: 'someNumber',
+                points: 0.16,
+                status: 'QUEUE',
+                submittedNumber: 'someNumber',
+              },
+            ],
+          });
+        });
+      });
+    } else {
+      console.warn(
+        'Please add VMS_LOCAL_FILE_PATH env to test vms with local path'
+      );
+    }
+
     describe('remote file', () => {
       it('should send vms to group', async () => {
         // given
         const groupName = 'someGroupName';
         const pathToRemoteFile = 'somePath';
 
-        const req = nock(`${SMSAPI_API_URL}`)
+        const req = nock('https://smsapi.io/api')
           .post('/vms.do', {
             details: true,
             encoding: 'utf-8',
@@ -405,7 +667,7 @@ describe('Vms', () => {
         const groupNames = ['someGroupName1', 'someGroupName2'];
         const pathToRemoteFile = 'somePath';
 
-        const req = nock(`${SMSAPI_API_URL}`)
+        const req = nock('https://smsapi.io/api')
           .post('/vms.do', {
             details: true,
             encoding: 'utf-8',
