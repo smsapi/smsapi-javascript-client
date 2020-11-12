@@ -50,6 +50,42 @@ describe('Contacts Groups', () => {
     ]);
   });
 
+  it('should get group by id', async () => {
+    // given
+    const group = {
+      contacts_count: 1,
+      created_by: 'someCreatedBy',
+      date_created: '1992-12-03',
+      date_updated: '1992-12-03',
+      description: 'someDescription',
+      id: 'someId',
+      idx: 'someIdx',
+      name: 'someName',
+      permissions: [],
+    };
+
+    const req = nock('https://smsapi.io/api')
+      .get(`/contacts/groups/${group.id}`)
+      .reply(200, group);
+
+    // when
+    const response = await smsapi.contacts.groups.getById(group.id);
+
+    // then
+    expect(req.isDone()).toBeTruthy();
+    expect(response).toEqual({
+      contactsCount: 1,
+      createdBy: 'someCreatedBy',
+      dateCreated: new Date('1992-12-03'),
+      dateUpdated: new Date('1992-12-03'),
+      description: 'someDescription',
+      id: 'someId',
+      idx: 'someIdx',
+      name: 'someName',
+      permissions: [],
+    });
+  });
+
   describe('create', () => {
     it('should create group', async () => {
       // given
