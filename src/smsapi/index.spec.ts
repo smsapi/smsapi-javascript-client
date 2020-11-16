@@ -1,5 +1,6 @@
 import nock from 'nock';
 
+import { API_URL } from '../constants';
 import { SMSAPI } from '../index';
 
 const token = 'someToken';
@@ -9,9 +10,9 @@ describe('SMSAPI', () => {
     nock.cleanAll();
   });
 
-  it('SMSAPI should call https://smsapi.io/api', async () => {
+  it(`SMSAPI should call ${API_URL}`, async () => {
     // given
-    nock('https://smsapi.io/api', {
+    nock(API_URL, {
       reqheaders: {
         authorization: `Bearer ${token}`,
       },

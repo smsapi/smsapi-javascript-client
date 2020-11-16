@@ -1,5 +1,6 @@
 import nock from 'nock';
 
+import { API_URL } from '../../constants';
 import { SMSAPI } from '../../smsapi';
 
 const smsapi = new SMSAPI('someToken');
@@ -18,7 +19,7 @@ describe('Sendernames', () => {
       status: 'ACTIVE',
     };
 
-    const req = nock('https://smsapi.io/api')
+    const req = nock(API_URL)
       .get('/sms/sendernames')
       .reply(200, {
         collection: [sendername],
@@ -50,7 +51,7 @@ describe('Sendernames', () => {
       status: 'ACTIVE',
     };
 
-    const req = nock('https://smsapi.io/api')
+    const req = nock(API_URL)
       .get(`/sms/sendernames/${sendername.sender}`)
       .reply(200, sendername);
 
@@ -76,7 +77,7 @@ describe('Sendernames', () => {
       status: 'ACTIVE',
     };
 
-    const req = nock('https://smsapi.io/api')
+    const req = nock(API_URL)
       .post('/sms/sendernames', {
         sender: sendername.sender,
       })
@@ -99,7 +100,7 @@ describe('Sendernames', () => {
     // given
     const sendername = 'sendername';
 
-    const req = nock('https://smsapi.io/api')
+    const req = nock(API_URL)
       .post(`/sms/sendernames/${sendername}/commands/make_default`)
       .reply(204);
 
@@ -115,7 +116,7 @@ describe('Sendernames', () => {
     // given
     const sendername = 'sendername';
 
-    const req = nock('https://smsapi.io/api')
+    const req = nock(API_URL)
       .delete(`/sms/sendernames/${sendername}`)
       .reply(204);
 

@@ -1,5 +1,6 @@
 import nock from 'nock';
 
+import { API_URL } from '../../../../constants';
 import { SMSAPI } from '../../../../index';
 
 import { Field } from './types/Field';
@@ -20,7 +21,7 @@ describe(`Contact's fields`, () => {
       type: 'phone_number',
     };
 
-    const request = nock('https://smsapi.io/api')
+    const request = nock(API_URL)
       .get('/contacts/fields')
       .reply(200, {
         collection: [field],
@@ -40,7 +41,7 @@ describe(`Contact's fields`, () => {
     const fieldName = 'someNewField';
     const fieldType: FieldType = 'phone_number';
 
-    const request = nock('https://smsapi.io/api')
+    const request = nock(API_URL)
       .post('/contacts/fields', {
         name: fieldName,
         type: fieldType,
@@ -67,7 +68,7 @@ describe(`Contact's fields`, () => {
     const fieldId = 'someFieldId';
     const fieldName = 'someUpdatedFieldName';
 
-    const request = nock('https://smsapi.io/api')
+    const request = nock(API_URL)
       .put(`/contacts/fields/${fieldId}`, {
         name: fieldName,
       })
@@ -92,7 +93,7 @@ describe(`Contact's fields`, () => {
     // given
     const fieldId = 'someFieldId';
 
-    const request = nock('https://smsapi.io/api')
+    const request = nock(API_URL)
       .delete(`/contacts/fields/${fieldId}`)
       .reply(204);
 

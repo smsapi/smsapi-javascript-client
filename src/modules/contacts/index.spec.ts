@@ -1,5 +1,6 @@
 import nock from 'nock';
 
+import { API_URL } from '../../constants';
 import { SMSAPI } from '../../smsapi';
 
 const smsapi = new SMSAPI('someToken');
@@ -24,7 +25,7 @@ describe('Contacts', () => {
       source: 'someSource',
     };
 
-    const req = nock('https://smsapi.io/api')
+    const req = nock(API_URL)
       .get(`/contacts/${contact.id}`)
       .reply(200, contact);
 
@@ -63,7 +64,7 @@ describe('Contacts', () => {
         source: 'someSource',
       };
 
-      const req = nock('https://smsapi.io/api')
+      const req = nock(API_URL)
         .get('/contacts')
         .reply(200, {
           collection: [contact],
@@ -105,7 +106,7 @@ describe('Contacts', () => {
         source: 'someSource',
       };
 
-      const req = nock('https://smsapi.io/api')
+      const req = nock(API_URL)
         .get('/contacts')
         .query({
           phone_number: contact.phone_number,
@@ -155,7 +156,7 @@ describe('Contacts', () => {
         source: 'someSource',
       };
 
-      const req = nock('https://smsapi.io/api')
+      const req = nock(API_URL)
         .post('/contacts', {
           phone_number: someNumber,
         })
@@ -186,7 +187,7 @@ describe('Contacts', () => {
         source: 'someSource',
       };
 
-      const req = nock('https://smsapi.io/api')
+      const req = nock(API_URL)
         .post('/contacts', {
           email: someEmail,
           phone_number: someNumber,
@@ -220,7 +221,7 @@ describe('Contacts', () => {
       source: 'someSource',
     };
 
-    const req = nock('https://smsapi.io/api')
+    const req = nock(API_URL)
       .put(`/contacts/${contact.id}`, {
         first_name: someFirstName,
       })
@@ -251,9 +252,7 @@ describe('Contacts', () => {
       source: 'someSource',
     };
 
-    const req = nock('https://smsapi.io/api')
-      .delete(`/contacts/${contact.id}`)
-      .reply(200);
+    const req = nock(API_URL).delete(`/contacts/${contact.id}`).reply(200);
 
     // when
     const response = await smsapi.contacts.remove(contact.id);
@@ -268,7 +267,7 @@ describe('Contacts', () => {
       // given
       const contactId = 'someContactId';
 
-      const req = nock('https://smsapi.io/api')
+      const req = nock(API_URL)
         .get(`/contacts/${contactId}/groups`)
         .reply(200, {
           collection: [
@@ -328,7 +327,7 @@ describe('Contacts', () => {
       const contactId = 'someContactId';
       const groupId = 'someGroupId';
 
-      const req = nock('https://smsapi.io/api')
+      const req = nock(API_URL)
         .get(`/contacts/${contactId}/groups/${groupId}`)
         .reply(200, {
           contact_expire_after: null,
@@ -383,7 +382,7 @@ describe('Contacts', () => {
       const contactId = 'someContactId';
       const groupId = 'someGroupId';
 
-      const req = nock('https://smsapi.io/api')
+      const req = nock(API_URL)
         .put(`/contacts/${contactId}/groups/${groupId}`)
         .reply(200, {
           collection: [
@@ -446,7 +445,7 @@ describe('Contacts', () => {
       const contactId = 'someContactId';
       const groupId = 'someGroupId';
 
-      const req = nock('https://smsapi.io/api')
+      const req = nock(API_URL)
         .delete(`/contacts/${contactId}/groups/${groupId}`)
         .reply(204);
 

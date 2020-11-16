@@ -1,5 +1,6 @@
 import nock from 'nock';
 
+import { API_URL } from '../../constants';
 import { SMSAPI } from '../../smsapi';
 
 const smsapi = new SMSAPI('someToken');
@@ -29,7 +30,7 @@ describe('Mms', () => {
       const number = '500000000';
       const subject = 'Some subject';
 
-      const req = nock('https://smsapi.io/api')
+      const req = nock(API_URL)
         .post('/mms.do', {
           details: true,
           encoding: 'utf-8',
@@ -81,7 +82,7 @@ describe('Mms', () => {
       const numbers = ['500000000', '500000001'];
       const subject = 'Some subject';
 
-      const req = nock('https://smsapi.io/api')
+      const req = nock(API_URL)
         .post('/mms.do', {
           details: true,
           encoding: 'utf-8',
@@ -131,7 +132,7 @@ describe('Mms', () => {
       const groupName = 'someGroupName';
       const subject = 'Some subject';
 
-      const req = nock('https://smsapi.io/api')
+      const req = nock(API_URL)
         .post('/mms.do', {
           details: true,
           encoding: 'utf-8',
@@ -187,7 +188,7 @@ describe('Mms', () => {
       const groupNames = ['someGroupName1', 'someGroupName2'];
       const subject = 'Some subject';
 
-      const req = nock('https://smsapi.io/api')
+      const req = nock(API_URL)
         .post('/mms.do', {
           details: true,
           encoding: 'utf-8',

@@ -1,5 +1,6 @@
 import nock from 'nock';
 
+import { API_URL } from '../../constants';
 import { SMSAPI } from '../../smsapi';
 
 const smsapi = new SMSAPI('someToken');
@@ -19,7 +20,7 @@ describe('HLR', () => {
       status: 'OK',
     };
 
-    const req = nock('https://smsapi.io/api')
+    const req = nock(API_URL)
       .get('/hlr.do')
       .query({
         format: 'json',
@@ -46,7 +47,7 @@ describe('HLR', () => {
       status: 'OK',
     };
 
-    const req = nock('https://smsapi.io/api')
+    const req = nock(API_URL)
       .get('/hlr.do')
       .query({
         format: 'json',
@@ -73,7 +74,7 @@ describe('HLR', () => {
       status: 'OK',
     }));
 
-    const req = nock('https://smsapi.io/api')
+    const req = nock(API_URL)
       .get('/hlr.do')
       .query({
         format: 'json',
@@ -100,7 +101,7 @@ describe('HLR', () => {
       status: 'OK',
     }));
 
-    const req = nock('https://smsapi.io/api')
+    const req = nock(API_URL)
       .get('/hlr.do')
       .query({
         format: 'json',
@@ -120,7 +121,7 @@ describe('HLR', () => {
   it('should handle one invalid number', async () => {
     // given
     const someNumber = '48500';
-    const req = nock('https://smsapi.io/api')
+    const req = nock(API_URL)
       .get('/hlr.do')
       .query({
         format: 'json',
@@ -154,7 +155,7 @@ describe('HLR', () => {
       status: 'OK',
     };
 
-    const req = nock('https://smsapi.io/api')
+    const req = nock(API_URL)
       .get('/hlr.do')
       .query({
         format: 'json',

@@ -1,5 +1,6 @@
 import nock from 'nock';
 
+import { API_URL } from '../../../../constants';
 import { SMSAPI } from '../../../../smsapi';
 
 const smsapi = new SMSAPI('someToken');
@@ -23,7 +24,7 @@ describe('Contacts Groups', () => {
       permissions: [],
     };
 
-    const req = nock('https://smsapi.io/api')
+    const req = nock(API_URL)
       .get('/contacts/groups')
       .reply(200, {
         collection: [group],
@@ -64,7 +65,7 @@ describe('Contacts Groups', () => {
       permissions: [],
     };
 
-    const req = nock('https://smsapi.io/api')
+    const req = nock(API_URL)
       .get(`/contacts/groups/${group.id}`)
       .reply(200, group);
 
@@ -101,9 +102,7 @@ describe('Contacts Groups', () => {
         permissions: [],
       };
 
-      const req = nock('https://smsapi.io/api')
-        .post('/contacts/groups')
-        .reply(201, group);
+      const req = nock(API_URL).post('/contacts/groups').reply(201, group);
 
       // when
       const response = await smsapi.contacts.groups.create(group.name);
@@ -137,7 +136,7 @@ describe('Contacts Groups', () => {
         permissions: [],
       };
 
-      const req = nock('https://smsapi.io/api')
+      const req = nock(API_URL)
         .post('/contacts/groups', {
           contact_expire_after: 5,
           description: group.description,
@@ -185,7 +184,7 @@ describe('Contacts Groups', () => {
         permissions: [],
       };
 
-      const req = nock('https://smsapi.io/api')
+      const req = nock(API_URL)
         .put(`/contacts/groups/${group.id}`, {
           description,
         })
@@ -225,7 +224,7 @@ describe('Contacts Groups', () => {
         permissions: [],
       };
 
-      const req = nock('https://smsapi.io/api')
+      const req = nock(API_URL)
         .put(`/contacts/groups/${group.id}`, {
           contact_expire_after: 5,
           description: group.description,
@@ -263,7 +262,7 @@ describe('Contacts Groups', () => {
       // given
       const groupId = 'someGroupId';
 
-      const req = nock('https://smsapi.io/api')
+      const req = nock(API_URL)
         .delete(`/contacts/groups/${groupId}`)
         .query({
           delete_contacts: false,
@@ -282,7 +281,7 @@ describe('Contacts Groups', () => {
       // given
       const groupId = 'someGroupId';
 
-      const req = nock('https://smsapi.io/api')
+      const req = nock(API_URL)
         .delete(`/contacts/groups/${groupId}`)
         .query({
           delete_contacts: true,

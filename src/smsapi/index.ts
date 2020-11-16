@@ -14,12 +14,12 @@ import { Templates } from '../modules/templates';
 import { Vms } from '../modules/vms';
 // @ts-ignore TS6059
 import { version } from '../../package.json';
+import { API_URL } from '../constants';
 
 import { extractDataFromResponse } from './httpClient/extractDataFromResponse';
 /* eslint-enable @typescript-eslint/ban-ts-comment */
 
 export class SMSAPI {
-  private apiUrl = 'https://smsapi.io/api';
   private accessToken: string;
 
   private httpClient: AxiosInstance;
@@ -57,7 +57,7 @@ export class SMSAPI {
   private setHttpClient(): AxiosInstance {
     const httpClient = axios.create({
       adapter,
-      baseURL: this.apiUrl,
+      baseURL: API_URL,
       headers: {
         Accept: 'application/json',
         Authorization: `Bearer ${this.accessToken}`,

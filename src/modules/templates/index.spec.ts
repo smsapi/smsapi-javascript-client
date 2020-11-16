@@ -1,5 +1,6 @@
 import nock from 'nock';
 
+import { API_URL } from '../../constants';
 import { SMSAPI } from '../../smsapi';
 
 const smsapi = new SMSAPI('someToken');
@@ -17,7 +18,7 @@ describe('Templates', () => {
       template: 'someTemplate',
     };
 
-    const req = nock('https://smsapi.io/api')
+    const req = nock(API_URL)
       .get('/sms/templates')
       .reply(200, {
         collection: [template],
@@ -43,7 +44,7 @@ describe('Templates', () => {
       template: 'someTemplate',
     };
 
-    const req = nock('https://smsapi.io/api')
+    const req = nock(API_URL)
       .get(`/sms/templates/${template.id}`)
       .reply(200, template);
 
@@ -62,7 +63,7 @@ describe('Templates', () => {
       template: 'someNewTemplate',
     };
 
-    const req = nock('https://smsapi.io/api')
+    const req = nock(API_URL)
       .post('/sms/templates', newTemplate)
       .reply(200, {
         id: 'someTemplateId',
@@ -89,13 +90,11 @@ describe('Templates', () => {
       template: 'someNewTemplate',
     };
 
-    const req = nock('https://smsapi.io/api')
-      .post('/sms/templates', newTemplate)
-      .reply(200, {
-        id: 'someTemplateId',
-        name: newTemplate.name,
-        template: newTemplate.template,
-      });
+    const req = nock(API_URL).post('/sms/templates', newTemplate).reply(200, {
+      id: 'someTemplateId',
+      name: newTemplate.name,
+      template: newTemplate.template,
+    });
 
     // when
     const response = await smsapi.templates.create(newTemplate);
@@ -117,7 +116,7 @@ describe('Templates', () => {
       template: 'someNewTemplate',
     };
 
-    const req = nock('https://smsapi.io/api')
+    const req = nock(API_URL)
       .put(`/sms/templates/${template.id}`, {
         name: template.name,
       })
@@ -137,9 +136,7 @@ describe('Templates', () => {
     // given
     const templateId = 'someTemplateId';
 
-    const req = nock('https://smsapi.io/api')
-      .delete(`/sms/templates/${templateId}`)
-      .reply(204);
+    const req = nock(API_URL).delete(`/sms/templates/${templateId}`).reply(204);
 
     // when
     const response = await smsapi.templates.remove(templateId);
