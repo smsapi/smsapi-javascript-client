@@ -1,5 +1,6 @@
 import nock from 'nock';
 
+import { API_URL } from '../../constants';
 import { SMSAPI } from '../../smsapi';
 
 describe('Profile', () => {
@@ -11,7 +12,7 @@ describe('Profile', () => {
     // given
     const smsapi = new SMSAPI('someToken');
 
-    const req = nock('https://smsapi.io/api').get('/profile').reply(200, {
+    const req = nock(API_URL).get('/profile').reply(200, {
       email: 'someEmail',
       id: 'someId',
       name: 'someName',

@@ -1,5 +1,6 @@
 import nock from 'nock';
 
+import { API_URL } from '../../constants';
 import { SMSAPI } from '../../smsapi';
 
 import { SmsDetails } from './types/SmsDetails';
@@ -17,7 +18,7 @@ describe('Sms', () => {
       const number = '500000000';
       const message = 'someMessage';
 
-      const req = nock('https://smsapi.io/api')
+      const req = nock(API_URL)
         .post('/sms.do', {
           details: true,
           encoding: 'utf-8',
@@ -70,7 +71,7 @@ describe('Sms', () => {
       const numbers = ['500000000', '500000001'];
       const message = 'someMessage';
 
-      const req = nock('https://smsapi.io/api')
+      const req = nock(API_URL)
         .post('/sms.do', {
           details: true,
           encoding: 'utf-8',
@@ -119,7 +120,7 @@ describe('Sms', () => {
       const number = '500000000';
       const message = 'someMessage';
 
-      const req = nock('https://smsapi.io/api')
+      const req = nock(API_URL)
         .post('/sms.do', {
           details: true,
           encoding: 'utf-8',
@@ -175,7 +176,7 @@ describe('Sms', () => {
       const groupName = 'someGroupName';
       const message = 'someMessage';
 
-      const req = nock('https://smsapi.io/api')
+      const req = nock(API_URL)
         .post('/sms.do', {
           details: true,
           encoding: 'utf-8',
@@ -234,7 +235,7 @@ describe('Sms', () => {
       const groupsNames = ['someGroupName1', 'someGroupName2'];
       const message = 'someMessage';
 
-      const req = nock('https://smsapi.io/api')
+      const req = nock(API_URL)
         .post('/sms.do', {
           details: true,
           encoding: 'utf-8',
@@ -293,7 +294,7 @@ describe('Sms', () => {
       const groupName = 'someGroupName';
       const message = 'someMessage';
 
-      const req = nock('https://smsapi.io/api')
+      const req = nock(API_URL)
         .post('/sms.do', {
           details: true,
           encoding: 'utf-8',
@@ -354,7 +355,7 @@ describe('Sms', () => {
       // given
       const scheduledSmsId = 'someScheduledSmsId';
 
-      const req = nock('https://smsapi.io/api')
+      const req = nock(API_URL)
         .post('/sms.do', {
           format: 'json',
           sch_del: scheduledSmsId,
@@ -388,7 +389,7 @@ describe('Sms', () => {
       // given
       const scheduledSmsIds = ['someScheduledSmsId1', 'someScheduledSmsId2'];
 
-      const req = nock('https://smsapi.io/api')
+      const req = nock(API_URL)
         .post('/sms.do', {
           format: 'json',
           sch_del: scheduledSmsIds.join(','),
@@ -453,7 +454,7 @@ describe('Sms', () => {
       udh: 'someUdh',
     };
 
-    const req = nock('https://smsapi.io/api')
+    const req = nock(API_URL)
       .post('/sms.do', {
         allow_duplicates: details.allowDuplicates,
         check_idx: details.checkIdx,

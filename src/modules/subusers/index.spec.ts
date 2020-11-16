@@ -1,6 +1,7 @@
 import nock from 'nock';
 import { v4 as uuidv4 } from 'uuid';
 
+import { API_URL } from '../../constants';
 import { SMSAPI } from '../../smsapi';
 
 import { NewSubuser } from './types/NewSubuser';
@@ -25,7 +26,7 @@ describe('Subusers', () => {
       username: 'someUsername',
     };
 
-    const req = nock('https://smsapi.io/api')
+    const req = nock(API_URL)
       .get('/subusers')
       .reply(200, {
         collection: [subuser],
@@ -68,9 +69,7 @@ describe('Subusers', () => {
       username: 'someUsername',
     };
 
-    const req = nock('https://smsapi.io/api')
-      .get(`/subusers/${subuserId}`)
-      .reply(200, subuser);
+    const req = nock(API_URL).get(`/subusers/${subuserId}`).reply(200, subuser);
 
     // when
     const response = await smsapi.subusers.getById(subuserId);
@@ -98,7 +97,7 @@ describe('Subusers', () => {
       },
     };
 
-    const req = nock('https://smsapi.io/api')
+    const req = nock(API_URL)
       .post('/subusers')
       .reply(200, {
         active: true,
@@ -135,7 +134,7 @@ describe('Subusers', () => {
       },
     };
 
-    const req = nock('https://smsapi.io/api')
+    const req = nock(API_URL)
       .post('/subusers', {
         ...subuser,
         credentials: {
@@ -172,7 +171,7 @@ describe('Subusers', () => {
       username: 'someUsername',
     };
 
-    const req = nock('https://smsapi.io/api')
+    const req = nock(API_URL)
       .put(`/subusers/${subuser.id}`, {
         description,
       })
@@ -214,7 +213,7 @@ describe('Subusers', () => {
       },
     };
 
-    const req = nock('https://smsapi.io/api')
+    const req = nock(API_URL)
       .put(`/subusers/${subuserId}`, {
         ...subuser,
         credentials: {
@@ -239,9 +238,7 @@ describe('Subusers', () => {
     // given
     const subuserId = 'someSubuserId';
 
-    const req = nock('https://smsapi.io/api')
-      .delete(`/subusers/${subuserId}`)
-      .reply(204);
+    const req = nock(API_URL).delete(`/subusers/${subuserId}`).reply(204);
 
     // when
     const response = await smsapi.subusers.remove(subuserId);

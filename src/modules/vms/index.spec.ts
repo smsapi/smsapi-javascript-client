@@ -1,5 +1,6 @@
 import nock from 'nock';
 
+import { API_URL } from '../../constants';
 import { SMSAPI } from '../../smsapi';
 import { hexToString } from '../../testHelpers/hexToString';
 
@@ -19,7 +20,7 @@ describe('Vms', () => {
         const number = '500000000';
         const tts = 'Some tts';
 
-        const req = nock('https://smsapi.io/api')
+        const req = nock(API_URL)
           .post('/vms.do', {
             details: true,
             encoding: 'utf-8',
@@ -71,7 +72,7 @@ describe('Vms', () => {
         const number = '500000000';
         const tts = 'Some tts';
 
-        const req = nock('https://smsapi.io/api')
+        const req = nock(API_URL)
           .post('/vms.do', {
             details: true,
             encoding: 'utf-8',
@@ -123,7 +124,7 @@ describe('Vms', () => {
         const numbers = ['500000000', '500000001'];
         const tts = 'Some tts';
 
-        const req = nock('https://smsapi.io/api')
+        const req = nock(API_URL)
           .post('/vms.do', {
             details: true,
             encoding: 'utf-8',
@@ -173,7 +174,7 @@ describe('Vms', () => {
           // given
           const number = '500000000';
 
-          const req = nock('https://smsapi.io/api')
+          const req = nock(API_URL)
             .post('/vms.do', (body) => {
               const data = hexToString(body);
 
@@ -228,7 +229,7 @@ describe('Vms', () => {
           // given
           const numbers = ['500000000', '500000001'];
 
-          const req = nock('https://smsapi.io/api')
+          const req = nock(API_URL)
             .post('/vms.do', (body) => {
               const data = hexToString(body);
 
@@ -287,7 +288,7 @@ describe('Vms', () => {
         const number = '500000000';
         const url = 'someUrl';
 
-        const req = nock('https://smsapi.io/api')
+        const req = nock(API_URL)
           .post('/vms.do', {
             details: true,
             encoding: 'utf-8',
@@ -338,7 +339,7 @@ describe('Vms', () => {
         const numbers = ['500000000', '500000001'];
         const url = 'someUrl';
 
-        const req = nock('https://smsapi.io/api')
+        const req = nock(API_URL)
           .post('/vms.do', {
             details: true,
             encoding: 'utf-8',
@@ -389,7 +390,7 @@ describe('Vms', () => {
         const groupName = 'someGroupName';
         const tts = 'Some tts';
 
-        const req = nock('https://smsapi.io/api')
+        const req = nock(API_URL)
           .post('/vms.do', {
             details: true,
             encoding: 'utf-8',
@@ -441,7 +442,7 @@ describe('Vms', () => {
         const groupNames = ['someGroupName1', 'someGroupName2'];
         const tts = 'Some tts';
 
-        const req = nock('https://smsapi.io/api')
+        const req = nock(API_URL)
           .post('/vms.do', {
             details: true,
             encoding: 'utf-8',
@@ -495,7 +496,7 @@ describe('Vms', () => {
           // given
           const groupName = 'someGroupName';
 
-          const req = nock('https://smsapi.io/api')
+          const req = nock(API_URL)
             .post('/vms.do', (body) => {
               const data = hexToString(body);
 
@@ -550,7 +551,7 @@ describe('Vms', () => {
           // given
           const groupNames = ['someGroupName1', 'someGroupName2'];
 
-          const req = nock('https://smsapi.io/api')
+          const req = nock(API_URL)
             .post('/vms.do', (body) => {
               const data = hexToString(body);
 
@@ -613,7 +614,7 @@ describe('Vms', () => {
         const groupName = 'someGroupName';
         const pathToRemoteFile = 'somePath';
 
-        const req = nock('https://smsapi.io/api')
+        const req = nock(API_URL)
           .post('/vms.do', {
             details: true,
             encoding: 'utf-8',
@@ -667,7 +668,7 @@ describe('Vms', () => {
         const groupNames = ['someGroupName1', 'someGroupName2'];
         const pathToRemoteFile = 'somePath';
 
-        const req = nock('https://smsapi.io/api')
+        const req = nock(API_URL)
           .post('/vms.do', {
             details: true,
             encoding: 'utf-8',

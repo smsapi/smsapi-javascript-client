@@ -4,6 +4,7 @@ import isEqual from 'lodash/isEqual';
 import { SMSAPI } from '../../../../smsapi';
 import { GetContactsQueryParams } from '../../types/GetContactsQueryParams';
 import { NewContact } from '../../types/NewContact';
+import { API_URL } from '../../../../constants';
 
 const smsapi = new SMSAPI('someToken');
 
@@ -42,7 +43,7 @@ describe('prepareParamsForRequest', () => {
       q: contactParams.q,
     };
 
-    const getContactRequest = nock('https://smsapi.io/api')
+    const getContactRequest = nock(API_URL)
       .get('/contacts')
       .query(body)
       .reply(200);
@@ -84,7 +85,7 @@ describe('prepareParamsForRequest', () => {
       q: contactParams.q,
     };
 
-    const getContactRequest = nock('https://smsapi.io/api')
+    const getContactRequest = nock(API_URL)
       .get('/contacts')
       .query(body)
       .reply(200);
@@ -123,7 +124,7 @@ describe('prepareParamsForRequest', () => {
       source: contactDetails.source,
     };
 
-    const createContactRequest = nock('https://smsapi.io/api')
+    const createContactRequest = nock(API_URL)
       .post('/contacts', (requestBody): boolean => isEqual(body, requestBody))
       .reply(201);
 
