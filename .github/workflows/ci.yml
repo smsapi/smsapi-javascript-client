@@ -18,6 +18,6 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - run: yarn install --ignore-scripts
-    - run: yarn test
+    - run: yarn tsdx test
       env:
         VMS_LOCAL_FILE_PATH: src/testHelpers/files/vms.wav
