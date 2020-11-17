@@ -1133,10 +1133,13 @@ var Vms = /*#__PURE__*/function (_BaseMessageModule) {
 
 var version = "2.0.0";
 
+var API_URL = 'https://smsapi.io/api';
+
 /* eslint-disable @typescript-eslint/ban-ts-comment */
+/* eslint-enable @typescript-eslint/ban-ts-comment */
+
 var SMSAPI = /*#__PURE__*/function () {
   function SMSAPI(accessToken) {
-    this.apiUrl = 'https://smsapi.io/api';
     this.accessToken = accessToken;
     this.httpClient = this.setHttpClient();
     this.contacts = new Contacts(this.httpClient);
@@ -1159,7 +1162,7 @@ var SMSAPI = /*#__PURE__*/function () {
   _proto.setHttpClient = function setHttpClient() {
     var httpClient = axios.create({
       adapter: adapter,
-      baseURL: this.apiUrl,
+      baseURL: API_URL,
       headers: {
         Accept: 'application/json',
         Authorization: "Bearer " + this.accessToken,
