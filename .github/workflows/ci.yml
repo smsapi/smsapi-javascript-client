@@ -16,5 +16,7 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - run: yarn install
+    - run: yarn install --ignore-scripts
     - run: yarn test
+      env:
+        VMS_LOCAL_FILE_PATH: src/testHelpers/files/vms.wav
