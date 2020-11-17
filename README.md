@@ -15,8 +15,8 @@ import { SMSAPI, MessageResponse } from 'smsapi';
 
 const smsapi = new SMSAPI('oAuthToken');
 
-const sendMessage = async (): Promise<MessageResponse> => {
-  return await smsapi.sms.sendSms('605xxxxxx', 'My first message!');
+const response = async (): Promise<MessageResponse> => {
+  return await smsapi.sms.sendSms('+48605xxxxxx', 'My first message!');
 };
 ```
 
