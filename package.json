@@ -13,7 +13,6 @@
   "scripts": {
     "build": "tsdx build",
     "lint": "eslint .",
-    "prepare": "tsdx build",
     "start": "tsdx watch",
     "test": "env-cmd -f .env.test tsdx test --runInBand"
   },
