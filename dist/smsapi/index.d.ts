@@ -7,9 +7,7 @@ import { Sms } from '../modules/sms';
 import { Subusers } from '../modules/subusers';
 import { Templates } from '../modules/templates';
 import { Vms } from '../modules/vms';
-export * from '../types';
 export declare class SMSAPI {
-    private apiUrl;
     private accessToken;
     private httpClient;
     contacts: Contacts;
