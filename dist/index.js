@@ -2,7 +2,7 @@
 'use strict'
 
 if (process.env.NODE_ENV === 'production') {
-  module.exports = require('./smsapi-javascript-client.cjs.production.min.js')
+  module.exports = require('./smsapi.cjs.production.min.js')
 } else {
-  module.exports = require('./smsapi-javascript-client.cjs.development.js')
+  module.exports = require('./smsapi.cjs.development.js')
 }

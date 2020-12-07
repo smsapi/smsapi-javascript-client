@@ -4,7 +4,7 @@
   "license": "Apache-2.0",
   "author": "SMSAPI <info@smsapi.pl>",
   "main": "dist/index.js",
-  "module": "dist/smsapi-javascript-client.esm.js",
+  "module": "dist/smsapi.esm.js",
   "typings": "dist/index.d.ts",
   "files": [
     "dist",

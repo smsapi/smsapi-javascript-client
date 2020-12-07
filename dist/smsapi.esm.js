@@ -1,22 +1,16 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', { value: true });
-
-function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
-
-var axios = _interopDefault(require('axios'));
-var adapter = _interopDefault(require('axios/lib/adapters/http'));
-var mapKeys = _interopDefault(require('lodash/mapKeys'));
-var snakeCase = _interopDefault(require('lodash/snakeCase'));
-var camelCase = _interopDefault(require('lodash/camelCase'));
-var forEach = _interopDefault(require('lodash/forEach'));
-var isArray = _interopDefault(require('lodash/isArray'));
-var isDate = _interopDefault(require('lodash/isDate'));
-var isObject = _interopDefault(require('lodash/isObject'));
-var querystring = require('querystring');
-var mapValues = _interopDefault(require('lodash/mapValues'));
-var fs = _interopDefault(require('fs'));
-var FormData = _interopDefault(require('form-data'));
+import axios from 'axios';
+import adapter from 'axios/lib/adapters/http';
+import mapKeys from 'lodash-es/mapKeys';
+import snakeCase from 'lodash-es/snakeCase';
+import camelCase from 'lodash-es/camelCase';
+import forEach from 'lodash-es/forEach';
+import isArray from 'lodash-es/isArray';
+import isDate from 'lodash-es/isDate';
+import isObject from 'lodash-es/isObject';
+import { stringify } from 'querystring';
+import mapValues from 'lodash-es/mapValues';
+import fs from 'fs';
+import FormData from 'form-data';
 
 function _extends() {
   _extends = Object.assign || function (target) {
@@ -138,14 +132,14 @@ var prepareParamsForRequest = function prepareParamsForRequest(config) {
     return _extends({}, config, {
       params: formattedParams,
       paramsSerializer: function paramsSerializer(params) {
-        return querystring.stringify(params);
+        return stringify(params);
       }
     });
   }
 
   if (data) {
     return _extends({}, config, {
-      data: querystring.stringify(formatKeys$1(data))
+      data: stringify(formatKeys$1(data))
     });
   }
 
@@ -1182,5 +1176,5 @@ var SMSAPI = /*#__PURE__*/function () {
   return SMSAPI;
 }();
 
-exports.SMSAPI = SMSAPI;
-//# sourceMappingURL=smsapi-javascript-client.cjs.development.js.map
+export { SMSAPI };
+//# sourceMappingURL=smsapi.esm.js.map
