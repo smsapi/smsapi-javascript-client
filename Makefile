@@ -37,5 +37,5 @@ build: ## build
 build-watch: ## build with watch
 	${DOCKER_RUN_NODE} yarn start
 
-test-lib: ## run test
-	${DOCKER_RUN} --env-file ./.env.test ${NODE_IMAGE} yarn test
+test: ## run test
+	${DOCKER_RUN_NODE} yarn test
