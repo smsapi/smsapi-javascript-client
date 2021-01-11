@@ -19,6 +19,7 @@ DOCKER_RUN = docker run \
 	--env NODE_ENV \
 	--user ${USERID}:${USERID} \
 	--rm \
+  --tty \
   --interactive
 
 DOCKER_RUN_NODE = ${DOCKER_RUN} \
