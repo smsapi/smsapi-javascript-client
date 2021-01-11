@@ -7,8 +7,7 @@
   "module": "dist/smsapi.esm.js",
   "typings": "dist/index.d.ts",
   "files": [
-    "dist",
-    "src"
+    "dist"
   ],
   "scripts": {
     "build": "tsdx build",
