@@ -10,7 +10,7 @@ NODE_ENV ?= development
 export NODE_ENV
 
 APP_VOLUME=${PWD}:/app
-NODE_IMAGE=node:12.8
+NODE_IMAGE=node:12.8-alpine
 USERID=$(shell id -u)
 
 DOCKER_RUN = docker run \
