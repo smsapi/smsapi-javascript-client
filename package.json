@@ -13,7 +13,9 @@
     "build": "tsdx build",
     "lint": "eslint .",
     "start": "tsdx watch",
-    "test": "tsdx test --runInBand"
+    "test": "tsdx test --runInBand",
+    "prepare": "yarn build",
+    "prepublishOnly": "yarn lint && yarn test"
   },
   "dependencies": {
     "axios": "^0.19.2",
