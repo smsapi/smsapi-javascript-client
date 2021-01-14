@@ -1,5 +1,6 @@
 {
   "include": ["src", "types"],
+  "exclude": ["src/testHelpers"],
   "compilerOptions": {
     "module": "esnext",
     "lib": ["dom", "esnext"],
