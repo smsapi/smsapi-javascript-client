@@ -10,7 +10,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsdx build",
+    "build": "cross-env NODE_ENV=production tsdx build",
     "lint": "eslint .",
     "start": "tsdx watch",
     "test": "tsdx test --runInBand",
@@ -27,6 +27,7 @@
     "@types/uuid": "^8.3.0",
     "@typescript-eslint/eslint-plugin": "^3.9.0",
     "@typescript-eslint/parser": "^3.9.0",
+    "cross-env": "^7.0.3",
     "eslint": "^7.6.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-config-standard": "^14.1.1",
