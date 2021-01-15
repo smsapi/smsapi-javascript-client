@@ -1,6 +1,6 @@
 {
   "include": ["src", "types"],
-  "exclude": ["src/testHelpers"],
+  "exclude": ["src/testHelpers", "src/**/*.spec.ts"],
   "compilerOptions": {
     "module": "esnext",
     "lib": ["dom", "esnext"],
@@ -9,18 +9,16 @@
     "sourceMap": true,
     "rootDir": "./src",
     "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
     "moduleResolution": "node",
-    "baseUrl": "./",
-    "paths": {
-      "*": ["src/*", "node_modules/*"]
-    },
     "jsx": "react",
     "esModuleInterop": true,
-    "resolveJsonModule": true,
-    "strictPropertyInitialization": false
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "strictPropertyInitialization": false,
+    "noEmit": true
   }
 }
