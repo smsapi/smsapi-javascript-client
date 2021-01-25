@@ -7,6 +7,7 @@ import snakeCase from 'lodash/snakeCase';
 
 import { BaseModule } from '../baseModule';
 import { SmsDetails } from '../sms/types/SmsDetails';
+import { ErrorResponse, isErrorResponse } from '../../types/ErrorResponse';
 import { MessageResponse } from '../../types/MessageResponse';
 
 import {
@@ -39,7 +40,7 @@ export class BaseMessageModule extends BaseModule {
     content: MessageContent,
     recipient: Recipient,
     details?: SmsDetails
-  ): Promise<MessageResponse> {
+  ): Promise<MessageResponse | ErrorResponse> {
     const body: Record<string, unknown> = {
       details: true,
       encoding: 'utf-8',
@@ -88,15 +89,15 @@ export class BaseMessageModule extends BaseModule {
         }
       );
 
-      return this.formatSmsResponse(data);
+      return this.formatResponse(data);
     }
 
-    const data = await this.httpClient.post<MessageResponse, MessageResponse>(
-      this.endpoint,
-      body
-    );
+    const data = await this.httpClient.post<
+      MessageResponse | ErrorResponse,
+      MessageResponse | ErrorResponse
+    >(this.endpoint, body);
 
-    return this.formatSmsResponse(data);
+    return this.formatResponse(data);
   }
 
   private isNumberRecipient(
@@ -192,7 +193,13 @@ export class BaseMessageModule extends BaseModule {
     });
   }
 
-  protected formatSmsResponse(response: MessageResponse): MessageResponse {
+  protected formatResponse(
+    response: MessageResponse | ErrorResponse
+  ): MessageResponse | ErrorResponse {
+    if (isErrorResponse(response)) {
+      return response;
+    }
+
     return {
       ...response,
       list: response.list.map((sms) => ({

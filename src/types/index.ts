@@ -16,12 +16,14 @@ import { SubuserPoints } from '../modules/subusers/types/SubuserPoints';
 import { Template } from '../modules/templates/types/Template';
 import { UpdateSubuser } from '../modules/subusers/types/UpdateSubuser';
 
+import { ErrorResponse } from './ErrorResponse';
 import { MessageStatus } from './MessageStatus';
 import { MessageResponse } from './MessageResponse';
 import { ApiCollection } from './ApiCollection';
 
 export {
   ApiCollection,
+  ErrorResponse,
   HlrCheck,
   HlrCheckError,
   HlrCheckResponse,
