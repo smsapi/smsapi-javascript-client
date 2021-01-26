@@ -7,8 +7,12 @@ import snakeCase from 'lodash/snakeCase';
 
 import { BaseModule } from '../baseModule';
 import { SmsDetails } from '../sms/types/SmsDetails';
-import { ErrorResponse, isErrorResponse } from '../../types/ErrorResponse';
 import { MessageResponse } from '../../types/MessageResponse';
+import {
+  MessageError,
+  MessageErrorResponse,
+  isMessageErrorResponseData,
+} from '../../errors/MessageResponseError';
 
 import {
   MessageContent,
@@ -40,7 +44,7 @@ export class BaseMessageModule extends BaseModule {
     content: MessageContent,
     recipient: Recipient,
     details?: SmsDetails
-  ): Promise<MessageResponse | ErrorResponse> {
+  ): Promise<MessageResponse> {
     const body: Record<string, unknown> = {
       details: true,
       encoding: 'utf-8',
@@ -81,21 +85,28 @@ export class BaseMessageModule extends BaseModule {
     if (this.isVmsLocalFile(content)) {
       const formData = this.getFormDataForVmsLocalFile(body, content);
 
-      const data = await this.httpClient.post<MessageResponse, MessageResponse>(
-        this.endpoint,
-        formData.getBuffer(),
-        {
-          headers: formData.getHeaders(),
-        }
-      );
+      const data = await this.httpClient.post<
+        MessageResponse | MessageErrorResponse,
+        MessageResponse | MessageErrorResponse
+      >(this.endpoint, formData.getBuffer(), {
+        headers: formData.getHeaders(),
+      });
+
+      if (isMessageErrorResponseData(data)) {
+        throw new MessageError(data);
+      }
 
       return this.formatResponse(data);
     }
 
     const data = await this.httpClient.post<
-      MessageResponse | ErrorResponse,
-      MessageResponse | ErrorResponse
+      MessageResponse | MessageErrorResponse,
+      MessageResponse | MessageErrorResponse
     >(this.endpoint, body);
+
+    if (isMessageErrorResponseData(data)) {
+      throw new MessageError(data);
+    }
 
     return this.formatResponse(data);
   }
@@ -193,13 +204,7 @@ export class BaseMessageModule extends BaseModule {
     });
   }
 
-  protected formatResponse(
-    response: MessageResponse | ErrorResponse
-  ): MessageResponse | ErrorResponse {
-    if (isErrorResponse(response)) {
-      return response;
-    }
-
+  protected formatResponse(response: MessageResponse): MessageResponse {
     return {
       ...response,
       list: response.list.map((sms) => ({

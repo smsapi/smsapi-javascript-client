@@ -1,6 +1,5 @@
 import { BaseMessageModule } from '../baseMessageModule';
 import { MessageResponse } from '../../types/MessageResponse';
-import { ErrorResponse } from '../../types/ErrorResponse';
 
 import { VmsTtsLector } from './types/VmsTtsLector';
 import { VmsDetails } from './types/VmsDetails';
@@ -13,7 +12,7 @@ export class Vms extends BaseMessageModule {
     tts: string,
     ttsLector?: VmsTtsLector,
     details?: VmsDetails
-  ): Promise<MessageResponse | ErrorResponse> {
+  ): Promise<MessageResponse> {
     return await this.send(
       {
         tts,
@@ -30,7 +29,7 @@ export class Vms extends BaseMessageModule {
     numbers: string | string[],
     pathToLocaleFile: string,
     details?: VmsDetails
-  ): Promise<MessageResponse | ErrorResponse> {
+  ): Promise<MessageResponse> {
     return await this.send(
       {
         localPath: pathToLocaleFile,
@@ -46,7 +45,7 @@ export class Vms extends BaseMessageModule {
     numbers: string | string[],
     pathToRemoteFile: string,
     details?: VmsDetails
-  ): Promise<MessageResponse | ErrorResponse> {
+  ): Promise<MessageResponse> {
     return await this.send(
       {
         remotePath: pathToRemoteFile,
@@ -63,7 +62,7 @@ export class Vms extends BaseMessageModule {
     tts: string,
     ttsLector?: VmsTtsLector,
     details?: VmsDetails
-  ): Promise<MessageResponse | ErrorResponse> {
+  ): Promise<MessageResponse> {
     return await this.send(
       {
         tts,
@@ -80,7 +79,7 @@ export class Vms extends BaseMessageModule {
     groups: string | string[],
     pathToLocaleFile: string,
     details?: VmsDetails
-  ): Promise<MessageResponse | ErrorResponse> {
+  ): Promise<MessageResponse> {
     return await this.send(
       {
         localPath: pathToLocaleFile,
@@ -96,7 +95,7 @@ export class Vms extends BaseMessageModule {
     groups: string | string[],
     pathToRemoteFile: string,
     details?: VmsDetails
-  ): Promise<MessageResponse | ErrorResponse> {
+  ): Promise<MessageResponse> {
     return await this.send(
       {
         remotePath: pathToRemoteFile,
