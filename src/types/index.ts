@@ -15,7 +15,7 @@ import { SubuserCredentials } from '../modules/subusers/types/SubuserCredentials
 import { SubuserPoints } from '../modules/subusers/types/SubuserPoints';
 import { Template } from '../modules/templates/types/Template';
 import { UpdateSubuser } from '../modules/subusers/types/UpdateSubuser';
-import { MessageErrorResponse } from '../errors/MessageResponseError';
+import { MessageErrorResponse } from '../errors/MessageError';
 
 import { MessageStatus } from './MessageStatus';
 import { MessageResponse } from './MessageResponse';

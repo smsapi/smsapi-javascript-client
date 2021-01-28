@@ -12,7 +12,7 @@ import {
   MessageError,
   MessageErrorResponse,
   isMessageErrorResponseData,
-} from '../../errors/MessageResponseError';
+} from '../../errors/MessageError';
 
 import {
   MessageContent,

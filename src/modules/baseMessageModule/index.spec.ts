@@ -2,6 +2,7 @@ import nock from 'nock';
 
 import { API_URL } from '../../constants';
 import { SMSAPI } from '../../smsapi';
+import { MessageErrorResponse } from '../../types';
 
 const smsapi = new SMSAPI('someToken');
 
@@ -95,5 +96,40 @@ describe('Base message module', () => {
 
     // then
     expect(req.isDone()).toBeTruthy();
+  });
+
+  it('should throw error when sms.do returns one', async () => {
+    // given
+    const invalidNumber = '500000xxx';
+    const message = 'someMessage';
+    const errorResponse: MessageErrorResponse = {
+      error: 13,
+      message: 'No correct phone numbers',
+    };
+
+    const date = new Date();
+
+    const req = nock(API_URL)
+      .post('/sms.do', {
+        date: date.toISOString(),
+        date_validate: true,
+        details: true,
+        encoding: 'utf-8',
+        format: 'json',
+        message,
+        to: invalidNumber,
+      })
+      .reply(200, errorResponse);
+
+    // when
+    try {
+      await smsapi.sms.sendSms(invalidNumber, message, {
+        date,
+      });
+    } catch (error) {
+      expect(req.isDone()).toBeTruthy();
+
+      expect(error.data).toEqual(errorResponse);
+    }
   });
 });
