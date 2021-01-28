@@ -39,3 +39,6 @@ build-watch: ## build with watch
 
 test: ## run test
 	${DOCKER_RUN_NODE} yarn test
+
+test--watch: ## run test
+	${DOCKER_RUN_NODE} yarn test:watch
