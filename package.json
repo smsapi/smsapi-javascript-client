@@ -1,5 +1,6 @@
 {
   "name": "smsapi",
+  "description": "Official client for sending SMS and account management on SMSAPI",
   "version": "2.0.2",
   "license": "Apache-2.0",
   "author": "SMSAPI <info@smsapi.pl>",
