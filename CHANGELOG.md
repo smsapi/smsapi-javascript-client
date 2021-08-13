@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.0.4](https://github.com/smsapi/smsapi-javascript-client/compare/v2.0.3...v2.0.4) - 2021-08-13
+
+### Changed
+
+- Dependencies update.
+
 ## [2.0.3](https://github.com/smsapi/smsapi-javascript-client/compare/v2.0.2...v2.0.3) - 2021-07-08
 
 ### Changed
