@@ -1,7 +1,5 @@
 # SMSAPI JavaScript (node.js) Client
 
-[![npm version](https://badge.fury.io/js/smsapi.svg)](http://badge.fury.io/js/smsapi)
-
 ## Installation
 
 ```bash
