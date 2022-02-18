@@ -9,13 +9,17 @@ npm install smsapi --save
 ## Example
 
 ```ts
-import { SMSAPI, MessageResponse } from 'smsapi';
+import { SMSAPI } from 'smsapi';
 
 const smsapi = new SMSAPI('oAuthToken');
 
-const response = async (): Promise<MessageResponse> => {
-  return await smsapi.sms.sendSms('+48605xxxxxx', 'My first message!');
-};
+try {
+  const result = await smsapi.sms.sendSms('+48605xxxxxx', 'My first message!');
+
+  console.log(result);
+} catch (err) {
+  console.log(err);
+}
 ```
 
 ## Supported modules
