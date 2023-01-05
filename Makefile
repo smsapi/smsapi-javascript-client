@@ -28,6 +28,9 @@ DOCKER_RUN_NODE = ${DOCKER_RUN} \
 install: ## install dependencies
 	${DOCKER_RUN_NODE} yarn install
 
+upgrade-interactive: ## upgrade-interactive dependencies
+	${DOCKER_RUN_NODE} yarn upgrade-interactive
+
 lint: ## scss and js linter
 	${DOCKER_RUN_NODE} yarn lint
 
