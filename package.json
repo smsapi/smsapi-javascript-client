@@ -16,12 +16,12 @@
     "start": "tsdx watch",
     "test": "tsdx test --runInBand",
     "test:watch": "tsdx test --watchAll",
-    "prepare": "yarn build",
+    "prepare": "husky install && yarn build",
     "prepublishOnly": "yarn lint && yarn test"
   },
   "dependencies": {
     "axios": "^0.21.1",
-    "form-data": "^3.0.0",
+    "form-data": "^4.0.0",
     "lodash": "^4.17.21"
   },
   "devDependencies": {
@@ -38,12 +38,12 @@
     "eslint-plugin-prettier": "^5.0.0",
     "eslint-plugin-promise": "^6.1.1",
     "eslint-plugin-standard": "^5.0.0",
-    "husky": "^4.2.5",
-    "nock": "^13.0.4",
+    "husky": "^8.0.3",
+    "nock": "^13.3.1",
     "prettier": "^3.0.0",
-    "rimraf": "^3.0.2",
+    "rimraf": "^5.0.1",
     "tsdx": "^0.13.2",
-    "tslib": "^2.0.1",
+    "tslib": "^2.6.0",
     "typescript": "^5.1.6",
     "uuid": "^9.0.0"
   },
