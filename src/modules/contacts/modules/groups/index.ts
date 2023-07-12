@@ -15,7 +15,7 @@ export class Groups extends BaseModule {
 
   async getById(groupId: string): Promise<Group> {
     return await this.httpClient.get<Group, Group>(
-      `/contacts/groups/${groupId}`
+      `/contacts/groups/${groupId}`,
     );
   }
 
@@ -29,7 +29,7 @@ export class Groups extends BaseModule {
   async update(groupId: string, updateGroup: UpdateGroup): Promise<Group> {
     return await this.httpClient.put<Group, Group>(
       `/contacts/groups/${groupId}`,
-      updateGroup
+      updateGroup,
     );
   }
 

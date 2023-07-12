@@ -161,7 +161,7 @@ describe('Mms', () => {
       const response = await smsapi.mms.sendMmsToGroup(
         groupName,
         subject,
-        smil
+        smil,
       );
 
       // then
@@ -217,7 +217,7 @@ describe('Mms', () => {
       const response = await smsapi.mms.sendMmsToGroup(
         groupNames,
         subject,
-        smil
+        smil,
       );
 
       // then

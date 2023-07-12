@@ -14,7 +14,7 @@ export class Fields extends BaseModule {
 
   async create(
     fieldName: string,
-    fieldType: FieldType = 'text'
+    fieldType: FieldType = 'text',
   ): Promise<Field> {
     return await this.httpClient.post<Field, Field>('/contacts/fields', {
       name: fieldName,
@@ -27,7 +27,7 @@ export class Fields extends BaseModule {
       `/contacts/fields/${fieldId}`,
       {
         name: newName,
-      }
+      },
     );
   }
 

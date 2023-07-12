@@ -27,7 +27,7 @@ export class Subusers extends BaseModule {
 
   async getById(subuserId: string): Promise<Subuser> {
     return await this.httpClient.get<Subuser, Subuser>(
-      `/subusers/${subuserId}`
+      `/subusers/${subuserId}`,
     );
   }
 
@@ -52,7 +52,7 @@ export class Subusers extends BaseModule {
 
   async update(
     subuserId: string,
-    updateSubuser: Partial<UpdateSubuser>
+    updateSubuser: Partial<UpdateSubuser>,
   ): Promise<Subuser> {
     const { credentials, points } = updateSubuser;
 
@@ -74,7 +74,7 @@ export class Subusers extends BaseModule {
                 per_month: points.perMonth,
               }
             : undefined,
-      }
+      },
     );
   }
 

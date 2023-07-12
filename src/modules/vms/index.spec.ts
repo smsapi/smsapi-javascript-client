@@ -202,7 +202,7 @@ describe('Vms', () => {
         // when
         const response = await smsapi.vms.sendVmsWithLocalFile(
           number,
-          VMS_LOCAL_FILE_PATH
+          VMS_LOCAL_FILE_PATH,
         );
 
         // then
@@ -255,7 +255,7 @@ describe('Vms', () => {
         // when
         const response = await smsapi.vms.sendVmsWithLocalFile(
           numbers,
-          VMS_LOCAL_FILE_PATH
+          VMS_LOCAL_FILE_PATH,
         );
 
         // then
@@ -520,7 +520,7 @@ describe('Group vms', () => {
         // when
         const response = await smsapi.vms.sendVmsWithLocalFileToGroup(
           groupName,
-          VMS_LOCAL_FILE_PATH
+          VMS_LOCAL_FILE_PATH,
         );
 
         // then
@@ -575,7 +575,7 @@ describe('Group vms', () => {
         // when
         const response = await smsapi.vms.sendVmsWithLocalFileToGroup(
           groupNames,
-          VMS_LOCAL_FILE_PATH
+          VMS_LOCAL_FILE_PATH,
         );
 
         // then
@@ -599,7 +599,7 @@ describe('Group vms', () => {
     });
   } else {
     console.warn(
-      'Please add VMS_LOCAL_FILE_PATH env to test vms with local path'
+      'Please add VMS_LOCAL_FILE_PATH env to test vms with local path',
     );
   }
 
@@ -636,7 +636,7 @@ describe('Group vms', () => {
       // when
       const response = await smsapi.vms.sendVmsWithRemoteFileToGroup(
         groupName,
-        pathToRemoteFile
+        pathToRemoteFile,
       );
 
       // then
@@ -690,7 +690,7 @@ describe('Group vms', () => {
       // when
       const response = await smsapi.vms.sendVmsWithRemoteFileToGroup(
         groupNames,
-        pathToRemoteFile
+        pathToRemoteFile,
       );
 
       // then

@@ -1,5 +1,5 @@
 export function isMessageErrorResponseData(
-  response: any
+  response: any, // eslint-disable-line
 ): response is MessageErrorResponse {
   return response.error !== undefined && response.message !== undefined;
 }

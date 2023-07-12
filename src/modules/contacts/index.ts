@@ -51,7 +51,7 @@ export class Contacts extends BaseModule {
 
   async getById(contactId: string): Promise<Contact> {
     return await this.contactHttpClient.get<Contact, Contact>(
-      `/contacts/${contactId}`
+      `/contacts/${contactId}`,
     );
   }
 
@@ -64,13 +64,13 @@ export class Contacts extends BaseModule {
 
   async update(
     contactId: string,
-    updateContact: UpdateContact
+    updateContact: UpdateContact,
   ): Promise<Contact> {
     return await this.contactHttpClient.put<Contact, Contact>(
       `/contacts/${contactId}`,
       {
         ...this.formatContactDetails(updateContact || {}),
-      }
+      },
     );
   }
 
@@ -87,13 +87,13 @@ export class Contacts extends BaseModule {
 
   async getGroupById(contactId: string, groupId: string): Promise<Group> {
     return await this.contactHttpClient.get<Group, Group>(
-      `/contacts/${contactId}/groups/${groupId}`
+      `/contacts/${contactId}/groups/${groupId}`,
     );
   }
 
   async assignContactToGroup(
     contactId: string,
-    groupId: string
+    groupId: string,
   ): Promise<ApiCollection<Group>> {
     return await this.contactHttpClient.put<
       ApiCollection<Group>,
@@ -103,10 +103,10 @@ export class Contacts extends BaseModule {
 
   async unpinContactFromGroup(
     contactId: string,
-    groupId: string
+    groupId: string,
   ): Promise<void> {
     await this.contactHttpClient.delete(
-      `/contacts/${contactId}/groups/${groupId}`
+      `/contacts/${contactId}/groups/${groupId}`,
     );
   }
 

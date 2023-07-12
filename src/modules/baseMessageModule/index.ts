@@ -43,7 +43,7 @@ export class BaseMessageModule extends BaseModule {
   protected async send(
     content: MessageContent,
     recipient: Recipient,
-    details?: SmsDetails
+    details?: SmsDetails,
   ): Promise<MessageResponse> {
     const body: Record<string, unknown> = {
       details: true,
@@ -112,7 +112,7 @@ export class BaseMessageModule extends BaseModule {
   }
 
   private isNumberRecipient(
-    recipient: Recipient
+    recipient: Recipient,
   ): recipient is NumberRecipient {
     return (recipient as NumberRecipient).to !== undefined;
   }
@@ -137,20 +137,20 @@ export class BaseMessageModule extends BaseModule {
   }
 
   private isVmsLocalFile(
-    content: MessageContent
+    content: MessageContent,
   ): content is VmsLocalFileContent {
     return (content as VmsLocalFileContent).localPath !== undefined;
   }
 
   private isVmsRemotePath(
-    content: MessageContent
+    content: MessageContent,
   ): content is VmsRemoteFileContent {
     return (content as VmsRemoteFileContent).remotePath !== undefined;
   }
 
   private getFormDataForVmsLocalFile(
     body: Record<string, unknown>,
-    content: VmsLocalFileContent
+    content: VmsLocalFileContent,
   ): FormData {
     const formData = new FormData();
 

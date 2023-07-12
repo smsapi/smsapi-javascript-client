@@ -26,7 +26,7 @@ export class Sendernames extends BaseModule {
 
   async getBySender(sender: string): Promise<Sendername> {
     const data = await this.httpClient.get<ApiSendername, ApiSendername>(
-      `/sms/sendernames/${sender}`
+      `/sms/sendernames/${sender}`,
     );
 
     return this.formatSendernameDates(data);
@@ -37,7 +37,7 @@ export class Sendernames extends BaseModule {
       '/sms/sendernames',
       {
         sender,
-      }
+      },
     );
 
     return this.formatSendernameDates(data);
@@ -45,7 +45,7 @@ export class Sendernames extends BaseModule {
 
   async makeDefault(sender: string): Promise<void> {
     await this.httpClient.post<void, void>(
-      `/sms/sendernames/${sender}/commands/make_default`
+      `/sms/sendernames/${sender}/commands/make_default`,
     );
   }
 

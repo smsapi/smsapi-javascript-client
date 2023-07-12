@@ -14,24 +14,24 @@ export class Templates extends BaseModule {
 
   async getById(templateId: string): Promise<Template> {
     return await this.httpClient.get<Template, Template>(
-      `/sms/templates/${templateId}`
+      `/sms/templates/${templateId}`,
     );
   }
 
   async create(newTemplate: NewTemplate): Promise<Template> {
     return await this.httpClient.post<Template, Template>(
       '/sms/templates',
-      newTemplate
+      newTemplate,
     );
   }
 
   async update(
     templateId: string,
-    newTemplate: Partial<NewTemplate>
+    newTemplate: Partial<NewTemplate>,
   ): Promise<Template> {
     return await this.httpClient.put<Template, Template>(
       `/sms/templates/${templateId}`,
-      newTemplate
+      newTemplate,
     );
   }
 

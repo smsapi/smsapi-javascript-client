@@ -8,7 +8,7 @@ interface ApiGroup {
 }
 
 const isApiCollection = (
-  data: ApiGroup | ApiCollection<ApiGroup>
+  data: ApiGroup | ApiCollection<ApiGroup>,
 ): data is ApiCollection<ApiGroup> => {
   return (
     !!(data as ApiCollection<ApiGroup>).size &&

@@ -7,7 +7,7 @@ import isObject from 'lodash/isObject';
 import mapKeys from 'lodash/mapKeys';
 
 const formatKeys = (
-  object: Record<string, unknown>
+  object: Record<string, unknown>,
 ): Record<string, unknown> => {
   return mapKeys(object, (_, key) => {
     return camelCase(key);
@@ -26,7 +26,7 @@ const formatResponse = (object: Record<string, unknown>) => {
       newResponse[key] = value.map((arrayValue) =>
         isObject(arrayValue) && !isDate(arrayValue)
           ? formatKeys(arrayValue as Record<string, unknown>)
-          : arrayValue
+          : arrayValue,
       );
 
       return;

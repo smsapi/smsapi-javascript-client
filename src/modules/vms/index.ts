@@ -11,7 +11,7 @@ export class Vms extends BaseMessageModule {
     numbers: string | string[],
     tts: string,
     ttsLector?: VmsTtsLector,
-    details?: VmsDetails
+    details?: VmsDetails,
   ): Promise<MessageResponse> {
     return await this.send(
       {
@@ -21,14 +21,14 @@ export class Vms extends BaseMessageModule {
       {
         to: numbers,
       },
-      details
+      details,
     );
   }
 
   async sendVmsWithLocalFile(
     numbers: string | string[],
     pathToLocaleFile: string,
-    details?: VmsDetails
+    details?: VmsDetails,
   ): Promise<MessageResponse> {
     return await this.send(
       {
@@ -37,14 +37,14 @@ export class Vms extends BaseMessageModule {
       {
         to: numbers,
       },
-      details
+      details,
     );
   }
 
   async sendVmsWithRemoteFile(
     numbers: string | string[],
     pathToRemoteFile: string,
-    details?: VmsDetails
+    details?: VmsDetails,
   ): Promise<MessageResponse> {
     return await this.send(
       {
@@ -53,7 +53,7 @@ export class Vms extends BaseMessageModule {
       {
         to: numbers,
       },
-      details
+      details,
     );
   }
 
@@ -61,7 +61,7 @@ export class Vms extends BaseMessageModule {
     groups: string | string[],
     tts: string,
     ttsLector?: VmsTtsLector,
-    details?: VmsDetails
+    details?: VmsDetails,
   ): Promise<MessageResponse> {
     return await this.send(
       {
@@ -71,14 +71,14 @@ export class Vms extends BaseMessageModule {
       {
         group: groups,
       },
-      details
+      details,
     );
   }
 
   async sendVmsWithLocalFileToGroup(
     groups: string | string[],
     pathToLocaleFile: string,
-    details?: VmsDetails
+    details?: VmsDetails,
   ): Promise<MessageResponse> {
     return await this.send(
       {
@@ -87,14 +87,14 @@ export class Vms extends BaseMessageModule {
       {
         group: groups,
       },
-      details
+      details,
     );
   }
 
   async sendVmsWithRemoteFileToGroup(
     groups: string | string[],
     pathToRemoteFile: string,
-    details?: VmsDetails
+    details?: VmsDetails,
   ): Promise<MessageResponse> {
     return await this.send(
       {
@@ -103,7 +103,7 @@ export class Vms extends BaseMessageModule {
       {
         group: groups,
       },
-      details
+      details,
     );
   }
 }

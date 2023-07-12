@@ -10,7 +10,7 @@ export class Mms extends BaseMessageModule {
     numbers: string | string[],
     subject: string,
     smil: string,
-    details?: MmsDetails
+    details?: MmsDetails,
   ): Promise<MessageResponse> {
     return await this.send(
       {
@@ -20,7 +20,7 @@ export class Mms extends BaseMessageModule {
       {
         to: numbers,
       },
-      details
+      details,
     );
   }
 
@@ -28,7 +28,7 @@ export class Mms extends BaseMessageModule {
     groups: string | string[],
     subject: string,
     smil: string,
-    details?: MmsDetails
+    details?: MmsDetails,
   ): Promise<MessageResponse> {
     return await this.send(
       {
@@ -38,7 +38,7 @@ export class Mms extends BaseMessageModule {
       {
         group: groups,
       },
-      details
+      details,
     );
   }
 }

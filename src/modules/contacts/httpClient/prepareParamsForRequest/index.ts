@@ -15,7 +15,7 @@ const formatKeys = (data: Record<string, string | boolean | number>) => {
 };
 
 export const prepareParamsForRequest = (
-  config: AxiosRequestConfig
+  config: AxiosRequestConfig,
 ): AxiosRequestConfig => {
   const { data, method, params } = config;
 

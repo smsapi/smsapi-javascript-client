@@ -413,7 +413,7 @@ describe('Contacts', () => {
       // when
       const response = await smsapi.contacts.assignContactToGroup(
         contactId,
-        groupId
+        groupId,
       );
 
       // then
@@ -452,7 +452,7 @@ describe('Contacts', () => {
       // when
       const response = await smsapi.contacts.unpinContactFromGroup(
         contactId,
-        groupId
+        groupId,
       );
 
       // then

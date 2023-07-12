@@ -12,7 +12,7 @@ export class Sms extends BaseMessageModule {
   async sendSms(
     numbers: string | string[],
     message: string,
-    details?: SmsDetails
+    details?: SmsDetails,
   ): Promise<MessageResponse> {
     return await this.send(
       {
@@ -21,14 +21,14 @@ export class Sms extends BaseMessageModule {
       {
         to: numbers,
       },
-      details
+      details,
     );
   }
 
   async sendFlashSms(
     numbers: string | string[],
     message: string,
-    details?: SmsDetails
+    details?: SmsDetails,
   ): Promise<MessageResponse> {
     return await this.sendSms(numbers, message, { ...details, flash: true });
   }
@@ -36,7 +36,7 @@ export class Sms extends BaseMessageModule {
   async sendSmsToGroup(
     groups: string | string[],
     message: string,
-    details?: SmsDetails
+    details?: SmsDetails,
   ): Promise<MessageResponse> {
     return await this.send(
       {
@@ -45,14 +45,14 @@ export class Sms extends BaseMessageModule {
       {
         group: groups,
       },
-      details
+      details,
     );
   }
 
   async sendFlashSmsToGroup(
     groups: string | string[],
     message: string,
-    details?: SmsDetails
+    details?: SmsDetails,
   ): Promise<MessageResponse> {
     return await this.sendSmsToGroup(groups, message, {
       ...details,
@@ -61,7 +61,7 @@ export class Sms extends BaseMessageModule {
   }
 
   async removeScheduledSms(
-    smsId: string | string[]
+    smsId: string | string[],
   ): Promise<ScheduledSmsResponse> {
     const ids = isArray(smsId) ? smsId.join(',') : smsId;
 
