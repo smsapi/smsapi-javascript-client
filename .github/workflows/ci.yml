@@ -23,4 +23,4 @@ jobs:
         uses: bahmutov/npm-install@v1
 
       - name: Test package
-        run: yarn tsdx test
+        run: yarn test
