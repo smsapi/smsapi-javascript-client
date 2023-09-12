@@ -132,4 +132,36 @@ describe('Base message module', () => {
       expect(error.data).toEqual(errorResponse);
     }
   });
+
+  it('should properly convert date_sent to Date', async () => {
+    // given
+    const number = '500000000';
+    const message = 'someMessage';
+
+    const dateSentInSeconds = 1694509448;
+
+    const req = nock(API_URL)
+      .post('/sms.do', {
+        details: true,
+        encoding: 'utf-8',
+        format: 'json',
+        message,
+        to: number,
+      })
+      .reply(200, {
+        count: 1,
+        list: [
+          {
+            date_sent: dateSentInSeconds,
+          },
+        ],
+      });
+
+    // when
+    const res = await smsapi.sms.sendSms(number, message);
+
+    // then
+    expect(req.isDone()).toBeTruthy();
+    expect(res.list[0].dateSent.getTime() / 1000).toEqual(dateSentInSeconds);
+  });
 });

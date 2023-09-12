@@ -7,7 +7,10 @@ import snakeCase from 'lodash/snakeCase';
 
 import { BaseModule } from '../baseModule';
 import { SmsDetails } from '../sms/types/SmsDetails';
-import { MessageResponse } from '../../types/MessageResponse';
+import {
+  ApiMessageResponse,
+  MessageResponse,
+} from '../../types/MessageResponse';
 import {
   MessageError,
   MessageErrorResponse,
@@ -86,8 +89,8 @@ export class BaseMessageModule extends BaseModule {
       const formData = this.getFormDataForVmsLocalFile(body, content);
 
       const data = await this.httpClient.post<
-        MessageResponse | MessageErrorResponse,
-        MessageResponse | MessageErrorResponse
+        ApiMessageResponse | MessageErrorResponse,
+        ApiMessageResponse | MessageErrorResponse
       >(this.endpoint, formData.getBuffer(), {
         headers: formData.getHeaders(),
       });
@@ -100,8 +103,8 @@ export class BaseMessageModule extends BaseModule {
     }
 
     const data = await this.httpClient.post<
-      MessageResponse | MessageErrorResponse,
-      MessageResponse | MessageErrorResponse
+      ApiMessageResponse | MessageErrorResponse,
+      ApiMessageResponse | MessageErrorResponse
     >(this.endpoint, body);
 
     if (isMessageErrorResponseData(data)) {
@@ -204,12 +207,12 @@ export class BaseMessageModule extends BaseModule {
     });
   }
 
-  protected formatResponse(response: MessageResponse): MessageResponse {
+  protected formatResponse(response: ApiMessageResponse): MessageResponse {
     return {
       ...response,
       list: response.list.map((sms) => ({
         ...sms,
-        dateSent: new Date(sms.dateSent),
+        dateSent: new Date(sms.dateSent * 1000),
         points:
           typeof sms.points === 'string' ? parseFloat(sms.points) : sms.points,
       })),
