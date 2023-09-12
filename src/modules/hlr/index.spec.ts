@@ -21,7 +21,7 @@ describe('HLR', () => {
     };
 
     const req = nock(API_URL)
-      .get('/hlr.do')
+      .post('/hlr.do')
       .query({
         format: 'json',
         number: someNumber,
@@ -48,7 +48,7 @@ describe('HLR', () => {
     };
 
     const req = nock(API_URL)
-      .get('/hlr.do')
+      .post('/hlr.do')
       .query({
         format: 'json',
         idx: someIdx,
@@ -75,7 +75,7 @@ describe('HLR', () => {
     }));
 
     const req = nock(API_URL)
-      .get('/hlr.do')
+      .post('/hlr.do')
       .query({
         format: 'json',
         number: someNumbers.join(','),
@@ -102,7 +102,7 @@ describe('HLR', () => {
     }));
 
     const req = nock(API_URL)
-      .get('/hlr.do')
+      .post('/hlr.do')
       .query({
         format: 'json',
         idx: someIdx.join(','),
@@ -122,7 +122,7 @@ describe('HLR', () => {
     // given
     const someNumber = '48500';
     const req = nock(API_URL)
-      .get('/hlr.do')
+      .post('/hlr.do')
       .query({
         format: 'json',
         number: someNumber,
@@ -156,7 +156,7 @@ describe('HLR', () => {
     };
 
     const req = nock(API_URL)
-      .get('/hlr.do')
+      .post('/hlr.do')
       .query({
         format: 'json',
         number: someNumbers.join(','),

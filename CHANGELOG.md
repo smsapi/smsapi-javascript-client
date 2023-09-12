@@ -5,6 +5,7 @@
 ### Fixed
 
 - Bug with converting message's `date_sent` to `Date`
+- Changed hlr request method from GET to POST.
 
 ## [2.0.7](https://github.com/smsapi/smsapi-javascript-client/compare/v2.0.6...v2.0.7) - 2023-07-17
 

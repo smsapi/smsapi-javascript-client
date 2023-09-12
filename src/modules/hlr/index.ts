@@ -17,10 +17,10 @@ export class Hlr extends BaseModule {
       params.idx = isArray(idx) ? idx.join(',') : idx;
     }
 
-    return await this.httpClient.get<
+    return await this.httpClient.post<
       HlrCheckResponse | HlrCheckResponse[],
       HlrCheckResponse | HlrCheckResponse[]
-    >('/hlr.do', {
+    >('/hlr.do', undefined, {
       params: {
         format: 'json',
         ...params,
