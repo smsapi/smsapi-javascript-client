@@ -18,7 +18,7 @@
     "prepublishOnly": "yarn lint && yarn test"
   },
   "dependencies": {
-    "axios": "^0.21.1",
+    "axios": "^1.6.0",
     "form-data": "^4.0.0",
     "lodash": "^4.17.21"
   },
