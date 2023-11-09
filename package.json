@@ -10,10 +10,10 @@
     "dist"
   ],
   "scripts": {
-    "build": "rimraf dist && tsup src/index.ts --dts --minify --treeshake",
+    "build": "rimraf dist && tsup src/index.ts --dts --minify terser --treeshake",
     "lint": "eslint .",
     "test": "jest",
-    "test:watch": "jest --watchAll",
+    "test:watch": "jest --watchAll --verbose",
     "prepare": "husky install",
     "prepublishOnly": "npm run lint && npm run test"
   },
@@ -24,6 +24,7 @@
   "devDependencies": {
     "@babel/preset-env": "^7.23.3",
     "@babel/preset-typescript": "^7.23.3",
+    "@types/jest": "^29.5.8",
     "@types/lodash": "^4.14.201",
     "@types/uuid": "^9.0.7",
     "@typescript-eslint/eslint-plugin": "^6.10.0",
@@ -43,6 +44,7 @@
     "nock": "^13.3.8",
     "prettier": "^3.0.3",
     "rimraf": "^5.0.5",
+    "terser": "^5.24.0",
     "tslib": "^2.6.2",
     "tsup": "^7.2.0",
     "typescript": "^5.2.2",
