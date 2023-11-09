@@ -1,30 +1,26 @@
 import { AxiosResponse } from 'axios';
-import camelCase from 'lodash/camelCase';
-import forEach from 'lodash/forEach';
-import isArray from 'lodash/isArray';
-import isDate from 'lodash/isDate';
-import isObject from 'lodash/isObject';
-import mapKeys from 'lodash/mapKeys';
+
+import { mapKeys } from '../../../helpers/mapKeys';
+import { isObject } from '../../../helpers/isObject';
+import { camelCase } from '../../../helpers/camelCase';
 
 const formatKeys = (
   object: Record<string, unknown>,
 ): Record<string, unknown> => {
-  return mapKeys(object, (_, key) => {
-    return camelCase(key);
-  });
+  return mapKeys(object, camelCase);
 };
 
 const formatResponse = (object: Record<string, unknown>) => {
   const newResponse = formatKeys(object);
 
-  forEach(newResponse, (value, key) => {
-    if (isDate(value)) {
+  Object.entries(newResponse).forEach(([key, value]) => {
+    if (value instanceof Date) {
       return;
     }
 
-    if (isArray(value)) {
+    if (Array.isArray(value)) {
       newResponse[key] = value.map((arrayValue) =>
-        isObject(arrayValue) && !isDate(arrayValue)
+        isObject(arrayValue) && !(arrayValue instanceof Date)
           ? formatKeys(arrayValue as Record<string, unknown>)
           : arrayValue,
       );
@@ -55,7 +51,7 @@ export const extractDataFromResponse = (response: AxiosResponse) => {
     return data;
   }
 
-  if (isArray(data)) {
+  if (Array.isArray(data)) {
     return data.map(formatResponse);
   }
 

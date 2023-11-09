@@ -1,17 +1,14 @@
 import { stringify } from 'querystring';
 
 import { InternalAxiosRequestConfig } from 'axios';
-import isArray from 'lodash/isArray';
-import mapKeys from 'lodash/mapKeys';
-import mapValues from 'lodash/mapValues';
-import snakeCase from 'lodash/snakeCase';
 
 import { formatDate } from '../../helpers/formatDate';
+import { mapKeys } from '../../../../helpers/mapKeys';
+import { mapValues } from '../../../../helpers/mapValues';
+import { snakeCase } from '../../../../helpers/snakeCase';
 
 const formatKeys = (data: Record<string, string | boolean | number>) => {
-  return mapKeys(data, (_, key) => {
-    return snakeCase(key);
-  });
+  return mapKeys(data, snakeCase);
 };
 
 export const prepareParamsForRequest = (
@@ -22,14 +19,14 @@ export const prepareParamsForRequest = (
   if (['get', 'delete'].includes((method as string).toLowerCase())) {
     let formattedParams = mapValues(params, (value, key) => {
       if (key === 'birthdayDate') {
-        if (isArray(value)) {
+        if (Array.isArray(value)) {
           return value.map(formatDate).join(',');
         }
 
-        return formatDate(value);
+        return value instanceof Date ? formatDate(value) : value;
       }
 
-      if (isArray(value)) {
+      if (Array.isArray(value)) {
         return value.join(',');
       }
 

@@ -1,5 +1,3 @@
-import isArray from 'lodash/isArray';
-
 import { BaseMessageModule } from '../baseMessageModule';
 import { MessageResponse } from '../../types/MessageResponse';
 
@@ -63,7 +61,7 @@ export class Sms extends BaseMessageModule {
   async removeScheduledSms(
     smsId: string | string[],
   ): Promise<ScheduledSmsResponse> {
-    const ids = isArray(smsId) ? smsId.join(',') : smsId;
+    const ids = Array.isArray(smsId) ? smsId.join(',') : smsId;
 
     return await this.httpClient.post<
       ScheduledSmsResponse,

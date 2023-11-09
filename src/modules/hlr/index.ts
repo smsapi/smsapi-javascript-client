@@ -1,5 +1,3 @@
-import isArray from 'lodash/isArray';
-
 import { BaseModule } from '../baseModule';
 
 import { HlrCheckResponse } from './types/HlrCheckResponse';
@@ -10,11 +8,11 @@ export class Hlr extends BaseModule {
     idx?: string | string[],
   ): Promise<HlrCheckResponse | HlrCheckResponse[]> {
     const params: Record<string, unknown> = {
-      number: isArray(numbers) ? numbers.join(',') : numbers,
+      number: Array.isArray(numbers) ? numbers.join(',') : numbers,
     };
 
     if (idx) {
-      params.idx = isArray(idx) ? idx.join(',') : idx;
+      params.idx = Array.isArray(idx) ? idx.join(',') : idx;
     }
 
     return await this.httpClient.post<

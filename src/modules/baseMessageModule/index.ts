@@ -1,9 +1,6 @@
 import fs from 'fs';
 
 import FormData from 'form-data';
-import isArray from 'lodash/isArray';
-import mapKeys from 'lodash/mapKeys';
-import snakeCase from 'lodash/snakeCase';
 
 import { BaseModule } from '../baseModule';
 import { SmsDetails } from '../sms/types/SmsDetails';
@@ -16,6 +13,8 @@ import {
   MessageErrorResponse,
   isMessageErrorResponseData,
 } from '../../errors/MessageError';
+import { mapKeys } from '../../helpers/mapKeys';
+import { snakeCase } from '../../helpers/snakeCase';
 
 import {
   MessageContent,
@@ -58,13 +57,13 @@ export class BaseMessageModule extends BaseModule {
     if (this.isNumberRecipient(recipient)) {
       const { to } = recipient;
 
-      body.to = isArray(to) ? to.join(',') : to;
+      body.to = Array.isArray(to) ? to.join(',') : to;
     }
 
     if (this.isGroupRecipient(recipient)) {
       const { group } = recipient;
 
-      body.group = isArray(group) ? group.join(',') : group;
+      body.group = Array.isArray(group) ? group.join(',') : group;
     }
 
     if (this.isSms(content)) {
@@ -194,7 +193,7 @@ export class BaseMessageModule extends BaseModule {
       formattedDetails.expirationDate = details.expirationDate.toISOString();
     }
 
-    return mapKeys(formattedDetails, (_, key) => {
+    return mapKeys(formattedDetails, (key) => {
       if (/param[1-4]/.test(key)) {
         return key;
       }
