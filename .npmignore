@@ -1,0 +1,6 @@
+**/*
+!/dist/**
+!CHANGELOG.md
+!LICENSE
+!README.md
+!THANKS.md
