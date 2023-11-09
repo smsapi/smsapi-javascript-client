@@ -1,6 +1,6 @@
 import { stringify } from 'querystring';
 
-import { AxiosRequestConfig } from 'axios';
+import { InternalAxiosRequestConfig } from 'axios';
 import isArray from 'lodash/isArray';
 import mapKeys from 'lodash/mapKeys';
 import mapValues from 'lodash/mapValues';
@@ -15,18 +15,22 @@ const formatKeys = (data: Record<string, string | boolean | number>) => {
 };
 
 export const prepareParamsForRequest = (
-  config: AxiosRequestConfig,
-): AxiosRequestConfig => {
+  config: InternalAxiosRequestConfig,
+): InternalAxiosRequestConfig => {
   const { data, method, params } = config;
 
   if (['get', 'delete'].includes((method as string).toLowerCase())) {
     let formattedParams = mapValues(params, (value, key) => {
       if (key === 'birthdayDate') {
         if (isArray(value)) {
-          return value.map(formatDate);
+          return value.map(formatDate).join(',');
         }
 
         return formatDate(value);
+      }
+
+      if (isArray(value)) {
+        return value.join(',');
       }
 
       return value;

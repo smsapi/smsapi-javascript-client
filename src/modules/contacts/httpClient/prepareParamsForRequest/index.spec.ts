@@ -59,7 +59,7 @@ describe('prepareParamsForRequest', () => {
     // given
     const contactParams: GetContactsQueryParams = {
       birthdayDate: [new Date('2015-07-13'), new Date('2015-07-15')],
-      email: 'someEmail',
+      email: ['someEmail1', 'someEmail2'],
       firstName: 'someFirstName',
       gender: 'female',
       groupId: 'someGroupId',
@@ -72,8 +72,8 @@ describe('prepareParamsForRequest', () => {
     };
 
     const body = {
-      birthday_date: ['2015-07-13', '2015-07-15'],
-      email: contactParams.email,
+      birthday_date: '2015-07-13,2015-07-15',
+      email: 'someEmail1,someEmail2',
       first_name: contactParams.firstName,
       gender: contactParams.gender,
       group_id: contactParams.groupId,

@@ -1,7 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import axios, { AxiosInstance } from 'axios';
-// @ts-ignore TS7016
-import adapter from 'axios/lib/adapters/http';
 
 import { Contacts } from '../modules/contacts';
 import { Hlr } from '../modules/hlr';
@@ -56,7 +54,7 @@ export class SMSAPI {
 
   private setHttpClient(): AxiosInstance {
     const httpClient = axios.create({
-      adapter,
+      adapter: 'http',
       baseURL: API_URL,
       headers: {
         Accept: 'application/json',
