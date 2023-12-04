@@ -136,7 +136,9 @@ describe('Templates', () => {
     // given
     const templateId = 'someTemplateId';
 
-    const req = nock(API_URL).delete(`/sms/templates/${templateId}`).reply(204);
+    const req = nock(API_URL)
+      .delete(`/sms/templates/${templateId}`)
+      .reply(204, {});
 
     // when
     const response = await smsapi.templates.remove(templateId);

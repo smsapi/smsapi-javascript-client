@@ -95,7 +95,7 @@ describe(`Contact's fields`, () => {
 
     const request = nock(API_URL)
       .delete(`/contacts/fields/${fieldId}`)
-      .reply(204);
+      .reply(204, {});
 
     // when
     const response = await smsapi.contacts.fields.remove(fieldId);

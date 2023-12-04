@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-import axios, { AxiosInstance } from 'axios';
-
 import { Contacts } from '../modules/contacts';
 import { Hlr } from '../modules/hlr';
 import { Mms } from '../modules/mms';
@@ -10,17 +7,11 @@ import { Sms } from '../modules/sms';
 import { Subusers } from '../modules/subusers';
 import { Templates } from '../modules/templates';
 import { Vms } from '../modules/vms';
-// @ts-ignore TS6059
-import { version } from '../../package.json';
-import { API_URL } from '../constants';
 
-import { extractDataFromResponse } from './httpClient/extractDataFromResponse';
-/* eslint-enable @typescript-eslint/ban-ts-comment */
+import { HttpClient } from './httpClient';
 
 export class SMSAPI {
-  private accessToken: string;
-
-  private httpClient: AxiosInstance;
+  private httpClient: HttpClient;
 
   public contacts: Contacts;
   public hlr: Hlr;
@@ -33,11 +24,9 @@ export class SMSAPI {
   public vms: Vms;
 
   constructor(accessToken: string) {
-    this.accessToken = accessToken;
+    this.httpClient = new HttpClient(accessToken);
 
-    this.httpClient = this.setHttpClient();
-
-    this.contacts = new Contacts(this.httpClient);
+    this.contacts = new Contacts(new HttpClient(accessToken));
     this.hlr = new Hlr(this.httpClient);
     this.mms = new Mms(this.httpClient);
     this.profile = new Profile(this.httpClient);
@@ -46,25 +35,5 @@ export class SMSAPI {
     this.subusers = new Subusers(this.httpClient);
     this.templates = new Templates(this.httpClient);
     this.vms = new Vms(this.httpClient);
-  }
-
-  private getUserAgent(): string {
-    return `smsapi/js-client:${version}`;
-  }
-
-  private setHttpClient(): AxiosInstance {
-    const httpClient = axios.create({
-      adapter: 'http',
-      baseURL: API_URL,
-      headers: {
-        Accept: 'application/json',
-        Authorization: `Bearer ${this.accessToken}`,
-        'User-Agent': this.getUserAgent(),
-      },
-    });
-
-    httpClient.interceptors.response.use(extractDataFromResponse);
-
-    return httpClient;
   }
 }

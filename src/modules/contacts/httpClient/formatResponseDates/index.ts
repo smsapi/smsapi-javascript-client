@@ -1,5 +1,4 @@
-import { AxiosResponse } from 'axios';
-
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ApiCollection } from '../../../../types/ApiCollection';
 
 interface ApiGroup {
@@ -30,21 +29,17 @@ const formatDates = (group: ApiGroup): Record<string, Date | string> => {
   };
 };
 
-export const formatResponseDates = (response: AxiosResponse): AxiosResponse => {
-  const { data } = response;
+export const formatResponseDates = (data: any): any => {
+  if (!data) {
+    return data;
+  }
 
   if (isApiCollection(data)) {
     return {
-      ...response,
-      data: {
-        collection: data.collection.map((group) => formatDates(group)),
-        size: data.size,
-      },
+      collection: data.collection.map((group) => formatDates(group)),
+      size: data.size,
     };
   }
 
-  return {
-    ...response,
-    data: formatDates(data),
-  };
+  return formatDates(data);
 };

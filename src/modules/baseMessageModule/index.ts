@@ -88,9 +88,9 @@ export class BaseMessageModule extends BaseModule {
       const formData = this.getFormDataForVmsLocalFile(body, content);
 
       const data = await this.httpClient.post<
-        ApiMessageResponse | MessageErrorResponse,
         ApiMessageResponse | MessageErrorResponse
-      >(this.endpoint, formData.getBuffer(), {
+      >(this.endpoint, {
+        data: formData.getBuffer(),
         headers: formData.getHeaders(),
       });
 
@@ -102,9 +102,8 @@ export class BaseMessageModule extends BaseModule {
     }
 
     const data = await this.httpClient.post<
-      ApiMessageResponse | MessageErrorResponse,
       ApiMessageResponse | MessageErrorResponse
-    >(this.endpoint, body);
+    >(this.endpoint, { data: body });
 
     if (isMessageErrorResponseData(data)) {
       throw new MessageError(data);

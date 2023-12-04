@@ -147,7 +147,7 @@ describe('Subusers', () => {
           per_month: subuser.points.perMonth,
         },
       })
-      .reply(200);
+      .reply(200, {});
 
     // when
     await smsapi.subusers.create(subuser);
@@ -225,7 +225,7 @@ describe('Subusers', () => {
           per_month: subuser.points.perMonth,
         },
       })
-      .reply(200);
+      .reply(200, {});
 
     // when
     await smsapi.subusers.update(subuserId, subuser);
@@ -238,7 +238,7 @@ describe('Subusers', () => {
     // given
     const subuserId = 'someSubuserId';
 
-    const req = nock(API_URL).delete(`/subusers/${subuserId}`).reply(204);
+    const req = nock(API_URL).delete(`/subusers/${subuserId}`).reply(204, {});
 
     // when
     const response = await smsapi.subusers.remove(subuserId);

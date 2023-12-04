@@ -1,14 +1,12 @@
-import { createAxiosResponse } from '../../../testHelpers/createAxiosResponse';
-
 import { extractDataFromResponse } from './index';
 
 describe('extractDataFromResponse', () => {
   it('should return data from response', () => {
     // given
-    const response = createAxiosResponse({
+    const response = {
       a: 'someA',
       b: 'someB',
-    });
+    };
 
     // when
     const data = extractDataFromResponse(response);
@@ -22,12 +20,12 @@ describe('extractDataFromResponse', () => {
 
   it('should return formatted date from response with object 1 level deep', () => {
     // given
-    const response = createAxiosResponse({
+    const response = {
       some_a: 'someA',
       some_b: {
         some_c: 'someC',
       },
-    });
+    };
 
     // when
     const data = extractDataFromResponse(response);
@@ -43,10 +41,10 @@ describe('extractDataFromResponse', () => {
 
   it('should return formatted data from response', () => {
     // given
-    const response = createAxiosResponse({
+    const response = {
       test_a: 'someA',
       test_b: 'someB',
-    });
+    };
 
     // when
     const data = extractDataFromResponse(response);
@@ -75,10 +73,10 @@ describe('extractDataFromResponse', () => {
       },
     ];
 
-    const response = createAxiosResponse({
+    const response = {
       collection,
       size: collection.length,
-    });
+    };
 
     // when
     const data = extractDataFromResponse(response);
@@ -105,7 +103,7 @@ describe('extractDataFromResponse', () => {
 
   it('should return formatted data from array response', () => {
     // given
-    const response = createAxiosResponse([
+    const response = [
       {
         testa: 'someA',
       },
@@ -118,7 +116,7 @@ describe('extractDataFromResponse', () => {
       {
         someTestD: 'someD',
       },
-    ]);
+    ];
 
     // when
     const data = extractDataFromResponse(response);
@@ -142,7 +140,7 @@ describe('extractDataFromResponse', () => {
 
   it('should return formatted data from array response with object 1 level deep', () => {
     // given
-    const response = createAxiosResponse([
+    const response = [
       {
         test_a: 'someA',
       },
@@ -151,7 +149,7 @@ describe('extractDataFromResponse', () => {
           test_c: 'someTestC',
         },
       },
-    ]);
+    ];
 
     // when
     const data = extractDataFromResponse(response);
@@ -171,7 +169,7 @@ describe('extractDataFromResponse', () => {
 
   it('should return formatted data from sms response', () => {
     // given
-    const response = createAxiosResponse({
+    const response = {
       count: 1,
       list: [
         {
@@ -179,7 +177,7 @@ describe('extractDataFromResponse', () => {
         },
       ],
       message: 'someMessage',
-    });
+    };
 
     // when
     const data = extractDataFromResponse(response);
@@ -198,7 +196,7 @@ describe('extractDataFromResponse', () => {
 
   it(`should return data when it's not an object`, () => {
     // given
-    const response = createAxiosResponse(undefined);
+    const response = undefined;
 
     // when
     const data = extractDataFromResponse(response);
@@ -209,10 +207,10 @@ describe('extractDataFromResponse', () => {
 
   it(`shouldn't format Date values`, () => {
     // given
-    const response = createAxiosResponse({
+    const response = {
       array_with_dates: [new Date()],
       date_created: new Date(),
-    });
+    };
 
     // when
     const data = extractDataFromResponse(response);
@@ -226,7 +224,7 @@ describe('extractDataFromResponse', () => {
 
   it(`should format contact's group permissions`, () => {
     // given
-    const response = createAxiosResponse({
+    const response = {
       another_array: [0, 1, 2, 3],
       permissions: [
         {
@@ -236,7 +234,7 @@ describe('extractDataFromResponse', () => {
           group_id: 'someGroupId2',
         },
       ],
-    });
+    };
 
     // when
     const data = extractDataFromResponse(response);

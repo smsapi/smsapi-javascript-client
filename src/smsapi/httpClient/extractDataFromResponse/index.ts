@@ -1,5 +1,3 @@
-import { AxiosResponse } from 'axios';
-
 import { mapKeys } from '../../../helpers/mapKeys';
 import { isObject } from '../../../helpers/isObject';
 import { camelCase } from '../../../helpers/camelCase';
@@ -36,7 +34,7 @@ const formatResponse = (object: Record<string, unknown>) => {
   return newResponse;
 };
 
-const isApiCollection = (data: Record<string, unknown>): boolean => {
+const isApiCollection = (data): boolean => {
   return !!data.collection && !!data.size;
 };
 
@@ -44,9 +42,7 @@ const isSmsResponse = (data: Record<string, unknown>): boolean => {
   return !!data.list && !!data.count;
 };
 
-export const extractDataFromResponse = (response: AxiosResponse) => {
-  const { data } = response;
-
+export const extractDataFromResponse = (data) => {
   if (!data) {
     return data;
   }

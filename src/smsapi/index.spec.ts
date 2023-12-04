@@ -18,7 +18,7 @@ describe('SMSAPI', () => {
       },
     })
       .get('/profile')
-      .reply(200);
+      .reply(200, {});
 
     const smsapi = new SMSAPI(token);
 

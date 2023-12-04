@@ -267,7 +267,7 @@ describe('Contacts Groups', () => {
         .query({
           delete_contacts: false,
         })
-        .reply(204);
+        .reply(204, {});
 
       // when
       const response = await smsapi.contacts.groups.remove(groupId);
@@ -286,7 +286,7 @@ describe('Contacts Groups', () => {
         .query({
           delete_contacts: true,
         })
-        .reply(204);
+        .reply(204, {});
 
       // when
       const response = await smsapi.contacts.groups.remove(groupId, true);

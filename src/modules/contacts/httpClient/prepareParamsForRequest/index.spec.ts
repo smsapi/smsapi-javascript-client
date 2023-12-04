@@ -46,7 +46,7 @@ describe('prepareParamsForRequest', () => {
     const getContactRequest = nock(API_URL)
       .get('/contacts')
       .query(body)
-      .reply(200);
+      .reply(200, {});
 
     // when
     await smsapi.contacts.get(contactParams);
@@ -88,7 +88,7 @@ describe('prepareParamsForRequest', () => {
     const getContactRequest = nock(API_URL)
       .get('/contacts')
       .query(body)
-      .reply(200);
+      .reply(200, {});
 
     // when
     await smsapi.contacts.get(contactParams);
@@ -126,7 +126,7 @@ describe('prepareParamsForRequest', () => {
 
     const createContactRequest = nock(API_URL)
       .post('/contacts', (requestBody): boolean => isEqual(body, requestBody))
-      .reply(201);
+      .reply(201, {});
 
     // when
     await smsapi.contacts.create(someNumber, contactDetails);

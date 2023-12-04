@@ -1,9 +1,9 @@
-import { AxiosInstance } from 'axios';
+import { HttpClient } from '../../smsapi/httpClient';
 
 export class BaseModule {
-  protected httpClient: AxiosInstance;
+  protected httpClient: HttpClient;
 
-  constructor(httpClient: AxiosInstance) {
+  constructor(httpClient: HttpClient) {
     this.httpClient = httpClient;
   }
 }

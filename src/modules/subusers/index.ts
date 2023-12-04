@@ -19,34 +19,31 @@ export interface ApiSubuser
 
 export class Subusers extends BaseModule {
   async get(): Promise<ApiCollection<Subuser>> {
-    return await this.httpClient.get<
-      ApiCollection<Subuser>,
-      ApiCollection<Subuser>
-    >('/subusers');
+    return await this.httpClient.get<ApiCollection<Subuser>>('/subusers');
   }
 
   async getById(subuserId: string): Promise<Subuser> {
-    return await this.httpClient.get<Subuser, Subuser>(
-      `/subusers/${subuserId}`,
-    );
+    return await this.httpClient.get<Subuser>(`/subusers/${subuserId}`);
   }
 
   async create(newSubuser: NewSubuser): Promise<Subuser> {
     const { credentials, points } = newSubuser;
 
-    return await this.httpClient.post<Subuser, Subuser>('/subusers', {
-      ...newSubuser,
-      credentials: {
-        api_password: credentials.apiPassword,
-        password: credentials.password,
-        username: credentials.username,
+    return await this.httpClient.post<Subuser>('/subusers', {
+      data: {
+        ...newSubuser,
+        credentials: {
+          api_password: credentials.apiPassword,
+          password: credentials.password,
+          username: credentials.username,
+        },
+        points: points
+          ? {
+              from_account: points.fromAccount,
+              per_month: points.perMonth,
+            }
+          : undefined,
       },
-      points: points
-        ? {
-            from_account: points.fromAccount,
-            per_month: points.perMonth,
-          }
-        : undefined,
     });
   }
 
@@ -56,9 +53,8 @@ export class Subusers extends BaseModule {
   ): Promise<Subuser> {
     const { credentials, points } = updateSubuser;
 
-    return await this.httpClient.put<Subuser, Subuser>(
-      `/subusers/${subuserId}`,
-      {
+    return await this.httpClient.put<Subuser>(`/subusers/${subuserId}`, {
+      data: {
         ...updateSubuser,
         credentials:
           credentials && (credentials.password || credentials.apiPassword)
@@ -75,10 +71,10 @@ export class Subusers extends BaseModule {
               }
             : undefined,
       },
-    );
+    });
   }
 
   async remove(subuserId: string): Promise<void> {
-    await this.httpClient.delete<void, void>(`/subusers/${subuserId}`);
+    await this.httpClient.delete<void>(`/subusers/${subuserId}`);
   }
 }

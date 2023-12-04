@@ -1,20 +1,18 @@
-import { stringify } from 'querystring';
-
-import { InternalAxiosRequestConfig } from 'axios';
-
 import { formatDate } from '../../helpers/formatDate';
 import { mapKeys } from '../../../../helpers/mapKeys';
 import { mapValues } from '../../../../helpers/mapValues';
 import { snakeCase } from '../../../../helpers/snakeCase';
+import { RequestOptions } from '../../../../smsapi/httpClient';
 
 const formatKeys = (data: Record<string, string | boolean | number>) => {
   return mapKeys(data, snakeCase);
 };
 
 export const prepareParamsForRequest = (
-  config: InternalAxiosRequestConfig,
-): InternalAxiosRequestConfig => {
-  const { data, method, params } = config;
+  method: string,
+  options: RequestOptions,
+): RequestOptions => {
+  const { data, params } = options;
 
   if (['get', 'delete'].includes((method as string).toLowerCase())) {
     let formattedParams = mapValues(params, (value, key) => {
@@ -36,18 +34,15 @@ export const prepareParamsForRequest = (
     formattedParams = formatKeys(formattedParams);
 
     return {
-      ...config,
       params: formattedParams,
-      paramsSerializer: (params) => stringify(params),
     };
   }
 
   if (data) {
     return {
-      ...config,
-      data: stringify(formatKeys(data)),
+      data: formatKeys(data),
     };
   }
 
-  return config;
+  return options;
 };

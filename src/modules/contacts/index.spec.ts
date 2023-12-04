@@ -252,7 +252,7 @@ describe('Contacts', () => {
       source: 'someSource',
     };
 
-    const req = nock(API_URL).delete(`/contacts/${contact.id}`).reply(200);
+    const req = nock(API_URL).delete(`/contacts/${contact.id}`).reply(200, {});
 
     // when
     const response = await smsapi.contacts.remove(contact.id);
@@ -447,7 +447,7 @@ describe('Contacts', () => {
 
       const req = nock(API_URL)
         .delete(`/contacts/${contactId}/groups/${groupId}`)
-        .reply(204);
+        .reply(204, {});
 
       // when
       const response = await smsapi.contacts.unpinContactFromGroup(

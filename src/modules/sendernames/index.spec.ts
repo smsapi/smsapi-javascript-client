@@ -102,7 +102,7 @@ describe('Sendernames', () => {
 
     const req = nock(API_URL)
       .post(`/sms/sendernames/${sendername}/commands/make_default`)
-      .reply(204);
+      .reply(204, {});
 
     // when
     const response = await smsapi.sendernames.makeDefault(sendername);
@@ -118,7 +118,7 @@ describe('Sendernames', () => {
 
     const req = nock(API_URL)
       .delete(`/sms/sendernames/${sendername}`)
-      .reply(204);
+      .reply(204, {});
 
     // when
     const response = await smsapi.sendernames.remove(sendername);

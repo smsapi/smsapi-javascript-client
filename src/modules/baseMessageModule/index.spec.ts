@@ -24,7 +24,7 @@ describe('Base message module', () => {
         message,
         to: number,
       })
-      .reply(200);
+      .reply(200, {});
 
     // when
     try {
@@ -85,7 +85,7 @@ describe('Base message module', () => {
         message,
         to: number,
       })
-      .reply(200);
+      .reply(200, {});
 
     // when
     try {
