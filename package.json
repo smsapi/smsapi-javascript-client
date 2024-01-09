@@ -4,6 +4,7 @@
   "version": "2.0.12",
   "license": "Apache-2.0",
   "author": "SMSAPI <info@smsapi.pl>",
+  "repository": "github:smsapi/smsapi-javascript-client",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "files": [
