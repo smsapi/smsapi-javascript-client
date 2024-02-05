@@ -15,7 +15,7 @@
     "lint": "eslint .",
     "test": "jest",
     "test:watch": "jest --watchAll --verbose",
-    "prepare": "husky install",
+    "prepare": "husky",
     "prepublishOnly": "npm run lint && npm run test"
   },
   "dependencies": {
