@@ -32,10 +32,10 @@ export class SMSAPI {
   public templates: Templates;
   public vms: Vms;
 
-  constructor(accessToken: string) {
+  constructor(accessToken: string, useFetch = false) {
     this.accessToken = accessToken;
 
-    this.httpClient = this.setHttpClient();
+    this.httpClient = this.setHttpClient(useFetch);
 
     this.contacts = new Contacts(this.httpClient);
     this.hlr = new Hlr(this.httpClient);
@@ -52,9 +52,9 @@ export class SMSAPI {
     return `smsapi/js-client:${version}`;
   }
 
-  private setHttpClient(): AxiosInstance {
+  private setHttpClient(useFetch = false): AxiosInstance {
     const httpClient = axios.create({
-      adapter: 'http',
+      adapter: useFetch ? 'fetch' : 'http',
       baseURL: API_URL,
       headers: {
         Accept: 'application/json',

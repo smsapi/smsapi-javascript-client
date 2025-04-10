@@ -11,7 +11,8 @@ npm install smsapi --save
 ```ts
 import { SMSAPI } from 'smsapi';
 
-const smsapi = new SMSAPI('oAuthToken');
+const USE_FETCH = false;
+const smsapi = new SMSAPI('oAuthToken', USE_FETCH);
 
 try {
   const result = await smsapi.sms.sendSms('+48605xxxxxx', 'My first message!');
