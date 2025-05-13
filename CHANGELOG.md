@@ -1,5 +1,15 @@
 # Changelog
 
+## [2.0.15](https://github.com/smsapi/smsapi-javascript-client/compare/v2.0.14...v2.0.15) - 2025-05-13
+
+### Added
+
+- Possibility to set specific service url.
+
+```js
+const smsapi = new SMSAPI('oAuthToken', 'https://ssl.smsapi.com/api');
+```
+
 ## [2.0.14](https://github.com/smsapi/smsapi-javascript-client/compare/v2.0.13...v2.0.14) - 2024-10-02
 
 ### Changed
