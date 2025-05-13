@@ -19,6 +19,7 @@ import { extractDataFromResponse } from './httpClient/extractDataFromResponse';
 
 export class SMSAPI {
   private accessToken: string;
+  private serviceUrl: string;
 
   private httpClient: AxiosInstance;
 
@@ -32,8 +33,9 @@ export class SMSAPI {
   public templates: Templates;
   public vms: Vms;
 
-  constructor(accessToken: string) {
+  constructor(accessToken: string, serviceUrl?: string) {
     this.accessToken = accessToken;
+    this.serviceUrl = serviceUrl ?? API_URL;
 
     this.httpClient = this.setHttpClient();
 
@@ -55,7 +57,7 @@ export class SMSAPI {
   private setHttpClient(): AxiosInstance {
     const httpClient = axios.create({
       adapter: 'http',
-      baseURL: API_URL,
+      baseURL: this.serviceUrl,
       headers: {
         Accept: 'application/json',
         Authorization: `Bearer ${this.accessToken}`,

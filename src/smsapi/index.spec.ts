@@ -29,4 +29,26 @@ describe('SMSAPI', () => {
     expect(nock.pendingMocks()).toEqual([]);
     expect(nock.isDone()).toEqual(true);
   });
+
+  it(`SMSAPI should call service provided by user`, async () => {
+    // given
+    const url = 'https://ssl.smsapi.com/api';
+
+    nock(url, {
+      reqheaders: {
+        authorization: `Bearer ${token}`,
+      },
+    })
+      .get('/profile')
+      .reply(200);
+
+    const smsapi = new SMSAPI(token, url);
+
+    // when
+    await smsapi.profile.get();
+
+    // then
+    expect(nock.pendingMocks()).toEqual([]);
+    expect(nock.isDone()).toEqual(true);
+  });
 });
