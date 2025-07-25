@@ -63,10 +63,7 @@ export class Sms extends BaseMessageModule {
   ): Promise<ScheduledSmsResponse> {
     const ids = Array.isArray(smsId) ? smsId.join(',') : smsId;
 
-    return await this.httpClient.post<
-      ScheduledSmsResponse,
-      ScheduledSmsResponse
-    >(this.endpoint, {
+    return await this.httpClient.post<ScheduledSmsResponse>(this.endpoint, {
       format: 'json',
       sch_del: ids,
     });

@@ -1,6 +1,4 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import axios, { AxiosInstance } from 'axios';
-
 import { Contacts } from '../modules/contacts';
 import { Hlr } from '../modules/hlr';
 import { Mms } from '../modules/mms';
@@ -14,14 +12,14 @@ import { Vms } from '../modules/vms';
 import { version } from '../../package.json';
 import { API_URL } from '../constants';
 
-import { extractDataFromResponse } from './httpClient/extractDataFromResponse';
+import { HttpClient } from './httpClient';
 /* eslint-enable @typescript-eslint/ban-ts-comment */
 
 export class SMSAPI {
   private accessToken: string;
   private serviceUrl: string;
 
-  private httpClient: AxiosInstance;
+  private httpClient: HttpClient;
 
   public contacts: Contacts;
   public hlr: Hlr;
@@ -37,9 +35,9 @@ export class SMSAPI {
     this.accessToken = accessToken;
     this.serviceUrl = serviceUrl ?? API_URL;
 
-    this.httpClient = this.setHttpClient();
+    this.httpClient = this.getHttpClient();
 
-    this.contacts = new Contacts(this.httpClient);
+    this.contacts = new Contacts(this.getHttpClient());
     this.hlr = new Hlr(this.httpClient);
     this.mms = new Mms(this.httpClient);
     this.profile = new Profile(this.httpClient);
@@ -54,19 +52,11 @@ export class SMSAPI {
     return `smsapi/js-client:${version}`;
   }
 
-  private setHttpClient(): AxiosInstance {
-    const httpClient = axios.create({
-      adapter: 'http',
-      baseURL: this.serviceUrl,
-      headers: {
-        Accept: 'application/json',
-        Authorization: `Bearer ${this.accessToken}`,
-        'User-Agent': this.getUserAgent(),
-      },
+  private getHttpClient(): HttpClient {
+    return new HttpClient(this.serviceUrl, {
+      Accept: 'application/json',
+      Authorization: `Bearer ${this.accessToken}`,
+      'User-Agent': this.getUserAgent(),
     });
-
-    httpClient.interceptors.response.use(extractDataFromResponse);
-
-    return httpClient;
   }
 }

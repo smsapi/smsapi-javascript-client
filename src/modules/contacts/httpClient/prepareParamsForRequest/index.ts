@@ -1,22 +1,17 @@
-import { stringify } from 'querystring';
-
-import { InternalAxiosRequestConfig } from 'axios';
-
 import { formatDate } from '../../helpers/formatDate';
 import { mapKeys } from '../../../../helpers/mapKeys';
 import { mapValues } from '../../../../helpers/mapValues';
 import { snakeCase } from '../../../../helpers/snakeCase';
+import { RequestInterceptor } from '../../../../smsapi/httpClient';
 
-const formatKeys = (data: Record<string, string | boolean | number>) => {
+const formatKeys = (data: Record<string, unknown>) => {
   return mapKeys(data, snakeCase);
 };
 
-export const prepareParamsForRequest = (
-  config: InternalAxiosRequestConfig,
-): InternalAxiosRequestConfig => {
-  const { data, method, params } = config;
+export const prepareParamsForRequest: RequestInterceptor = (config) => {
+  const { body, method, params } = config;
 
-  if (['get', 'delete'].includes((method as string).toLowerCase())) {
+  if (params && ['get', 'delete'].includes((method as string).toLowerCase())) {
     let formattedParams = mapValues(params, (value, key) => {
       if (key === 'birthdayDate') {
         if (Array.isArray(value)) {
@@ -38,14 +33,13 @@ export const prepareParamsForRequest = (
     return {
       ...config,
       params: formattedParams,
-      paramsSerializer: (params) => stringify(params),
     };
   }
 
-  if (data) {
+  if (body && typeof body === 'object' && !Buffer.isBuffer(body)) {
     return {
       ...config,
-      data: stringify(formatKeys(data)),
+      body: formatKeys(body) as Record<string, string | number | boolean>,
     };
   }
 

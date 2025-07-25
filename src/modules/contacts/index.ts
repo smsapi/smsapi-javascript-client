@@ -1,10 +1,8 @@
-import axios, { AxiosInstance } from 'axios';
-
-import { extractDataFromResponse } from '../../smsapi/httpClient/extractDataFromResponse';
 import { BaseModule } from '../baseModule';
 import { ApiCollection } from '../../types/ApiCollection';
 import { mapKeys } from '../../helpers/mapKeys';
 import { snakeCase } from '../../helpers/snakeCase';
+import { HttpClient } from '../../smsapi/httpClient';
 
 import { Contact } from './types/Contact';
 import { NewContact } from './types/NewContact';
@@ -18,45 +16,31 @@ import { UpdateContact } from './types/UpdateContact';
 import { Fields } from './modules/fields';
 
 export class Contacts extends BaseModule {
-  private contactHttpClient: AxiosInstance;
-
   public fields: Fields;
   public groups: Groups;
 
-  constructor(httpClient: AxiosInstance) {
+  constructor(httpClient: HttpClient) {
     super(httpClient);
 
-    this.contactHttpClient = axios.create({
-      adapter: httpClient.defaults.adapter,
-      baseURL: httpClient.defaults.baseURL,
-      headers: httpClient.defaults.headers,
-    });
+    this.httpClient.addRequestInterceptor(prepareParamsForRequest);
+    this.httpClient.addResponseInterceptor(formatResponseDates);
 
-    this.contactHttpClient.interceptors.request.use(prepareParamsForRequest);
-    this.contactHttpClient.interceptors.response.use(formatResponseDates);
-    this.contactHttpClient.interceptors.response.use(extractDataFromResponse);
-
-    this.fields = new Fields(this.contactHttpClient);
-    this.groups = new Groups(this.contactHttpClient);
+    this.fields = new Fields(this.httpClient);
+    this.groups = new Groups(this.httpClient);
   }
 
   async get(params?: GetContactsQueryParams): Promise<ApiCollection<Contact>> {
-    return await this.contactHttpClient.get<
-      ApiCollection<Contact>,
-      ApiCollection<Contact>
-    >('/contacts', {
+    return await this.httpClient.get<ApiCollection<Contact>>('/contacts', {
       params,
     });
   }
 
   async getById(contactId: string): Promise<Contact> {
-    return await this.contactHttpClient.get<Contact, Contact>(
-      `/contacts/${contactId}`,
-    );
+    return await this.httpClient.get<Contact>(`/contacts/${contactId}`);
   }
 
   async create(phoneNumber: string, details?: NewContact): Promise<Contact> {
-    return await this.contactHttpClient.post<Contact, Contact>('/contacts', {
+    return await this.httpClient.post<Contact>('/contacts', {
       phone_number: phoneNumber,
       ...this.formatContactDetails(details || {}),
     });
@@ -66,27 +50,23 @@ export class Contacts extends BaseModule {
     contactId: string,
     updateContact: UpdateContact,
   ): Promise<Contact> {
-    return await this.contactHttpClient.put<Contact, Contact>(
-      `/contacts/${contactId}`,
-      {
-        ...this.formatContactDetails(updateContact || {}),
-      },
-    );
+    return await this.httpClient.put<Contact>(`/contacts/${contactId}`, {
+      ...this.formatContactDetails(updateContact || {}),
+    });
   }
 
   async remove(contactId: string): Promise<void> {
-    await this.contactHttpClient.delete(`/contacts/${contactId}`);
+    await this.httpClient.delete(`/contacts/${contactId}`);
   }
 
   async getGroups(contactId: string): Promise<ApiCollection<Group>> {
-    return await this.contactHttpClient.get<
-      ApiCollection<Group>,
-      ApiCollection<Group>
-    >(`/contacts/${contactId}/groups`);
+    return await this.httpClient.get<ApiCollection<Group>>(
+      `/contacts/${contactId}/groups`,
+    );
   }
 
   async getGroupById(contactId: string, groupId: string): Promise<Group> {
-    return await this.contactHttpClient.get<Group, Group>(
+    return await this.httpClient.get<Group>(
       `/contacts/${contactId}/groups/${groupId}`,
     );
   }
@@ -95,19 +75,16 @@ export class Contacts extends BaseModule {
     contactId: string,
     groupId: string,
   ): Promise<ApiCollection<Group>> {
-    return await this.contactHttpClient.put<
-      ApiCollection<Group>,
-      ApiCollection<Group>
-    >(`/contacts/${contactId}/groups/${groupId}`);
+    return await this.httpClient.put<ApiCollection<Group>>(
+      `/contacts/${contactId}/groups/${groupId}`,
+    );
   }
 
   async unpinContactFromGroup(
     contactId: string,
     groupId: string,
   ): Promise<void> {
-    await this.contactHttpClient.delete(
-      `/contacts/${contactId}/groups/${groupId}`,
-    );
+    await this.httpClient.delete(`/contacts/${contactId}/groups/${groupId}`);
   }
 
   private formatContactDetails(details: NewContact): Record<string, unknown> {

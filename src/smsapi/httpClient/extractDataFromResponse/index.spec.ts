@@ -1,17 +1,19 @@
-import { createAxiosResponse } from '../../../testHelpers/createAxiosResponse';
+import { ApiResponse } from '..';
 
 import { extractDataFromResponse } from './index';
 
 describe('extractDataFromResponse', () => {
   it('should return data from response', () => {
     // given
-    const response = createAxiosResponse({
-      a: 'someA',
-      b: 'someB',
-    });
+    const response = {
+      data: {
+        a: 'someA',
+        b: 'someB',
+      },
+    };
 
     // when
-    const data = extractDataFromResponse(response);
+    const data = extractDataFromResponse(response as ApiResponse);
 
     // then
     expect(data).toEqual({
@@ -22,15 +24,17 @@ describe('extractDataFromResponse', () => {
 
   it('should return formatted date from response with object 1 level deep', () => {
     // given
-    const response = createAxiosResponse({
-      some_a: 'someA',
-      some_b: {
-        some_c: 'someC',
+    const response = {
+      data: {
+        some_a: 'someA',
+        some_b: {
+          some_c: 'someC',
+        },
       },
-    });
+    };
 
     // when
-    const data = extractDataFromResponse(response);
+    const data = extractDataFromResponse(response as ApiResponse);
 
     // then
     expect(data).toEqual({
@@ -43,13 +47,15 @@ describe('extractDataFromResponse', () => {
 
   it('should return formatted data from response', () => {
     // given
-    const response = createAxiosResponse({
-      test_a: 'someA',
-      test_b: 'someB',
-    });
+    const response = {
+      data: {
+        test_a: 'someA',
+        test_b: 'someB',
+      },
+    };
 
     // when
-    const data = extractDataFromResponse(response);
+    const data = extractDataFromResponse(response as ApiResponse);
 
     // then
     expect(data).toEqual({
@@ -75,13 +81,15 @@ describe('extractDataFromResponse', () => {
       },
     ];
 
-    const response = createAxiosResponse({
-      collection,
-      size: collection.length,
-    });
+    const response = {
+      data: {
+        collection,
+        size: collection.length,
+      },
+    };
 
     // when
-    const data = extractDataFromResponse(response);
+    const data = extractDataFromResponse(response as ApiResponse);
 
     // then
     expect(data).toEqual({
@@ -105,23 +113,25 @@ describe('extractDataFromResponse', () => {
 
   it('should return formatted data from array response', () => {
     // given
-    const response = createAxiosResponse([
-      {
-        testa: 'someA',
-      },
-      {
-        test_b: 'someB',
-      },
-      {
-        'some-test-c': 'someC',
-      },
-      {
-        someTestD: 'someD',
-      },
-    ]);
+    const response = {
+      data: [
+        {
+          testa: 'someA',
+        },
+        {
+          test_b: 'someB',
+        },
+        {
+          'some-test-c': 'someC',
+        },
+        {
+          someTestD: 'someD',
+        },
+      ],
+    };
 
     // when
-    const data = extractDataFromResponse(response);
+    const data = extractDataFromResponse(response as ApiResponse);
 
     // then
     expect(data).toEqual([
@@ -142,19 +152,21 @@ describe('extractDataFromResponse', () => {
 
   it('should return formatted data from array response with object 1 level deep', () => {
     // given
-    const response = createAxiosResponse([
-      {
-        test_a: 'someA',
-      },
-      {
-        test_b: {
-          test_c: 'someTestC',
+    const response = {
+      data: [
+        {
+          test_a: 'someA',
         },
-      },
-    ]);
+        {
+          test_b: {
+            test_c: 'someTestC',
+          },
+        },
+      ],
+    };
 
     // when
-    const data = extractDataFromResponse(response);
+    const data = extractDataFromResponse(response as ApiResponse);
 
     // then
     expect(data).toEqual([
@@ -171,18 +183,20 @@ describe('extractDataFromResponse', () => {
 
   it('should return formatted data from sms response', () => {
     // given
-    const response = createAxiosResponse({
-      count: 1,
-      list: [
-        {
-          date_sent: 1596539492,
-        },
-      ],
-      message: 'someMessage',
-    });
+    const response = {
+      data: {
+        count: 1,
+        list: [
+          {
+            date_sent: 1596539492,
+          },
+        ],
+        message: 'someMessage',
+      },
+    };
 
     // when
-    const data = extractDataFromResponse(response);
+    const data = extractDataFromResponse(response as ApiResponse);
 
     // then
     expect(data).toEqual({
@@ -198,10 +212,10 @@ describe('extractDataFromResponse', () => {
 
   it(`should return data when it's not an object`, () => {
     // given
-    const response = createAxiosResponse(undefined);
+    const response = { data: undefined };
 
     // when
-    const data = extractDataFromResponse(response);
+    const data = extractDataFromResponse(response as ApiResponse);
 
     // then
     expect(data).toBe(undefined);
@@ -209,13 +223,15 @@ describe('extractDataFromResponse', () => {
 
   it(`shouldn't format Date values`, () => {
     // given
-    const response = createAxiosResponse({
-      array_with_dates: [new Date()],
-      date_created: new Date(),
-    });
+    const response = {
+      data: {
+        array_with_dates: [new Date()],
+        date_created: new Date(),
+      },
+    };
 
     // when
-    const data = extractDataFromResponse(response);
+    const data = extractDataFromResponse(response as ApiResponse);
 
     // then
     expect(data).toEqual({
@@ -226,20 +242,22 @@ describe('extractDataFromResponse', () => {
 
   it(`should format contact's group permissions`, () => {
     // given
-    const response = createAxiosResponse({
-      another_array: [0, 1, 2, 3],
-      permissions: [
-        {
-          group_id: 'someGroupId1',
-        },
-        {
-          group_id: 'someGroupId2',
-        },
-      ],
-    });
+    const response = {
+      data: {
+        another_array: [0, 1, 2, 3],
+        permissions: [
+          {
+            group_id: 'someGroupId1',
+          },
+          {
+            group_id: 'someGroupId2',
+          },
+        ],
+      },
+    };
 
     // when
-    const data = extractDataFromResponse(response);
+    const data = extractDataFromResponse(response as ApiResponse);
 
     // then
     expect(data).toEqual({

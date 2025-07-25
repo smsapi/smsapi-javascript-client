@@ -1,5 +1,3 @@
-import { AxiosResponse } from 'axios';
-
 import { ApiCollection } from '../../../../types/ApiCollection';
 
 interface ApiGroup {
@@ -30,7 +28,7 @@ const formatDates = (group: ApiGroup): Record<string, Date | string> => {
   };
 };
 
-export const formatResponseDates = (response: AxiosResponse): AxiosResponse => {
+export const formatResponseDates = (response) => {
   const { data } = response;
 
   if (isApiCollection(data)) {

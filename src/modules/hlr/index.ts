@@ -15,14 +15,15 @@ export class Hlr extends BaseModule {
       params.idx = Array.isArray(idx) ? idx.join(',') : idx;
     }
 
-    return await this.httpClient.post<
-      HlrCheckResponse | HlrCheckResponse[],
-      HlrCheckResponse | HlrCheckResponse[]
-    >('/hlr.do', undefined, {
-      params: {
-        format: 'json',
-        ...params,
+    return await this.httpClient.post<HlrCheckResponse | HlrCheckResponse[]>(
+      '/hlr.do',
+      undefined,
+      {
+        params: {
+          format: 'json',
+          ...params,
+        },
       },
-    });
+    );
   }
 }

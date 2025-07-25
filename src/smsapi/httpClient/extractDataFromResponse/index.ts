@@ -1,8 +1,7 @@
-import { AxiosResponse } from 'axios';
-
 import { mapKeys } from '../../../helpers/mapKeys';
 import { isObject } from '../../../helpers/isObject';
 import { camelCase } from '../../../helpers/camelCase';
+import { ApiResponse } from '..';
 
 const formatKeys = (
   object: Record<string, unknown>,
@@ -44,7 +43,8 @@ const isSmsResponse = (data: Record<string, unknown>): boolean => {
   return !!data.list && !!data.count;
 };
 
-export const extractDataFromResponse = (response: AxiosResponse) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const extractDataFromResponse = (response: ApiResponse<any>) => {
   const { data } = response;
 
   if (!data) {

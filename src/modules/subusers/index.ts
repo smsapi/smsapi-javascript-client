@@ -19,22 +19,17 @@ export interface ApiSubuser
 
 export class Subusers extends BaseModule {
   async get(): Promise<ApiCollection<Subuser>> {
-    return await this.httpClient.get<
-      ApiCollection<Subuser>,
-      ApiCollection<Subuser>
-    >('/subusers');
+    return await this.httpClient.get<ApiCollection<Subuser>>('/subusers');
   }
 
   async getById(subuserId: string): Promise<Subuser> {
-    return await this.httpClient.get<Subuser, Subuser>(
-      `/subusers/${subuserId}`,
-    );
+    return await this.httpClient.get<Subuser>(`/subusers/${subuserId}`);
   }
 
   async create(newSubuser: NewSubuser): Promise<Subuser> {
     const { credentials, points } = newSubuser;
 
-    return await this.httpClient.post<Subuser, Subuser>('/subusers', {
+    return await this.httpClient.post<Subuser>('/subusers', {
       ...newSubuser,
       credentials: {
         api_password: credentials.apiPassword,
@@ -56,29 +51,26 @@ export class Subusers extends BaseModule {
   ): Promise<Subuser> {
     const { credentials, points } = updateSubuser;
 
-    return await this.httpClient.put<Subuser, Subuser>(
-      `/subusers/${subuserId}`,
-      {
-        ...updateSubuser,
-        credentials:
-          credentials && (credentials.password || credentials.apiPassword)
-            ? {
-                api_password: credentials.apiPassword,
-                password: credentials.password,
-              }
-            : undefined,
-        points:
-          points && (points.fromAccount || points.perMonth)
-            ? {
-                from_account: points.fromAccount,
-                per_month: points.perMonth,
-              }
-            : undefined,
-      },
-    );
+    return await this.httpClient.put<Subuser>(`/subusers/${subuserId}`, {
+      ...updateSubuser,
+      credentials:
+        credentials && (credentials.password || credentials.apiPassword)
+          ? {
+              api_password: credentials.apiPassword,
+              password: credentials.password,
+            }
+          : undefined,
+      points:
+        points && (points.fromAccount || points.perMonth)
+          ? {
+              from_account: points.fromAccount,
+              per_month: points.perMonth,
+            }
+          : undefined,
+    });
   }
 
   async remove(subuserId: string): Promise<void> {
-    await this.httpClient.delete<void, void>(`/subusers/${subuserId}`);
+    await this.httpClient.delete<void>(`/subusers/${subuserId}`);
   }
 }

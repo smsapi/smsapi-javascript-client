@@ -1,6 +1,8 @@
+import { QueryParams } from '../../../smsapi/httpClient';
+
 import { ContactGender } from './ContactGender';
 
-export interface GetContactsQueryParams {
+export interface GetContactsQueryParams extends QueryParams {
   q?: string;
   offset?: number;
   limit?: number;
