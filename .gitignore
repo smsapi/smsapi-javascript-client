@@ -116,3 +116,5 @@ out
 
 # TypeScript build output
 dist/
+
+.vscode
