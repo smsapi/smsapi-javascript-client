@@ -1,5 +1,4 @@
 import nock from 'nock';
-import { v4 as uuidv4 } from 'uuid';
 
 import { API_URL } from '../../constants';
 import { SMSAPI } from '../../smsapi';
@@ -125,7 +124,7 @@ describe('Subusers', () => {
       credentials: {
         apiPassword: 'SomeSuperStrongApiPassword123',
         password: 'SomeSuperStrongPassword123',
-        username: `user-${uuidv4()}`,
+        username: `user-${new Date().getTime()}`,
       },
       description: 'Some subuser description',
       points: {
