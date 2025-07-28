@@ -6,7 +6,7 @@ export interface RequestConfig {
   url: string;
   method: string;
   headers: Record<string, string>;
-  body?: Record<string, unknown> | string | Buffer;
+  body?: Record<string, unknown> | string | Buffer | FormData;
   params?: QueryParams;
 }
 
@@ -106,7 +106,10 @@ export class HttpClient {
     };
 
     if (body && method !== 'GET' && method !== 'HEAD') {
-      if (requestConfig.body instanceof Buffer) {
+      if (requestConfig.body instanceof FormData) {
+        delete (fetchConfig.headers as Record<string, string>)['Content-Type'];
+        fetchConfig.body = requestConfig.body;
+      } else if (requestConfig.body instanceof Buffer) {
         fetchConfig.body = requestConfig.body;
       } else {
         fetchConfig.body = JSON.stringify(requestConfig.body);
