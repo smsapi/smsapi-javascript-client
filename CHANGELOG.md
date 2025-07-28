@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.1.0](https://github.com/smsapi/smsapi-javascript-client/compare/v2.0.15...v2.1.0) - 2025-07-28
+
+**Dropped support for Node <18.**
+
+### Changed
+
+- Replaced axios with fetch.
+- Dependencies update.
+
 ## [2.0.15](https://github.com/smsapi/smsapi-javascript-client/compare/v2.0.14...v2.0.15) - 2025-05-13
 
 ### Added
