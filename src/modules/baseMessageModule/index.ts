@@ -1,7 +1,5 @@
 import fs from 'fs';
 
-import FormData from 'form-data';
-
 import { BaseModule } from '../baseModule';
 import { SmsDetails } from '../sms/types/SmsDetails';
 import {
@@ -89,9 +87,7 @@ export class BaseMessageModule extends BaseModule {
 
       const data = await this.httpClient.post<
         ApiMessageResponse | MessageErrorResponse
-      >(this.endpoint, formData.getBuffer(), {
-        headers: formData.getHeaders(),
-      });
+      >(this.endpoint, formData);
 
       if (isMessageErrorResponseData(data)) {
         throw new MessageError(data);
@@ -155,26 +151,26 @@ export class BaseMessageModule extends BaseModule {
     const formData = new FormData();
 
     if (body.to) {
-      formData.append('to', body.to);
+      formData.append('to', body.to as string);
     }
 
     if (body.group) {
-      formData.append('group', body.group);
+      formData.append('group', body.group as string);
     }
 
     for (const [key, value] of Object.entries(body)) {
       if (typeof value === 'boolean') {
-        formData.append(key, value ? 1 : 0);
+        formData.append(key, value ? '1' : '0');
         continue;
       }
 
       formData.append(key, value as string);
     }
 
-    formData.append('file', fs.readFileSync(content.localPath), {
-      contentType: 'audio/wav',
-      filename: 'vms.wav',
-    });
+    const fileBuffer = fs.readFileSync(content.localPath);
+    const fileBlob = new Blob([fileBuffer], { type: 'audio/wav' });
+
+    formData.append('file', fileBlob, 'vms.wav');
 
     return formData;
   }

@@ -17,9 +17,6 @@
     "test:watch": "jest --watchAll --verbose",
     "prepublishOnly": "npm run lint && npm run test"
   },
-  "dependencies": {
-    "form-data": "^4.0.4"
-  },
   "devDependencies": {
     "@babel/preset-env": "^7.28.0",
     "@babel/preset-typescript": "^7.27.1",
