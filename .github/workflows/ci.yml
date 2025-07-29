@@ -26,5 +26,11 @@ jobs:
       - name: Install deps and build (with cache)
         uses: bahmutov/npm-install@v1
 
+      - name: Typecheck
+        run: npm run typecheck
+
       - name: Test package
         run: npm run test
+
+      - name: Lint
+        run: npm run lint
