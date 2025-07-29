@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.1.1](https://github.com/smsapi/smsapi-javascript-client/compare/v2.1.0...v2.1.1) - 2025-07-29
+
+### Changed
+
+- Replaced form-data package with native FormData.
+
 ## [2.1.0](https://github.com/smsapi/smsapi-javascript-client/compare/v2.0.15...v2.1.0) - 2025-07-28
 
 **Dropped support for Node <18.**
