@@ -6,7 +6,7 @@ export interface RequestConfig {
   url: string;
   method: string;
   headers: Record<string, string>;
-  body?: Record<string, unknown> | string | Buffer | FormData;
+  body?: Record<string, unknown> | string | FormData;
   params?: QueryParams;
 }
 

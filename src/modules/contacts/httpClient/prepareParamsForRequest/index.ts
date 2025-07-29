@@ -36,7 +36,7 @@ export const prepareParamsForRequest: RequestInterceptor = (config) => {
     };
   }
 
-  if (body && typeof body === 'object' && !Buffer.isBuffer(body)) {
+  if (body && typeof body === 'object' && !(body instanceof FormData)) {
     return {
       ...config,
       body: formatKeys(body) as Record<string, string | number | boolean>,
