@@ -1421,10 +1421,10 @@
     "@jridgewell/resolve-uri" "^3.1.0"
     "@jridgewell/sourcemap-codec" "^1.4.14"
 
-"@mswjs/interceptors@^0.39.3":
-  version "0.39.4"
-  resolved "https://registry.npmjs.org/@mswjs/interceptors/-/interceptors-0.39.4.tgz"
-  integrity sha512-B82DbrGVCIBrNEfRJbqUFB0eNz0wVzqbenEpmbE71XLVU4yKZbDnRBuxz+7udc/uM7LDWDD4sRJ5tISzHf2QkQ==
+"@mswjs/interceptors@^0.39.5":
+  version "0.39.5"
+  resolved "https://registry.yarnpkg.com/@mswjs/interceptors/-/interceptors-0.39.5.tgz#6f0571493bf76291a60b62234ed0add2c4bd970e"
+  integrity sha512-B9nHSJYtsv79uo7QdkZ/b/WoKm20IkVSmTc/WCKarmDtFwM0dRx2ouEniqwNkzCSLn3fydzKmnMzjtfdOWt3VQ==
   dependencies:
     "@open-draft/deferred-promise" "^2.2.0"
     "@open-draft/logger" "^0.3.0"
@@ -4195,11 +4195,11 @@ natural-compare@^1.4.0:
   integrity sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==
 
 nock@^14.0.6:
-  version "14.0.7"
-  resolved "https://registry.npmjs.org/nock/-/nock-14.0.7.tgz"
-  integrity sha512-ubwvvhSzNPqc7Nm3a/iYolwqb7lo1zfllDKO1ODsYu3KnarmQEya5yV70ZUwhVxYIl1ePuX3W+lHw2un+pUfpQ==
+  version "14.0.8"
+  resolved "https://registry.yarnpkg.com/nock/-/nock-14.0.8.tgz#9db86c64c61d27c3e26ca61d341367a7b2ad7177"
+  integrity sha512-5DCGrkwK1f8kxUvqvzLWb97XuDUY4/t5M3ZcogPfLGvC2wO8wjRQsIDSXj2L6e1J0Dv8xscf9wWSvGnS3OL29Q==
   dependencies:
-    "@mswjs/interceptors" "^0.39.3"
+    "@mswjs/interceptors" "^0.39.5"
     json-stringify-safe "^5.0.1"
     propagate "^2.0.0"
 
