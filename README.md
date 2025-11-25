@@ -28,6 +28,7 @@ try {
   * Contact fields
   * Contact groups
 * Hlr
+* MFA
 * MMS
 * Profile
 * Sendernames

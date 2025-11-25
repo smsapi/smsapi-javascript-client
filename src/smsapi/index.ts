@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { Contacts } from '../modules/contacts';
 import { Hlr } from '../modules/hlr';
+import { Mfa } from '../modules/mfa';
 import { Mms } from '../modules/mms';
 import { Profile } from '../modules/profile';
 import { Sendernames } from '../modules/sendernames';
@@ -23,6 +24,7 @@ export class SMSAPI {
 
   public contacts: Contacts;
   public hlr: Hlr;
+  public mfa: Mfa;
   public mms: Mms;
   public profile: Profile;
   public sendernames: Sendernames;
@@ -39,6 +41,7 @@ export class SMSAPI {
 
     this.contacts = new Contacts(this.getHttpClient());
     this.hlr = new Hlr(this.httpClient);
+    this.mfa = new Mfa(this.httpClient);
     this.mms = new Mms(this.httpClient);
     this.profile = new Profile(this.httpClient);
     this.sendernames = new Sendernames(this.httpClient);
