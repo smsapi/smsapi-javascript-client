@@ -19,10 +19,10 @@ describe('MFA', () => {
           phone_number: phoneNumber,
         })
         .reply(200, {
-          id: 'someId',
           code: '123456',
-          phone_number: phoneNumber,
           from: null,
+          id: 'someId',
+          phone_number: phoneNumber,
         });
 
       // when
@@ -31,10 +31,10 @@ describe('MFA', () => {
       // then
       expect(req.isDone()).toBeTruthy();
       expect(response).toEqual({
-        id: 'someId',
         code: '123456',
-        phoneNumber: phoneNumber,
         from: null,
+        id: 'someId',
+        phoneNumber: phoneNumber,
       });
     });
 
@@ -50,16 +50,16 @@ describe('MFA', () => {
 
       const req = nock(API_URL)
         .post('/mfa/codes', {
-          phone_number: phoneNumber,
           content: options.content,
           fast: options.fast,
           from: options.from,
+          phone_number: phoneNumber,
         })
         .reply(200, {
-          id: 'someId',
           code: '654321',
-          phone_number: phoneNumber,
           from: 'Test',
+          id: 'someId',
+          phone_number: phoneNumber,
         });
 
       // when
@@ -68,10 +68,10 @@ describe('MFA', () => {
       // then
       expect(req.isDone()).toBeTruthy();
       expect(response).toEqual({
-        id: 'someId',
         code: '654321',
-        phoneNumber: phoneNumber,
         from: 'Test',
+        id: 'someId',
+        phoneNumber: phoneNumber,
       });
     });
   });
@@ -85,8 +85,8 @@ describe('MFA', () => {
 
       const req = nock(API_URL)
         .post('/mfa/codes/verifications', {
-          phone_number: phoneNumber,
           code: code,
+          phone_number: phoneNumber,
         })
         .reply(204);
 
