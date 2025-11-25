@@ -1,5 +1,15 @@
 # Changelog
 
+## [2.1.3](https://github.com/smsapi/smsapi-javascript-client/compare/v2.1.2...v2.1.3) - 2025-11-25
+
+### Added
+
+- Support for MFA with `smsapi.mfa.generateCode()` and `smsapi.mfa.verifyCode()`.
+
+### Changed
+
+- Better error handling. Now we return HTTP status code and response from API.
+
 ## [2.1.2](https://github.com/smsapi/smsapi-javascript-client/compare/v2.1.1...v2.1.2) - 2025-09-12
 
 ### Changed
