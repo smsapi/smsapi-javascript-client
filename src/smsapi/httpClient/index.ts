@@ -2,6 +2,19 @@ import { extractDataFromResponse } from './extractDataFromResponse';
 
 export type QueryParams = Record<string, unknown>;
 
+export class HttpError extends Error {
+  constructor(
+    message: string,
+    public status: number,
+    public statusText: string,
+    public responseBody: string,
+    public url: string,
+  ) {
+    super(message);
+    this.name = 'HttpError';
+  }
+}
+
 export interface RequestConfig {
   url: string;
   method: string;
@@ -123,8 +136,12 @@ export class HttpClient {
 
     if (!response.ok) {
       const errorData = await response.text();
-      throw new Error(
-        `Request failed with status ${response.status}: ${errorData}`,
+      throw new HttpError(
+        `Request failed with status ${response.status}: ${response.statusText}`,
+        response.status,
+        response.statusText,
+        errorData,
+        response.url,
       );
     }
 
